@@ -1,0 +1,18 @@
+--- 
+title: 'Notes for "Forecasting: Principles and Practice, 3rd edition"'
+author: "Qiushi Yan"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [references.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+github-repo: enixam/fpp
+#nocite: '@*'
+#description: "This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook."
+---
+
+# Preface {-}
+
+This project contains my learning notes and code for [**Forecasting: Principles and Practice**, 3rd edition](https://otexts.com/fpp3/).  
+

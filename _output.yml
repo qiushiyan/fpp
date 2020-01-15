@@ -1,0 +1,17 @@
+bookdown::gitbook:
+  css: css/style.css
+  config:
+    fontsettings:
+      theme: white
+      family: serif
+      size: 2
+    toc:
+      collapse: section
+      before: |
+        <li><a href="./">Notes for fpp3</a></li>
+      after: |
+        <li><a href="https://github.com/rstudio/bookdown" target="blank">written with bookdown</a></li>
+    edit:
+      link: https://github.com/enixam/fpp/edit/master/%s
+      text: "Edit"
+
