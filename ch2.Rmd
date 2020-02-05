@@ -1,0 +1,72 @@
+
+# Time series graphics  
+
+
+
+## `tsibble` objects  
+
+```{r}
+library(tsibble)
+library(tsibbledata)
+```
+
+```{r}
+x <- tsibble(Year = 2015:2019, Observation = c(123, 39, 78, 52, 110), 
+             index = Year)
+
+x
+```
+
+
+
+Multiple time series, `key`:  
+
+```{r}
+olympic_running
+```
+
+### manipulation  
+
+tidyverse-based manipulation
+
+```{r}
+PBS
+
+PBS %>%
+  filter(ATC2 == "A10")
+
+# index column is automatically selected
+PBS %>%
+  filter(ATC2=="A10") %>%
+  select(Concession, Type, ATC1)
+```
+
+All key variable must be explicitly selected, that means we must at least select `Concession` and `Type` in the case above, since `ATC2` and `ATC1` are no longer `key` variables after `filter(ATC == "A10")`
+
+```{r}
+PBS %>% 
+    filter(ATC2 == "A10") %>% 
+    as_tibble() %>% 
+    count(Concession, Type, ATC1)
+```
+
+As to `summarize()`, `index` is automatically used as the grouping variable:  
+
+```{r}
+PBS %>%
+  filter(ATC2=="A10") %>%
+  select(Month, Concession, Type, Cost) %>%
+  summarise(TotalC = sum(Cost))
+```
+
+The  `mutate()`, here we change the units from dollars to millions of dollars:
+```{r}
+PBS %>%
+  filter(ATC2 == "A10") %>%
+  select(Month, Concession, Type, Cost) %>%
+  summarise(TotalC = sum(Cost)) %>%
+  mutate(Cost = TotalC / 1e6) -> a10
+
+a10
+```
+

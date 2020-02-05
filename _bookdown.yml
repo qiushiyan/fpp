@@ -9,6 +9,8 @@ before_chapter_script: "_common.R"
 
 rmd_files: [
   "index.Rmd",
+  "ch1.Rmd",
+  "ch2.Rmd",
   
   
   "references.Rmd"
