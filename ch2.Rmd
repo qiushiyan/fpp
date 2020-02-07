@@ -1,6 +1,9 @@
 
 # Time series graphics  
 
+```{r, echo = TRUE}
+knitr::opts_chunk$set(cache = TRUE)
+```
 
 
 ## `tsibble` objects  
@@ -194,7 +197,7 @@ vic_elec %>%
   theme(legend.position = "top")
 ```
 
-Different from `autoplot()`, when `gg_season()` encounter multiple time series, they are displayed in facets. 
+Different from `autoplot()`, when `gg_season()` and the `gg_subseries()` (later introduced) encounter multiple time series, they are displayed in facets. 
 
 
 
@@ -210,7 +213,7 @@ a10 %>%
     ggtitle("Seasonal subseries plot: antidiabetic drug sales")
 ```
 
-The blue horizontal lines indicate the means for each month. This form of plot enables the underlying seasonal pattern to be seen clearly, and also shows the changes in seasonality over time. It is especially useful in identifying changes within particular seasons. In this example, the plot is not particularly revealing; but in some cases, this is the most useful way of viewing seasonal changes over time.  
+**The blue horizontal lines indicate the means for each month**. This form of plot enables the underlying seasonal pattern to be seen clearly, and also shows the changes in seasonality over time. It is especially useful in identifying changes within particular seasons. In this example, the plot is not particularly revealing; but in some cases, this is the most useful way of viewing seasonal changes over time.  
 
 ### Example: Australian holiday tourism  
 
@@ -229,7 +232,8 @@ Then we can get total visitors by states(i.e., ignoring regions), and then plot 
 ```{r}
 holidays <- holiday_tourism %>%
   group_by(State) %>% # no nedd to specify group_by(Quarter, Region)
-  count(wt = Trips, name = "trips") 
+  count(wt = Trips, name = "trips") %>%
+  ungroup()
 
 holidays %>%  
   autoplot() +
@@ -239,9 +243,249 @@ holidays %>%
 
 Time plots of each series shows that there is strong seasonality for most states, but that the seasonal peaks do not coincide.   
 
-```{r}
-holidays %>%
-  filter(State == "ACT") %>%
-  gg_season()
+To see the timing of the seasonal peaks in each state, we can use a season plot.
+
+```{r, cache = TRUE, fig.height = 10, fig.width = 7.5}
+holidays %>% 
+  gg_season(trips) +
+  ylab("thousands of trips") +
+  ggtitle("Australian domestic holiday nights")
 ```
 
+Here it is clear that the southern states of Australia (Tasmania, Victoria and South Australia) have strongest tourism in Q1 (their summer), while the northern states (Queensland and the Northern Territory) have the strongest tourism in Q3 (their dry season).  
+
+The corresponding subseries plots are shown below:  
+
+```{r, fig.height = 8, fig.width = 8, cache = TRUE}
+holidays %>%
+  gg_subseries(trips) + 
+  ylab("thousands of trips") +
+  ggtitle("Australian domestic holiday nights")
+```
+
+This figure makes it evident that Western Australian tourism has jumped markedly in recent years, while Victorian tourism has increased in Q1 and Q4 but not in the middle of the year.
+
+## visualization between time series  
+
+While `autoplot()`, `gg_season()` and `gg_subseries()` is instrumental in visualizing individual time series, it is also useful to explore relationships between time series.   
+
+`vic_elec` half-hourly electricity `Demand` (in Gigawatts) and `Temperature` (in degrees Celsius), for 2014 in Victoria, Australia. The temperatures are for Melbourne, the largest city in Victoria, while the demand values are for the entire state. Addition to draw two separate time series, we can make a scatter plot to see relationship between the two:   
+
+```{r, cache = TRUE}
+library(ggpointdensity)
+vic_elec %>% 
+  ggplot() + 
+  geom_pointdensity(aes(Demand, Temperature)) + 
+  scale_color_viridis_c()
+```
+
+### scatterplot matrices  
+
+When there are several potential predictor variables, it is useful to plot each variable against each other variable. Consider the eight time series shown below, showing quarterly visitor numbers across states and territories of Australia.
+
+```{r, fig.height = 7.5, fig.width = 8, cache = TRUE}
+visitors <- tourism %>%
+  group_by(State) %>%
+  summarise(trips = sum(Trips))
+visitors %>%
+  ggplot(aes(x = Quarter, y = trips)) +
+    geom_line() +
+    facet_grid(vars(State), scales = "free_y") +
+    ylab("Number of visitor nights each quarter (millions)")
+```
+To better illustrate how number of visitors in different states are related, we could draw a scatterplot matrix by `GGally；:ggpairs()`
+
+```{r, fig.width = 8, fig.height = 7}
+library(GGally)
+visitors %>%
+  pivot_wider(names_from = State, values_from = trips) %>% 
+  ggpairs(columns = 2:9)
+```
+
+## Lag plots  
+
+Lag plot is another useful tool in discerning seaonality, which display $y_t$ against $y_{t-k}$ in a time series, $k$ being a constant for each individual plot.  
+
+Here we use the Australian beer production data to make a lag plot, in `gg_lag()`, `lags` determines different values of $k$ displayed (defaults to `1:9`) and `geom` types of geometry:  
+
+```{r, cache = TRUE}
+recent_production <- aus_production %>%
+  filter(year(Quarter) >= 1992)
+
+recent_production %>%
+  gg_lag(y = Beer, lags = 1:9, geom = "point")
+```
+
+It's no surprise that strong relationship is detected for $k = 4$ and $k = 8$, since in these 2 panels data points are collected from the same quarter, and from this pattern strong seasonality of beer production can be found.    
+
+### Autocorrelation
+
+Just as correlation measures the extent of a linear relationship between two variables, autocorrelation measures the linear relationship between lagged values of a time series. 
+
+
+
+There are several autocorrelation coefficients, corresponding to each panel in the lag plot. For example, $r_1$ measures the relationship between $y_t$ and $y_{t−1}$, $r_2$ measures the relationship between $y_t$ and $y_{t−2}$ and so on.  
+
+As correlation coefficient (pearson) is defined as: 
+
+$$
+r_{x, y} = \frac{\sum{(x_t - \bar{x})(y_t - \bar{y})}}{\sqrt{\sum{(x_t - \bar{x}})^2} \times {\sqrt{\sum{(y_t - \bar{y}})^2}}}
+$$
+
+given $x_t = y_t$ and $y_t = y_{t-k}$ we get the autocorrelation coefficient: 
+
+$$
+r_k = r_{y_t,y_{t-k}} = \frac{\sum{(y_t - \bar{y})(y_{t-k} - \bar{y})}}{\sum{(y_t - \bar{y})^2}}
+$$
+
+The autocorrelation coefficients make up the *autocorrelation function* or **ACF**.  
+
+The autocorrelation coefficients for the beer production data can be computed using the `ACF(.data, lag_max)` function, with `lag_max` defaulting to $10 \times \log{\frac{N}{M}}$ where $N$ is the number of observations and $M$ the number of series..  
+
+```{r}
+recent_production %>% ACF(Beer)
+```
+
+
+Similarly, the `ACF()` result could be plotted by `autoplot()`, which is oftern referred to as **correlogram**:     
+
+```{r}
+recent_production %>% 
+  ACF(Beer) %>%
+  autoplot()
+```
+
+
+In this graph:
+
+* $r_4$ is higher than for the other lags. This is due to the seasonal pattern in the data: the peaks tend to be four quarters apart and the troughs tend to be four quarters apart.  
+* $r_2$ is more negative than for the other lags because troughs tend to be two quarters behind peaks.  
+* The dashed blue lines indicate whether the correlations are significantly different from zero.
+
+This seasonal pattern could also be visualized by `gg_season()`` 
+```{r, fig.show = "hold", out.width = "50%"}
+recent_production %>% gg_season()
+recent_production %>% gg_subseries()
+```
+
+### Trend and seasonality in ACF plots  
+
+
+When data have a trend, the autocorrelations for small lags tend to be large and positive because observations nearby in time are also nearby in size. So the ACF of trended time series tend to have positive values that slowly decrease as the lags increase.
+
+When data are seasonal, the autocorrelations will be larger for the seasonal lags (at multiples of the seasonal frequency) than for other lags.
+
+When data are both trended and seasonal, you see a combination of these effects, as shown below in the case of `a10`. 
+```{r}
+a10 %>% ACF(cost, lag_max = 48) %>% autoplot()
+```
+
+
+
+```{r}
+a10 %>% autoplot()
+```
+
+## White noise  {#white-noise}
+
+Time series that show no autocorrelation are called **white noise**. Below is a randomly generated example:  
+
+```{r}
+set.seed(2020)
+y <- tsibble(sample = 1:50, wn = rnorm(50), index = sample)
+y %>% autoplot(wn) + ggtitle("White noise")
+```
+
+Let's check with `ACF()` :  
+
+```{r, fig.show = "hold", out.width = "50%"}
+y %>% 
+  ACF() %>% 
+  autoplot()
+
+y %>% 
+  gg_lag(geom = "point")
+```
+
+**For white noise series, we expect each autocorrelation to be close to zero.** Of course, they will not be exactly equal to zero as there is some random variation. For a white noise series, we expect $95%$ of the spikes in the `ACF` to lie within $±2/\sqrt{T}$ where $T$  is the length of the time series. It is common to plot these bounds on a graph of the `ACF` (the blue dashed lines above). If one or more large spikes are outside these bounds, or if substantially more than 5% of spikes are outside these bounds, then the series is probably not white noise.
+
+In this example, $T = 50$ and so the bounds are at $±2/\sqrt{50}=±0.28$. All of the autocorrelation coefficients lie within these limits, confirming that the data are white noise.    
+
+
+## Exercises  
+
+```{exercise}
+Use the help function to explore what the series `gafa_stock`, `PBS`, `vic_elec` and `pelt` represent.  
+
+* Use `autoplot()` to plot some of the series in these data sets.  
+
+* What is the time interval of each series?  
+  
+* Use `filter()` to find what days corresponded to the peak closing price for each of the four stocks in gafa_stock.  
+```
+
+`gafa_stock`: Historical stock prices from 2014-2018 for Google, Amazon, Facebook and Apple.  
+`PBS`: Monthly Medicare Australia prescription data  
+`vic_elec`: Half-hourly electricity demand for Victoria, Australia  
+`pelt`: Hudson Bay Company trading records for Snowshoe Hare and Canadian Lynx furs from 1845 to 1935.  
+
+Use `autoplot()` on `pelt`, both `Hare` and `Lynx` are showing some sort of cyclic patterns:  
+
+```{r}
+pelt %>% autoplot(Hare)
+pelt %>% autoplot(Lynx)
+```
+
+The four respective time interval are day (irregular but collected on a daily basis for the most part), month, 30 minutes and year.  
+
+```{r}
+gafa_stock %>% 
+  group_by(Symbol) %>% 
+  filter(min_rank(desc(Close)) == 1)
+```
+
+
+```{exercise}
+The `aus_livestock` data contains the monthly total number of pigs slaughtered in Victoria, Australia, from Jul 1972 to Dec 2018. Use `filter()` to extract pig slaughters in Victoria between 1990 and 1995. Use autoplot and ACF for this data and compare these to white noise plots in \@ref(white-noise)
+```
+
+
+```{r}
+aus_livestock <- aus_livestock %>%
+  mutate(year = year(Month)) %>% 
+  filter(year >= 1990, year <= 1995, 
+         Animal == "Pigs",
+         State == "Victoria")
+
+aus_livestock
+```
+
+
+```{r, fig.show = "hold", out.width = "50%"}
+aus_livestock %>% autoplot(Count)
+aus_livestock %>% gg_season(Count)
+```
+
+```{r, fig.show = "hold", out.width = "50%"}
+aus_livestock %>% 
+  ACF(Count) %>%
+  autoplot()
+```
+
+Based on current plots, it seems that pig slaughters in Victoria between 1990 and 1995 expericenced a general increase despite fluctuations. Lag plots have shown some sort of seasonality on a yearly basis. Pig slaughters tend to peak in one of the summer months, while remaining at a faily low level at both ends of a year.    
+
+
+
+```{exercise}
+The following time plots and ACF plots correspond to four different time series. Your task is to match each time plot in the first row with one of the ACF plots in the second row.
+```
+
+
+```{r, echo = FALSE}
+knitr::include_graphics("images/match_acf.png")
+```
+
+
+**3 -> D**, **1 -> B**, both time series have a long-term trend (increasing and decreasing respectively), and the ACF plots should generally turn to be positive. And there is a clear seasonal effect in monthly air passengers so that its corresponding ACF plots should not be within the zero interval.  
+
+**2 -> A, 4 -> C**, time plot 2 has demonstrated seasonality within a year, while plot 4 seems to have some white noise.

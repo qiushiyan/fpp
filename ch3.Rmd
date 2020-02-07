@@ -1,0 +1,33 @@
+
+# Time series decomposition
+
+```{r}
+library(tsibble)
+library(tsibbledata)
+library(feasts)
+library(lubridate)
+```
+
+```{r}
+print_retail <- aus_retail %>%
+  filter(Industry == "Newspaper and book retailing") %>%
+  index_by(Year = year(Month)) %>%
+  summarise(Turnover = sum(Turnover))
+
+aus_economy <- global_economy %>%
+  filter(Code == "AUS")
+```
+
+
+
+```{r}
+print_retail %>%
+  left_join(aus_economy, by = "Year") %>% 
+  mutate(Turnover_adj = Turnover / CPI) %>%
+  pivot_longer(c(Turnover, Turnover_adj), 
+               names_to = "type", values_to = "Turnover") %>%
+  ggplot() + 
+  geom_line(aes(Year, Turnover)) + 
+  facet_wrap(~ type, scales = "free_y")
+```
+

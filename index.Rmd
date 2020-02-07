@@ -9,10 +9,11 @@ biblio-style: apalike
 link-citations: yes
 github-repo: enixam/fpp
 #nocite: '@*'
-#description: "This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook."
+description: '"Reproducing "Forecasting: Principles and Practice, 3rd edition"'
 ---
 
 # Preface {-}
 
-This project contains my learning notes and code for [**Forecasting: Principles and Practice**, 3rd edition](https://otexts.com/fpp3/).  
+This project contains my learning notes and code for [**Forecasting: Principles and Practice**, 3rd edition](https://otexts.com/fpp3/), which heavliy draws on packages **fable**[@R-fable], **feasts**[@R-feasts], **fable**[@R-fable] and **tidyverse**[@R-tidyverse] .  
 
+Tidyverse is automatically loaded before each chapter.  
