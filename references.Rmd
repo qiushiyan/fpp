@@ -1,5 +1,10 @@
 
 
-`r if (knitr::is_html_output()) '# References {-}'`  
+`r if (knitr::is_html_output()) '# References {-}'`   
 
-<div id="refs"></div>
+<div id="refs">
+Hyndman, R.J., & Athanasopoulos, G. (2019) Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3. Accessed on <20200208>.
+
+
+
+</div>

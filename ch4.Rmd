@@ -1,0 +1,64 @@
+
+# Time series features  
+
+```{r}
+library(tsibble)
+library(tsibbledata)
+library(fable)
+library(feasts)
+```
+
+
+## Simple statistics  
+
+
+## ACF features  
+
+
+## STL features  
+
+
+$$
+y_t = T_t + S_t + R_t
+$$
+
+
+
+$$
+F_T = \max(0\,, 1- \frac{Var(R_t)}{Var(T_t + R_t)})
+$$
+
+$$
+F_S = \max(0\,, 1- \frac{Var(R_t)}{Var(S_t + R_t)})
+$$
+
+
+
+```{r}
+tourism %>%
+  features(Trips, feat_stl)
+```
+
+```{r}
+tourism %>%
+  features(Trips, feat_stl) %>%
+  ggplot() + 
+  geom_point(aes(trend_strength, seasonal_strength_year, color = Purpose))
+```
+
+All of the features included in the `feasts` package can be computed in one line like this, which gives total 44 features (result not show).  
+
+```{r, eval = FALSE}
+tourism %>% 
+  features(Trips, feature_set(pkgs = "feasts"))
+```
+
+
+## Exporing Australian tourism data  
+
+
+
+
+
+
+
