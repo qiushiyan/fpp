@@ -56,8 +56,20 @@ tourism %>%
 
 ## Exporing Australian tourism data  
 
+```{r}
+tourism_tsl <- tourism %>%
+  features(Trips, features = list(feat_stl, feat_acf))
+```
 
 
+```{r, fig.height = 8, cache = TRUE}
+tourism_tsl %>% 
+  select(contains("season"), Purpose) %>% 
+  mutate(
+    seasonal_peak_year = glue::glue("Q{seasonal_peak_year + 1}"),
+    seasonal_trough_year = glue::glue("Q{seasonal_trough_year + 1}")) %>%
+  GGally::ggpairs(aes(color = Purpose))
+```
 
 
 
