@@ -13,6 +13,7 @@ rmd_files: [
   "ch2.Rmd",
   "ch3.Rmd",
   "ch4.Rmd",
+  "ch5.Rmd",
   
   
   "references.Rmd"

@@ -56,7 +56,9 @@ tourism %>%
 
 ## Exporing Australian tourism data  
 
-```{r}
+Specify multiple function
+
+```{r, cache = TRUE}
 tourism_tsl <- tourism %>%
   features(Trips, features = list(feat_stl, feat_acf))
 ```

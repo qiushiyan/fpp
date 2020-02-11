@@ -3,6 +3,7 @@
 
 ```{r}
 library(tsibble)
+library(tsibbledata)
 library(fable)
 library(feasts)
 library(lubridate)
@@ -20,7 +21,7 @@ aus_economy <- global_economy %>%
 
 
 
-```{r}
+```{r, cache = TRUE}
 print_retail %>%
   left_join(aus_economy, by = "Year") %>% 
   mutate(Turnover_adj = Turnover / CPI) %>%
@@ -131,15 +132,19 @@ As is noted above, a $2×m-MA$ is equivalent to a weighted $m + 1 -MA$, which ha
 
 In `aus_livestock` data we can see some sort of seasonality:  
 
-```{r}
-aus_livestock %>% 
+```r
+aus_livestock %>%
   filter(Animal == "Pigs", State == "Australian Capital Territory") %>%
   gg_season()
 ```
+```{r, echo = FALSE}
+knitr::include_graphics("images/livestock.png")
+```
+
 
 Since it is collected monthly, we can use a $2\times12-MA$ to average out the seasonality:  
 
-```{r}
+```{r, cache = TRUE}
 capital_livestock_ma <- aus_livestock %>% 
   filter(Animal == "Pigs", State == "Australian Capital Territory") %>%
   mutate(`2-MA` = slide_dbl(Count, ~ mean(.x), .before = 1),
@@ -227,7 +232,7 @@ x11_dcmp %>% autoplot()
 
 It can be useful to use seasonal plots and seasonal sub-series plots of the seasonal component. These help us to visualise the variation in the seasonal component over time. In this case, there are only small changes over time.  
 
-```{r}
+```{r, cache = TRUE}
 x11_dcmp %>%
   gg_subseries(seasonal)
 ```
