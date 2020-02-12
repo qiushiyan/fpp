@@ -109,7 +109,7 @@ bricks %>%
   autoplot(bricks)
 ```
 
-### Naive methods  
+### Naive method
 
 For naive forecasts, we simply set **all forecasts** to be the value of the **last observation**. That is,   
 
@@ -364,5 +364,233 @@ For both $Q$ and $Q^∗$, the results are not significant. Thus, we can conclude
 
 
 ## Prediction intervals 
+
+
+A prediction interval gives an interval within which we expect $y_t$ to lie with a specified probability. For example, **assuming that the residuals are normally distributed**, a 95% prediction interval for the h-step forecast is :  
+
+$$
+y_{T+h | h} \pm 1.96\hat{\sigma}_h
+$$
+
+where $\hat{\sigma}_h$ is an estimate of the standard deviation of the h-step forecast distribution.  
+
+More generally, a prediction interval can be written as :  
+
+
+$$
+y_{T+h | h} \pm c\hat{\sigma}_h
+$$
+
+where $c$ depends on the coverage probability (i.e., $Z_\alpha$ when $1 - \alpha$ means the critical level and residuals are normally distributed).  
+
+
+
+### One-step prediction intervals  
+
+**When forecasting one step ahead, the standard deviation of the forecast distribution is almost the same as the standard deviation of the residuals.** (In fact, the two standard deviations are identical if there are no parameters to be estimated, as is the case with the naïve method. For forecasting methods involving parameters to be estimated, the standard deviation of the forecast distribution is slightly larger than the residual standard deviation, although this difference is often ignored.)  
+
+So for a naive model's prediction interval at $y_{T+1}$
+
+$$
+\hat{y}_{T + 1} \pm Z_\alpha\hat{\sigma}
+$$
+
+where 
+
+$$
+\hat{\sigma} = \sqrt{\frac{1}{n}\sum_{t = 1}^{T}{R_t^2}}
+$$
+
+### Multi-step prediction intervals  
+
+A common feature of prediction intervals is that they increase in length as the forecast horizon increases. The further ahead we forecast, the more uncertainty is associated with the forecast, and thus the wider the prediction intervals. That is, σh usually increases with $h$ (although there are some non-linear forecasting methods that do not have this property).
+
+To produce a prediction interval, it is necessary to have an estimate of $\sigma_h$
+. As already noted, for one-step forecasts ($h = 1$), the residual standard deviation provides a good estimate of the forecast standard deviation $\sigma_1$. For multi-step forecasts, a more complicated method of calculation is required. **These calculations assume that the residuals are uncorrelated**.  
+
+For the **four benchmark methods**, it is possible to mathematically derive the forecast standard deviation under the assumption of uncorrelated residuals. If $\sigma_h$ denotes the standard deviation of the h-step forecast distribution, and $\hat{\sigma}$ is the residual standard deviation, then we can use the following expressions.  
+
+```{r, echo = FALSE}
+knitr::include_graphics("images/benchmark.png")
+```
+
+Note that when $h = 1$ and T is large, these all give the same approximate value $\hat{\sigma}$.
+
+Prediction intervals can easily be computed for you when using the fable package. For example, here is the output when using the naïve method for the Google stock price.  
+
+
+```{r}
+google_2015 %>%
+  model(NAIVE(Close)) %>%
+  forecast(h = 10) %>%
+  hilo(level = 95) %>% 
+  unnest(`95%`)
+```
+
+
+The hilo() function converts the forecast distributions into intervals. By default, 80% and 95% prediction intervals are returned, here I aks only for a 95% interval via the `level` argument.  
+
+### Prediction intervals from bootstrapped residuals  
+
+Assuming future errors will be similar to past errors, we can replace $e_{T+1}, e_{T+2}, \dots$ by sampling from the collection of errors we have seen in the past (i.e., the residuals). Thus we could get "future" $y_{T+1}, y_{T+2}, \dots$ by $\hat{y}_{T+1} + e_{T+1}, \hat{y}_{T+2} + e_{T+2}, \dots$.  
+
+Since sampling could generate different sets of future residuals, we thus get different paths of $y_{T+1}, y_{T+2}, \dots$. And we can then derive the $1 - \alpha$ prediction interval simply by calculating a correspoing percentile based on each $\hat{y}_{T+1}, \hat{y}_{T+2}, \dots$ and numerous simulated path.  
+
+`generate()` lets us see some possible futures:  
+
+```{r}
+google_fit <- google_2015 %>% 
+  model(NAIVE(Close))
+
+sim <- google_fit %>% 
+  generate(h = 30, times = 5, bootstrap = TRUE) 
+
+sim
+```
+Here we have generated five possible sample paths for the next 30 trading days. The `.rep` variable provides a new key for the tsibble. The plot below shows the five sample paths along with the historical data.  
+
+```{r}
+ggplot(google_2015) + 
+  geom_line(aes(day, Close)) + 
+  geom_line(aes(day, .sim, color = factor(.rep)), data = sim) + 
+  ggtitle("Google closing stock price") +
+  guides(col = FALSE)
+```
+
+
+This is all built into the `frecast()` function so we do not need to call generate() directly:  
+
+```{r, cache = TRUE}
+fc <- google_fit %>% forecast(h = 30, bootstrap = TRUE)
+fc
+```
+
+
+
+Notice that the forecast distribution is now represented as a simulation with **5000 sample paths**. Because there is no normality assumption, the prediction intervals are not symmetric.  
+
+```{r}
+fc %>% 
+  autoplot(google_2015) + 
+  ggtitle("Bootstrapped prediction interval")
+```
+
+
+## Evaluating model accuracy  
+
+### Forecast errors 
+
+$$
+e_{T+h} = y_{T+h} - \hat{y}_{T+h | T}
+$$
+
+where ${y_1\, \dots, y_T}$ is the traing set and ${y_{T+1}, y_{T+2}\dots}$ the testing set.  
+
+
+### Scale dependent errors 
+
+The two most commonly used scale-dependent measures are based on the absolute errors or squared errors:   
+
+$$
+\begin{align}
+Mean \,absolute \,error: MAE &= mean(|e_t|) \\
+Root \,square \,mean \,error: RMSE &= \sqrt{mean(e_t^2)} \\
+\end{align}
+$$
+
+
+### Percentage errors 
+
+The percentage error is given by $p_t = 100e_t/y_t$. Percentage errors have the advantage of being **unit-free**, and so are frequently used to compare forecast performances between data sets. The most commonly used measure is: 
+
+$$
+Mean \,absolute \,error: MAE = mean(|p_t|)
+$$
+Measures based on percentage errors have the disadvantage of being infinite or undefined if $y_t = 0$ for any $t$ in the period of interest, and having extreme values if any $y_t$ is close to zero. **Another problem with percentage errors that is often overlooked is that they assume the unit of measurement has a meaningful zero**. For example, a percentage error makes no sense when measuring the accuracy of temperature forecasts on either the Fahrenheit or Celsius scales, because temperature has an arbitrary zero point. They also have the disadvantage that they put a heavier penalty on negative errors than on positive errors.   
+
+This observation led to the use of the so-called “symmetric” MAPE (sMAPE) which was used in the M3 forecasting competition. It is defined by 
+
+$$
+sMAPE = mean(200|y_t - \hat{y}_t| / (y_t + \hat{y}_t))
+$$
+
+However, if $y_t$ is close to zero, $\hat{y}_t$ is also likely to be close to zero. Thus, the measure still involves division by a number close to zero, making the calculation unstable. Also, the value of sMAPE can be negative, so it is not really a measure of “absolute percentage errors” at all.
+
+Hyndman & Koehler [-@hyndman2006another] recommend that the sMAPE not be used. It is included here only because it is widely used, although it is not used in this book.
+
+### Scaled errors 
+
+Scaled errors were proposed by Hyndman & Koehler as an alternative to using percentage errors when comparing forecast accuracy across series with different units. They proposed scaling the errors based on the *training* MAE from a simple forecast method.  
+
+For a non-seasonal time series, a useful way to define a scaled error uses naive forecasts:   
+
+$$
+q_j = \frac{e_j}{\frac{1}{T-1}\sum_{t = 2}^{T}{|y_t - y_{t-1}|}}
+$$
+
+
+Because the numerator and denominator both involve values on the scale of the original data, $q_j$ is independent of the scale of the data. A scaled error is less than one if it arises from a better forecast than the average naive forecast computed on the training data. Conversely, it is greater than one if the forecast is worse than the average naive forecast computed on the training data.
+
+For seasonal time series, a scaled error can be defined using seasonal naive forecasts:   
+
+$$
+q_j = \frac{e_j}{\frac{1}{T-m}\sum_{t = m+1}^{T}{|y_t - y_{t-m}|}}
+$$
+
+
+The *mean absolute scaled error* is simply  
+
+$$
+MASE = mean(|q_j|)
+$$
+
+
+
+### Examples  
+
+```{r, cache = TRUE}
+recent_production <- aus_production %>% filter(year(Quarter) >= 1992)
+beer_train <- recent_production %>% filter(year(Quarter) <= 2007)
+
+beer_fit <- beer_train %>%
+  model(
+    Mean = MEAN(Beer),
+    `Naïve` = NAIVE(Beer),
+    `Seasonal naïve` = SNAIVE(Beer),
+    Drift = RW(Beer ~ drift())
+  )
+
+beer_fc <- beer_fit %>%
+  forecast(h = 10)
+
+beer_fc %>%
+  autoplot(filter(aus_production, year(Quarter) >= 1992), level = NULL) +
+  xlab("Year") + ylab("Megalitres") +
+  ggtitle("Forecasts for quarterly beer production") +
+  guides(colour=guide_legend(title = "Models"))
+```
+
+
+```{r}
+accuracy(beer_fc, recent_production)
+```
+
+It is obvious from the graph that the seasonal naïve method is best for these data, although it can still be improved, as we will discover later. Sometimes, different accuracy measures will lead to different results as to which forecast method is best. However, in this case, all of the results point to the seasonal naïve method as the best of these three methods for this data set.
+
+To take a non-seasonal example, consider the Google stock price. The following graph shows the closing stock prices from 2015, along with forecasts for January 2016 obtained from three different methods.  
+
+```{r}
+google_fit <- google_2015 %>%
+  model(
+    Mean = MEAN(Close),
+    `Naïve` = NAIVE(Close),
+    Drift = RW(Close ~ drift())
+  )
+
+
+```
+
+## Time series cross-validation  
+
 
 
