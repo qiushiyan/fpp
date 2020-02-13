@@ -13,6 +13,11 @@ library(lubridate)
 ## A tidy forecasting workflow  
 
 ```{r, echo = FALSE}
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+
+```{r, echo = FALSE}
 knitr::include_graphics("images/workflow.png")
 ```
 
@@ -51,7 +56,7 @@ linear_reg() %>%
 
 ### Train the model (estimate)  
 
-```{r, cache = TRUE}
+```{r}
 ge_fit <- global_economy %>% 
   model(trend_model = TSLM(GDP ~ trend()))
 
@@ -66,14 +71,14 @@ ge_fit
 
 Similar to `predict()`: 
 
-```{r, cache = TRUE}
+```{r}
 ge_forecast <- ge_fit %>% 
   forecast(h = "3 years") # h means horizon
 
 ge_forecast
 ```
 
-```{r, cache = TRUE}
+```{r}
 ge_forecast %>% 
   filter(Country == "Sweden") %>% 
   autoplot(global_economy) + 
@@ -167,7 +172,7 @@ y_{T+h} = y_T + h(\frac{y_{T} - y_1}{T - 1})
 $$
 
 
-```{r, cache = TRUE}
+```{r}
 bricks %>% 
   model(NAIVE(Bricks ~ drift())) %>%
   forecast(h = "10 years") %>% 
@@ -177,7 +182,7 @@ bricks %>%
 
 ### Australian quarterly beer production  
 
-```{r, cache = TRUE}
+```{r}
 beer_fit <- aus_production %>% 
   filter_index("1992 Q1" ~ "2006 Q4") %>% 
   model(Mean = MEAN(Beer),
@@ -197,7 +202,7 @@ In this case, only the seasonal naïve forecasts are close to the observed value
 ### Example: Google’s daily closing stock price  
 
 
-```{r, cache = TRUE}
+```{r}
 # Re-index based on trading days
 google_stock <- gafa_stock %>%
   filter(Symbol == "GOOG") %>%
@@ -321,7 +326,7 @@ google_2015 %>%
   gg_tsresiduals()
 ```
 
-### Portmanteau tests for autocorrelation
+A qq plot to detect distribution:  
 
 ```{r}
 aug %>% 
@@ -363,7 +368,7 @@ aug %>% features(.resid, ljung_box, lag = 10, dof = 0)
 For both $Q$ and $Q^∗$, the results are not significant. Thus, we can conclude that the residuals are not distinguishable from a white noise series.  
 
 
-## Prediction intervals 
+## Prediction intervals {#predict-interval}
 
 
 A prediction interval gives an interval within which we expect $y_t$ to lie with a specified probability. For example, **assuming that the residuals are normally distributed**, a 95% prediction interval for the h-step forecast is :  
@@ -428,7 +433,7 @@ google_2015 %>%
 ```
 
 
-The hilo() function converts the forecast distributions into intervals. By default, 80% and 95% prediction intervals are returned, here I aks only for a 95% interval via the `level` argument.  
+The `hilo()` function converts the forecast distributions into intervals. By default, 80% and 95% prediction intervals are returned, here I aks only for a 95% interval via the `level` argument.  
 
 ### Prediction intervals from bootstrapped residuals  
 
@@ -460,7 +465,7 @@ ggplot(google_2015) +
 
 This is all built into the `forecast()` function so we do not need to call generate() directly:  
 
-```{r, cache = TRUE}
+```{r}
 google_bootstrap_fc <- google_fit %>% forecast(h = 30, bootstrap = TRUE)
 google_bootstrap_fc
 ```
@@ -548,7 +553,7 @@ $$
 
 ### Examples  
 
-```{r, cache = TRUE}
+```{r}
 recent_production <- aus_production %>% filter(year(Quarter) >= 1992)
 beer_train <- recent_production %>% filter(year(Quarter) <= 2007)
 
@@ -616,7 +621,7 @@ google_2015 %>%
 ```
 
 
-```{r, cache = TRUE}
+```{r}
 google_2015_cv <- google_2015 %>%
   slice(1:(n()-1)) %>%
   stretch_tsibble(.init = 3, .step = 1)
@@ -637,7 +642,7 @@ As expected, the accuracy measures from the residuals are smaller, as the corres
 ### Example: Forecast horizon accuracy with cross-validation   
 
 The code below evaluates the forecasting performance of 1- to 8-step-ahead drift forecasts. The plot shows that the forecast error increases as the forecast horizon increases, as we would expect.  
-```{r, cache = TRUE}
+```{r}
 google_2015_tr <- google_2015 %>%
   slice(1:(n()-8)) %>%
   stretch_tsibble(.init = 3, .step = 1)
@@ -670,10 +675,167 @@ fc %>%
 
 Box cox transformation is mentioned at \@ref(box-cox). When forecasting from a model with transformations, we first produce forecasts of the transformed data. Then, we need to reverse the transformation (or *back-transform*) to obtain forecasts on the original scale. The reverse Box-Cox transformation is given by  
 
-$$
-y_t = 
+\begin{equation}
+y_t =  (\#eq:box-cox)
 \begin{cases}
 \exp{(w_t)} & \text{if} \;\lambda = 0 \\
 (\lambda w_t + 1)^{1/\lambda} & \text{otherwise}
 \end{cases}
+\end{equation}
+
+
+### Prediction intervals with transformations  
+
+If a transformation has been used, then the prediction interval is first computed on the transformed scale, then the end points are back-transformed to give a prediction interval on the original scale. This approach preserves the probability coverage of the prediction interval, although it will no longer be symmetric around the point forecast.
+
+The back-transformation of prediction intervals is done automatically for **fable** models, provided that you have used a transformation in the model formula.
+
+Transformations sometimes make little difference to the point forecasts but have a large effect on prediction intervals.
+
+### Forecasting with constraints  
+
+One common use of transformations is to ensure the forecasts remain on the appropriate scale. For example, log transformations constrain the forecasts to stay positive (because the back transformation is $\exp(w_t)$).
+
+Another useful transformation is the **scaled logit**, which can be used to ensure that the forecasts are kept within a specific interval. A scaled logit that ensures the forecasted values are between $a$
+and $b$ (where $a < b$) is given by:  
+
 $$
+w_t = f(y_t) = \log{\frac{y_t -a}{b - y_t}}
+$$
+
+Inverting this transformation gives the appropriate back-transformation of:
+
+$$
+y_t = \frac{a + be^{w_t}}{1 + e^{w_t}} = \frac{(b - a)e^{w_t}}{1 + e^{w_t}} + a
+$$
+
+To use this transformation when modelling, we can create a new transformation with the `new_transformation()` function, which is essentially a **function factory**. This allows us to define two functions that accept the same parameters, where the observations are provided as the first argument. The first the argument of `new_transformation()`, `transformation` shoule be a function taht is used to transform the data, the second `inverse` is used to back-transform forecasts:  
+
+```{r}
+scaled_logit <- new_transformation(
+  transformation = function(x, lower = 0, upper = 1) {
+    log(x - lower) / (upper - x)
+  },
+  inverse = function(x, lower = 0, upper = 1) {
+    (upper - lower) * exp(x) / (1 + exp(x)) + lower
+  }
+)
+```
+
+Take the beer data for example, suppose we want to constrain the forecast production of beer into a $(300, 400)$ interval:  
+
+```{r, fig.show = "hold", out.width = "50%"}
+beer_production <- aus_production %>% 
+  filter_index("1992 Q1" ~ "2006 Q4") %>% 
+  select(Quarter, Beer)
+
+
+beer_production %>% 
+  model(SNAIVE(scaled_logit(Beer, 300, 400))) %>% 
+  forecast(h = 8) %>% 
+  autoplot(beer_production, level = NULL) + 
+  ggtitle("Scaled logit transformation")
+
+beer_production %>% 
+  model(SNAIVE(Beer)) %>% 
+  forecast(h = 8) %>% 
+  autoplot(beer_production, level = NULL) + 
+  ggtitle("No transformation")
+```
+
+
+
+### Bias adjustments  
+
+One issue with using mathematical transformations such as Box-Cox transformations is that the back-transformed point forecast will not be the mean of the forecast distribution. In fact, it will usually be the median of the forecast distribution (assuming that the distribution on the transformed space is symmetric). For many purposes, this is acceptable, but occasionally the mean forecast is required. For example, you may wish to add up sales forecasts from various regions to form a forecast for the whole country. But medians do not add up, whereas means do. (the mean of multiple means is the mean of the whole)  
+
+For a Box-Cox transformation, the **back-transformed mean** is given by:  
+
+\begin{equation}
+y_t =           (\#eq:bias-adjusted)
+\begin{cases}
+\exp{(w_t)}[1 + \frac{\sigma_h^2}{2}] & \text{if} \; \lambda = 0 \\
+(\lambda w_t + 1)^{1/\lambda}[1 + \frac{\sigma_h^2{1 - \lambda}}{2(\lambda w_t + 1)^2}] & \text{otherwise}
+\end{cases}
+\end{equation}
+
+where $\sigma_h^2$ is the h-step forecast variance on the transformed scale. The larger the forecast variance, the bigger the difference between the mean and the median. Estimation of $\sigma_h^2$ is mentioned in \@ref(predict-interval)
+
+The difference between the simple back-transformed forecast given by \@ref(eq:box-cox) and the mean given by \@ref(eq:bias-adjusted) is called the **bias**. When we use the mean, rather than the median, we say the point forecasts have been **bias-adjusted**.
+
+
+
+```{r}
+eggs <- fma::eggs %>% as_tsibble()
+eggs
+
+eggs_fit <- eggs %>% model(RW(log(value) ~ drift()))
+
+eggs_fc <- eggs_fit %>% 
+  forecast(h = 50) 
+
+eggs_fc_biased <- eggs_fit %>% 
+  forecast(h = 50, bias_adjust = FALSE) 
+
+eggs %>% autoplot(value) +
+  autolayer(eggs_fc_biased, level = 80) +
+  autolayer(eggs_fc, colour = "red", level = NULL)
+```
+
+
+The blue line in shows the forecast medians while the red line shows the forecast means. Notice how the skewed forecast distribution pulls up the point forecast when we use the bias adjustment.  
+
+**Bias adjustments will be applied by default in the `fable` package**. To produce point forecasts that are not bias adjusted (giving forecast medians rather than means), use the argument `bias_adjust = FALSE` in `forecast()`.  
+
+## Forecasting with decomposition
+
+Times series decomposition (discussed in Chpater \@ref(time-series-decomposition)) can be a useful step in producing forecasts.  
+
+Assuming an additive decomposition, the decomposed time series can be written as 
+
+$$
+y_t = \hat{A}_t + \hat{S}_t
+$$
+
+
+where $\hat{A}_t = \hat{T}_t + \hat{R}_t$ is the seasonally adjusted component.   
+
+To forecast a decomposed time series, we forecast the seasonal component, $\hat{S}_t$, and the seasonally adjusted component $\hat{A}_t$, separately. It is usually assumed that the seasonal component is unchanging, or changing extremely slowly, so it is forecast by simply taking the last year of the estimated component. **In other words, a seasonal naïve method is used for the seasonal component.**  
+
+**To forecast the seasonally adjusted component, any non-seasonal forecasting method may be used.** For example, a random walk with drift model, or Holt’s method (discussed in Chapter 8), or a non-seasonal ARIMA model (discussed in Chapter 9), may be used.  
+
+### Example: Employment in the US retail sector  
+
+```{r}
+us_retail_employment <- fpp3::us_employment %>%
+  filter(year(Month) >= 1990, Title == "Retail Trade")
+
+retail_employment_dcmp <- us_retail_employment %>%
+  model(STL(Employed ~ trend(window = 7), robust = TRUE)) %>%
+  components() %>%
+  select(-.model)
+
+retail_employment_dcmp %>%
+  model(NAIVE(season_adjust)) %>%
+  forecast(h = 10) %>%
+  autoplot(retail_employment_dcmp) + ylab("New orders index") +
+  ggtitle("Naive forecasts of seasonally adjusted data")
+```
+
+This shows naïve forecasts of the seasonally adjusted electrical equipment orders data. These are then “reseasonalised” by adding in the seasonal naïve forecasts of the seasonal component. 
+
+This is made easy with the `decomposition_model()` model function, which allows you to compute forecasts via any additive decomposition, using other model functions to forecast each of the decomposition’s components. The first argument of `decomposition_model()` specifies a decomposition method we want to use, and the rest determines models on resulting components. Seasonal components of the model will be forecasted automatically using `SNAIVE()` if a different model isn’t specified. The function will also do the reseasonalising for you, **ensuring that the resulting forecasts of the original data are shown** below   
+
+```{r}
+us_retail_employment %>% 
+  model(stlf = decomposition_model(
+    STL(Employed ~ trend(window = 7), robust = TRUE),
+    RW(season_adjust ~ drift())
+  )) %>%
+  forecast() %>% 
+  autoplot(us_retail_employment)
+```
+
+The prediction intervals shown in this graph are constructed in the same way as the point forecasts. That is, the upper and lower limits of the prediction intervals on the seasonally adjusted data are “reseasonalised” by adding in the forecasts of the seasonal component.
+
+As well as the drift method, any other appropriate forecasting method can be used to model the seasonally adjusted component.

@@ -9,6 +9,9 @@ library(feasts)
 library(lubridate)
 ```
 
+```{r, echo = FALSE}
+knitr::opts_chunk$set(cache = TRUE)
+```
 
 
 
@@ -60,19 +63,15 @@ If the data shows variation that increases or decreases with the level of the se
 
 A useful family of transformations, that includes both logarithms and power transformations, is the family of Box-Cox transformations, which depend on the parameter $\lambda$ and are defined as follows:  
 
-$$
+\begin{equation}
 w_t =
-
 \begin{cases}
-
-\log{y_t}& \text{if} \; \lambda = 0\\
-
+\log{y_t}& \text{if} \; \lambda = 0 \\
 (y^\lambda_t - 1)/\lambda & \text{otherwise}
-
 \end{cases}
-$$
+\end{equation}
 
-The logarithm in a Box-Cox transformation is always a natural logarithm (i.e., to base $e$). So if $λ = 0$, natural logarithms are used, but if $\lambda \not= 0 $, a power transformation is used, followed by some simple scaling.
+The logarithm in a Box-Cox transformation is always a natural logarithm (i.e., to base $e$). So if $λ = 0$, natural logarithms are used, but if $\lambda \not= 0$, a power transformation is used, followed by some simple scaling.
 
 If $\lambda = 1$, then $w_t = y_t−1$, so the transformed data is shifted downwards but there is no change in the shape of the time series. But for all other values of $\lambda$, the time series will change shape.  
 
@@ -103,7 +102,7 @@ A moving average of order $m$ can be written as:
 $$
 \bar{T}_t = \frac{1}{m}\sum_{j = -k}^{k}{y_{t+j}}
 $$ 
-$m = 2k + 1$
+where $m = 2k + 1$
 
 For example, a moving average of order 5 will select a data point, takes 2 points before it and 2 points after it and compute the average of these 5 points.  
 
@@ -350,5 +349,4 @@ us_retail_employment %>%
 ```
 
 
-## Exercises  
 

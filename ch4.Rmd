@@ -123,7 +123,7 @@ tourism %>%
 
 The most seasonal series can also be easily identified and plotted.  
 
-```{r, cache = TRUE}
+```{r}
 # most seasonal 
 tourism %>%
   features(Trips, feat_stl) %>%
@@ -150,13 +150,13 @@ tourism %>%
 
 Specify multiple function
 
-```{r, cache = TRUE}
+```{r}
 tourism_tsl <- tourism %>%
   features(Trips, features = list(feat_stl, feat_acf))
 ```
 
 
-```{r, fig.height = 8, cache = TRUE}
+```{r, fig.height = 8}
 tourism_tsl %>% 
   select(contains("season"), Purpose) %>% 
   mutate(

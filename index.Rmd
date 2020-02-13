@@ -14,8 +14,12 @@ description: '"Reproducing "Forecasting: Principles and Practice, 3rd edition"'
 
 # Preface {-}
 
-This project contains my learning notes and code for [*Forecasting: Principles and Practice, 3rd edition*](https://otexts.com/fpp3/), which heavliy draws on packages **fable**[@R-fable], **feasts**[@R-feasts], **fable**[@R-fable] and **tidyverse**[@R-tidyverse] .  
+This project contains my learning notes and code for [*Forecasting: Principles and Practice, 3rd edition*](https://otexts.com/fpp3/), which heavliy draws on packages **tsibble**[@R-tsibble], **feasts**[@R-feasts], **fable**[@R-fable] and **tidyverse**[@R-tidyverse] .  
 
 Another reference is [*Applied Time Series Analysis for Fisheries and Environmental Sciences*](https://nwfsc-timeseries.github.io/atsa-labs/)  
 
-Tidyverse is automatically loaded before each chapter.  
+Tidyverse is automatically loaded before each chapter.
+
+```{r, eval = FALSE}
+library(tidyverse)
+```
