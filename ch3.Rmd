@@ -9,6 +9,27 @@ library(feasts)
 library(lubridate)
 ```
 
+
+
+
+
+## Transformation and adjustments  
+
+### Calendar adjustments  
+
+Some of the variation seen in seasonal data may be due to simple calendar effects. In such cases, it is usually much easier to remove the variation before doing any further analysis.
+
+For example, if you are studying the total monthly sales in a retail store, there will be variation between the months simply because of the different numbers of trading days in each month, in addition to the seasonal variation across the year. It is easy to remove this variation by computing average sales per trading day in each month, rather than total sales in the month. Then we effectively remove the calendar variation. Simpler patterns are usually easier to model and lead to more accurate forecasts.  
+
+
+### Population adjustments  
+
+use index per capita rather than index itself (when related to population)  
+
+### Inflation adjustments
+
+Price index such as CPI (Consumer Price Index) allows us to compare the growth or decline of industries relative to a common price value. For example, looking at aggregate “newspaper and book” retail turnover from `aus_retail`, and adjusting the data for inflation using CPI from `global_economy` allows us to understand the changes over time.  
+
 ```{r}
 print_retail <- aus_retail %>%
   filter(Industry == "Newspaper and book retailing") %>%
@@ -31,6 +52,48 @@ print_retail %>%
   geom_line(aes(Year, Turnover)) + 
   facet_wrap(~ type, scales = "free_y")
 ```
+
+
+### Mathematical transformation (Box-Cox)  {#box-cox}
+
+If the data shows variation that increases or decreases with the level of the series, then a transformation can be useful. 
+
+A useful family of transformations, that includes both logarithms and power transformations, is the family of Box-Cox transformations, which depend on the parameter $\lambda$ and are defined as follows:  
+
+$$
+w_t =
+
+\begin{cases}
+
+\log{y_t}& \text{if} \; \lambda = 0\\
+
+(y^\lambda_t - 1)/\lambda & \text{otherwise}
+
+\end{cases}
+$$
+
+The logarithm in a Box-Cox transformation is always a natural logarithm (i.e., to base $e$). So if $λ = 0$, natural logarithms are used, but if $\lambda \not= 0 $, a power transformation is used, followed by some simple scaling.
+
+If $\lambda = 1$, then $w_t = y_t−1$, so the transformed data is shifted downwards but there is no change in the shape of the time series. But for all other values of $\lambda$, the time series will change shape.  
+
+
+A good value of \lambda is one which makes the size of the seasonal variation about the same across the whole series, as that makes the forecasting model simpler. The `guerrero` feature  can be used to choose (estimate) a value of lambda for you. In the following case it chooses $\lambda = 0.12$.  
+
+```{r, cache = TRUE}
+lambda <- aus_production %>%
+  features(Gas, guerrero) %>% 
+  pull(1)
+
+lambda
+
+aus_production %>% 
+  mutate(Gas_transformed = box_cox(Gas, lambda)) %>% 
+  pivot_longer(c(Gas, Gas_transformed), names_to = "type", values_to = "value") %>% 
+  ggplot() + 
+  geom_line(aes(Quarter, value)) +
+  facet_wrap(~ type, scales = "free")
+```
+
 
 
 ## Moving averages  

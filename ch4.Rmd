@@ -1,6 +1,17 @@
 
 # Time series features  
 
+```{r, echo = FALSE}
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+
+The `feasts` package includes functions for computing features And statistics from time series (hence the name). We have already seen some time series features. For example, autocorrelations can be considered features of a time series — they are numerical summaries computed from the series. Another feature we saw in the last chapter was the Guerroro estimate of the Box-Cox transformation parameter — again, this is a number computed from a time series.
+
+We can compute many different features on many different time series, and use them to explore the properties of the series.
+
+In this chapter we will look at some features that have been found useful in time series exploration, and how they can be used to uncover interesting information about your data.
+
 ```{r}
 library(tsibble)
 library(tsibbledata)
@@ -9,35 +20,99 @@ library(feasts)
 ```
 
 
-## Simple statistics  
+## Simple statistics   
+
+Any numerical summary computed from a time series is a feature of that time series — the mean, minimum or maximum, for example.
+
+The features can be computed using the `features()` function. For example, let’s compute the means of all the series in the Australian tourism data.  
+
+```{r}
+tourism %>% 
+  features(Trips, mean)
+```
+
+The new column `V1` contains the mean of each time series.  
+
+It is useful to give the resulting feature columns names to help us remember where they came from. This can be done by using a list of functions.  
+
+```{r}
+tourism %>% 
+  features(Trips, list(mean = mean)) %>% 
+  arrange(desc(mean))
+```
 
 
-## ACF features  
+Rather than compute one feature at a time, it is convenient to compute many features at once. A common short summary of a data set is to compute five summary statistics: the minimum, first quartile, median, third quartile and maximum. These divide the data into four equal-size sections, each containing 25% of the data. The `quantile()` function can be used to compute them.  
+
+```{r}
+# as of now lambda expressions are not supported 2020.2.13
+tourism %>% 
+  features(Trips, quantile, prob = seq(0, 1, 0.25))
+```
+
+
+## ACF features   
+
+
+All the autocorrelations of a series can be considered features of that series. We can also summarise the autocorrelations to produce new features; for example, the sum of the first ten squared autocorrelation coefficients is a useful summary of how much autocorrelation there is in a series, regardless of lag.
+
+We can also compute autocorrelations of transformations of a time series. A useful transformation in this context is to look at changes in the series between periods. That is, we “difference” the data and create a new time series consisting of the differences between consecutive observations. Then we can compute the autocorrelations of this new differenced series.
+
+Occasionally it is useful to apply the same differencing operation again, so we compute the differences of the differences. The autocorrelations of this double differenced series may provide useful information.
+
+Another related approach is to compute seasonal differences of a series. If we had monthly data, for example, we would compute the difference between consecutive Januaries, consecutive Februaries, and so on. This enables us to look at how the series is changing between years, rather than between months. Again, the autocorrelations of the seasonally differenced series may provide useful information.  
+
+The `feat_acf()` function computes a selection of the autocorrelations discussed here. It will return six or seven features:
+
+
+* the first autocorrelation coefficient from the original data;  
+* the sum of square of the first ten autocorrelation coefficients from the original data;   
+* the first autocorrelation coefficient from the differenced data;  
+* the sum of square of the first ten autocorrelation coefficients from the differenced data;  
+* the first autocorrelation coefficient from the twice differenced data;  
+* the sum of square of the first ten autocorrelation coefficients from the twice differenced data;
+* For seasonal data, the autocorrelation coefficient at the first seasonal lag is also returned.
+
+When applied to the Australian tourism data, we get the following output.  
+
+
+```{r}
+tourism %>% 
+  features(Trips, feat_acf) %>% 
+  select(-(1:3))
+```
 
 
 ## STL features  
 
+A time series decomposition can be used to measure the strength of trend and seasonality in a time series. Recall that the decomposition is written as 
 
 $$
 y_t = T_t + S_t + R_t
 $$
 
-
+For strongly trended data, the seasonally adjusted data should have much more variation than the remainder component. Therefore $Var(R_t)/Var(T_t + R_t)$ should be relatively small. But for data with little or no trend, the two variances should be approximately the same. So we define the strength of trend as: 
 
 $$
 F_T = \max(0\,, 1- \frac{Var(R_t)}{Var(T_t + R_t)})
 $$
 
+The strength of seasonality is defined similarly, but with respect to the detrended data rather than the seasonally adjusted data:
+
 $$
 F_S = \max(0\,, 1- \frac{Var(R_t)}{Var(S_t + R_t)})
 $$
 
+These measures can be useful, for example, when you have a large collection of time series, and you need to find the series with the most trend or the most seasonality.
 
+Other useful features based on STL include the timing of **peaks and troughs** — which month or quarter contains the largest seasonal component and which contains the smallest seasonal component.
 
 ```{r}
 tourism %>%
   features(Trips, feat_stl)
 ```
+
+We can then use these features in plots to identify what type of series are heavily trended and what are most seasonal.
 
 ```{r}
 tourism %>%
@@ -45,6 +120,23 @@ tourism %>%
   ggplot() + 
   geom_point(aes(trend_strength, seasonal_strength_year, color = Purpose))
 ```
+
+The most seasonal series can also be easily identified and plotted.  
+
+```{r, cache = TRUE}
+# most seasonal 
+tourism %>%
+  features(Trips, feat_stl) %>%
+  filter(seasonal_strength_year == max(seasonal_strength_year)) %>%
+  left_join(tourism, by = c("State", "Region", "Purpose")) %>%
+  ggplot(aes(x = Quarter, y = Trips)) + 
+  geom_line() +
+  facet_grid(vars(State, Region, Purpose))
+```
+
+## Other features  
+
+
 
 All of the features included in the `feasts` package can be computed in one line like this, which gives total 44 features (result not show).  
 

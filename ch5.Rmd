@@ -458,11 +458,11 @@ ggplot(google_2015) +
 ```
 
 
-This is all built into the `frecast()` function so we do not need to call generate() directly:  
+This is all built into the `forecast()` function so we do not need to call generate() directly:  
 
 ```{r, cache = TRUE}
-fc <- google_fit %>% forecast(h = 30, bootstrap = TRUE)
-fc
+google_bootstrap_fc <- google_fit %>% forecast(h = 30, bootstrap = TRUE)
+google_bootstrap_fc
 ```
 
 
@@ -470,7 +470,7 @@ fc
 Notice that the forecast distribution is now represented as a simulation with **5000 sample paths**. Because there is no normality assumption, the prediction intervals are not symmetric.  
 
 ```{r}
-fc %>% 
+google_bootstrap_fc %>% 
   autoplot(google_2015) + 
   ggtitle("Bootstrapped prediction interval")
 ```
@@ -590,7 +590,90 @@ google_fit <- google_2015 %>%
 
 ```
 
-## Time series cross-validation  
+## Time series cross-validation    
+
+> A more sophisticated version of training/test sets is time series cross-validation. In this procedure, there are a series of test sets, each consisting of a single observation. The corresponding training set consists only of observations that occurred prior to the observation that forms the test set. Thus, no future observations can be used in constructing the forecast. Since it is not possible to obtain a reliable forecast based on a small training set, the earliest observations are not considered as test sets.
+
+```{r, echo = FALSE}
+knitr::include_graphics("images/cv.png")
+```
+
+The forecast accuracy is computed by averaging over the test sets. 
+
+With time series forecasting, one-step forecasts may not be as relevant as multi-step forecasts. In this case, the cross-validation procedure based on a rolling forecasting origin can be modified to allow multi-step errors to be used. Suppose that we are interested in models that produce good 4-step-ahead forecasts. Then the corresponding diagram is shown below.  
+
+```{r, echo = FALSE}
+knitr::include_graphics("images/cv_multi.png")
+```
+
+ `stretch_tsibble()` (may subject to change, I havn't found a corresponding function in the **slider** package) generates multiple folds as we specified:  
+
+```{r}
+google_2015 %>%
+  slice(1:7) %>% 
+  stretch_tsibble(.init = 3, .step = 1) %>%  # initial window size = 3, incremental step = 1
+  as_data_frame()
+```
+
+
+```{r, cache = TRUE}
+google_2015_cv <- google_2015 %>%
+  slice(1:(n()-1)) %>%
+  stretch_tsibble(.init = 3, .step = 1)
+
+google_cv_fc <- google_2015_cv %>%
+  model(RW(Close ~ drift())) %>%
+  forecast(h = 1)
+
+google_cv_fc %>% accuracy(google_2015)
+
+# residual accuracy
+google_2015 %>% model(RW(Close ~ drift())) %>% accuracy()
+```
+
+As expected, the accuracy measures from the residuals are smaller, as the corresponding “forecasts” are based on a model fitted to the entire data set, rather than being true forecasts.  
+
+
+### Example: Forecast horizon accuracy with cross-validation   
+
+The code below evaluates the forecasting performance of 1- to 8-step-ahead drift forecasts. The plot shows that the forecast error increases as the forecast horizon increases, as we would expect.  
+```{r, cache = TRUE}
+google_2015_tr <- google_2015 %>%
+  slice(1:(n()-8)) %>%
+  stretch_tsibble(.init = 3, .step = 1)
+
+fc <- google_2015_tr %>%
+  model(RW(Close ~ drift())) %>%
+  forecast(h = 8) %>%
+  group_by(.id) %>%
+  mutate(h = row_number()) %>%
+  ungroup()
+```
+
+
+```{r}
+# by indicates accuracy should be averaged over same "h"
+fc %>%
+  accuracy(google_2015, by = "h")
+```
 
 
 
+```{r}
+fc %>%
+  accuracy(google_2015, by = "h") %>%   
+  ggplot(aes(x = h, y = RMSE)) + 
+  geom_point()
+```
+
+## Forecasting using transformations  
+
+Box cox transformation is mentioned at \@ref(box-cox). When forecasting from a model with transformations, we first produce forecasts of the transformed data. Then, we need to reverse the transformation (or *back-transform*) to obtain forecasts on the original scale. The reverse Box-Cox transformation is given by  
+
+$$
+y_t = 
+\begin{cases}
+\exp{(w_t)} & \text{if} \;\lambda = 0 \\
+(\lambda w_t + 1)^{1/\lambda} & \text{otherwise}
+\end{cases}
+$$
