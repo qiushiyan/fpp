@@ -24,6 +24,7 @@ knitr::include_graphics("images/workflow.png")
 
 ### Data preparation (tidy)  
 
+Simplified by `tidyverse` and `tsibble`
 
 ### Visualize   
 
@@ -65,6 +66,7 @@ ge_fit
 
 ### Check model performance (evaluate)  
 
+More discussed in \@ref(evaluating-model-accuracy)
 
 
 ### Produce forecasts (forecast)  
@@ -724,7 +726,7 @@ scaled_logit <- new_transformation(
 
 Take the beer data for example, suppose we want to constrain the forecast production of beer into a $(300, 400)$ interval:  
 
-```{r, fig.show = "hold", out.width = "50%"}
+```{r, fig.show = "hold", out.width = "50%", fig.align = "default"}
 beer_production <- aus_production %>% 
   filter_index("1992 Q1" ~ "2006 Q4") %>% 
   select(Quarter, Beer)
