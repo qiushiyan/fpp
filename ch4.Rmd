@@ -145,6 +145,13 @@ tourism %>%
   features(Trips, feature_set(pkgs = "feasts"))
 ```
 
+all features related to stl decomposition
+
+```{r}
+tourism %>% 
+  features(Trips, feature_set(tags = "stl"))
+```
+
 
 ## Exporing Australian tourism data  
 
