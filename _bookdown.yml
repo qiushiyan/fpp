@@ -1,3 +1,4 @@
+new_session: yes
 book_filename: "fpp"
 delete_merged_file: true
 language:

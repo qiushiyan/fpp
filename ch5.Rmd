@@ -613,9 +613,10 @@ With time series forecasting, one-step forecasts may not be as relevant as multi
 knitr::include_graphics("images/cv_multi.png")
 ```
 
- `stretch_tsibble()` (may subject to change, I havn't found a corresponding function in the **slider** package) generates multiple folds as we specified:  
+ `stretch_tsibble()` generates multiple folds as we specified: (may subject to change, I havn't found a corresponding function in the **slider** package, perhaps `vfold_cv` from **rsample** in the future?)
 
 ```{r}
+# demonstrate `stretch_tsibble()` on a small subset
 google_2015 %>%
   slice(1:7) %>% 
   stretch_tsibble(.init = 3, .step = 1) %>%  # initial window size = 3, incremental step = 1
@@ -632,6 +633,7 @@ google_cv_fc <- google_2015_cv %>%
   model(RW(Close ~ drift())) %>%
   forecast(h = 1)
 
+# for one step forecast, no need to specify "by" in `accuracy()`
 google_cv_fc %>% accuracy(google_2015)
 
 # residual accuracy
@@ -646,7 +648,7 @@ As expected, the accuracy measures from the residuals are smaller, as the corres
 The code below evaluates the forecasting performance of 1- to 8-step-ahead drift forecasts. The plot shows that the forecast error increases as the forecast horizon increases, as we would expect.  
 ```{r}
 google_2015_tr <- google_2015 %>%
-  slice(1:(n()-8)) %>%
+  slice(1:(n() - 8)) %>%
   stretch_tsibble(.init = 3, .step = 1)
 
 fc <- google_2015_tr %>%
