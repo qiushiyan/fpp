@@ -320,7 +320,7 @@ aug %>%
   autoplot()
 ```
 
-Shorthand function:  
+Shorthand function `gg_tsresiduals()`:  
 
 ```{r}
 google_2015 %>%
@@ -341,7 +341,7 @@ aug %>%
 
 
 
-n order to overcome this problem, we test whether the first h autocorrelations are significantly different from what would be expected from a white noise process. A test for a group of autocorrelations is called a **portmanteau test**, from a French word describing a suitcase containing a number of items.  
+In order to overcome this problem, we test whether the first h autocorrelations are significantly different from what would be expected from a white noise process. A test for a group of autocorrelations is called a **portmanteau test**, from a French word describing a suitcase containing a number of items.  
 
 One such test is the **Box-Pierce** test, based on the following statistic:  
 
@@ -553,7 +553,7 @@ $$
 
 
 
-### Examples  
+### Examples: beer production 
 
 ```{r}
 recent_production <- aus_production %>% filter(year(Quarter) >= 1992)
@@ -594,8 +594,25 @@ google_fit <- google_2015 %>%
     Drift = RW(Close ~ drift())
   )
 
+google_jan_2016 <- google_stock %>%
+  filter(yearmonth(Date) == yearmonth("2016 Jan"))
+
+google_fc <- google_fit %>%
+  forecast(google_jan_2016)
+
+google_fc %>% 
+  autoplot(rbind(google_2015, google_jan_2016), level = NULL) +
+  ggtitle("Google stock price (daily ending 6 Dec 13)") +
+  guides(colour=guide_legend(title="Forecast"))
 
 ```
+Check model accuracy
+
+```{r}
+accuracy(google_fc, google_stock)
+```
+
+Here, the best method is the naïve method (regardless of which accuracy measure is used).
 
 ## Time series cross-validation    
 
@@ -751,7 +768,7 @@ beer_production %>%
 
 ### Bias adjustments  
 
-One issue with using mathematical transformations such as Box-Cox transformations is that the back-transformed point forecast will not be the mean of the forecast distribution. In fact, it will usually be the median of the forecast distribution (assuming that the distribution on the transformed space is symmetric). For many purposes, this is acceptable, but occasionally the mean forecast is required. For example, you may wish to add up sales forecasts from various regions to form a forecast for the whole country. But medians do not add up, whereas means do. (the mean of multiple means is the mean of the whole)  
+One issue with using mathematical transformations such as Box-Cox transformations is that **the back-transformed point forecast will not be the mean of the forecast distribution.** In fact, it will usually be the median of the forecast distribution (assuming that the distribution on the transformed space is symmetric). For many purposes, this is acceptable, but occasionally the mean forecast is required. For example, you may wish to add up sales forecasts from various regions to form a forecast for the whole country. But medians do not add up, whereas means do. (the mean of multiple means is the mean of the whole)  
 
 For a Box-Cox transformation, the **back-transformed mean** is given by:  
 
@@ -765,9 +782,7 @@ y_t =           (\#eq:bias-adjusted)
 
 where $\sigma_h^2$ is the h-step forecast variance on the transformed scale. The larger the forecast variance, the bigger the difference between the mean and the median. Estimation of $\sigma_h^2$ is mentioned in \@ref(predict-interval)
 
-The difference between the simple back-transformed forecast given by \@ref(eq:box-cox) and the mean given by \@ref(eq:bias-adjusted) is called the **bias**. When we use the mean, rather than the median, we say the point forecasts have been **bias-adjusted**.
-
-
+The difference between the simple back-transformed forecast given by equation \@ref(eq:box-cox) and the mean by equation \@ref(eq:bias-adjusted) is called the **bias**. When we use the mean, rather than the median, we say the point forecasts have been **bias-adjusted**.
 
 ```{r}
 eggs <- fma::eggs %>% as_tsibble()

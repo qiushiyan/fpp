@@ -1,0 +1,315 @@
+
+# Time series regression models  
+
+```{r}
+library(tsibble)
+library(tsibbledata)
+library(fable)
+library(feasts)
+library(lubridate)
+library(car)
+options(scipen = 3)
+```
+
+
+In this chapter we discuss regression models. The basic concept is that we forecast the time series of interest y assuming that it has a linear relationship with other time series $x$.
+
+For example, we might wish to forecast monthly sales $y$
+using total advertising spend $x$ as a predictor. Or we might forecast daily electricity demand $y$ using temperature $x_1$ and the day of week $x_2$ as predictors.
+
+## The linear model  
+
+### Simple linear regression  
+
+In the simplest case, the regression model allows for a linear relationship between the forecast variable $y$ and a single predictor variable $x$:
+
+$$
+y_t = \beta_0 + \beta_1x_t + \epsilon_t
+$$
+
+Use the US consumption data, `us_change`, to fit a simple linear model where `Consumption` is predicted against `Income`. First, plot these two time series
+```{r}
+us_change <- fpp3::us_change
+
+us_change %>% 
+  pivot_longer(c(Consumption, Income)) %>% 
+  ggplot() + 
+  geom_line(aes(Quarter, value, color = name)) + 
+  labs(y = "% change",
+       color = "Series")
+```  
+
+And then make a scatter plot:  
+
+```{r}
+us_change %>%
+  ggplot(aes(Income, Consumption)) +
+    ylab("Consumption (quarterly % change)") +
+    xlab("Income (quarterly % change)") +
+    geom_point() +
+    geom_smooth(method="lm", se=FALSE)
+```
+
+Fit a formal model:  
+
+```{r}
+us_change_fit <- lm(Consumption ~ Income, data = us_change)
+us_change_fit %>% glance()
+```
+
+The simple linear model can be written as 
+
+```{r, results = "asis", echo = FALSE}
+equatiomatic::extract_eq(us_change_fit, use_coefs = TRUE)
+```
+
+`TSLM()` (time series regression model) is more compatible with the modelling workflow in `fable`, compared to the general method `lm()`  
+
+```{r}
+us_change %>% 
+  model(TSLM(Consumption ~ Income)) %>% 
+  report()
+```
+
+`report()` displays a object in a suitable format for reporting, here its result is identical to `summary.lm()`. `TSLM()` 
+
+### Multiple linear regression  
+
+
+
+\begin{equation}
+(\#eq:multiple-linear-reg)
+y_t = \beta_0 + \beta_1x_{1t} + \beta_2x_{2t} + \dots + \beta_kx_{kt} + \epsilon_t
+\end{equation}
+
+We could simply use more predictors in `us_change` to create a multiple linear regression model. This time, the last 4 columns are included in the model. Take a look at the rest 3 time seires determined by `Production`, `Savings` and `Unemployment`  
+
+```{r}
+us_change %>% 
+  pivot_longer(4:6) %>% 
+  ggplot() + 
+  geom_line(aes(Quarter, value, color = name)) + 
+  facet_wrap(vars(name), nrow = 3, scales = "free_y") + 
+  scale_color_discrete(guide = FALSE)
+```
+
+
+Below is a scatterplot matrix of five variables. The first column shows the relationships between the forecast variable (`consumption`) and each of the predictors. The scatterplots show positive relationships with income and industrial production, and negative relationships with savings and unemployment. The strength of these relationships are shown by the correlation coefficients across the first row. The remaining scatterplots and correlation coefficients show the relationships between the predictors.  
+
+```{r}
+GGally::ggpairs(us_change[, 2:6])
+```
+
+There may some concerns about multicolinearity, but VIF (Variance Inflation Factor) shows there is nothing to worry about: 
+
+```{r}
+lm(Consumption ~ Income + Production + Savings + Unemployment, 
+   data = us_change) %>% 
+  car::vif()
+```
+
+Fit a multiple linear model:  
+
+```{r}
+us_change_mfit <- us_change %>% 
+  model(TSLM(Consumption ~ Income + Production + Savings + Unemployment))
+
+us_change_mfit %>% report()
+```
+
+
+```{r, echo = FALSE, results = "asis"}
+lm(Consumption ~ Income + Production + Savings + Unemployment, data = us_change) %>% 
+  equatiomatic::extract_eq(use_coefs = TRUE)
+```
+
+
+### Assumptions  
+
+When we use a linear regression model, we are implicitly making some assumptions about the variables in Equation \@ref(eq:multiple-linear-reg):  
+
+- The forecast variable $y_t$ and predictors ${x_1, \dots, x_k}$ have a (approximate) **linear** relationship in reality  
+
+
+
+- Residuals $\epsilon_t$ are **independent** (not autocorrelated in a time series linear model specifically) and have constant variance $\sigma^2$ and mean $0$ . Otherwise the forecasts will be inefficient, as there is more information in the data that can be exploited. This can be expressed as 
+
+\begin{equation}  
+(\#eq:GM)
+\begin{aligned}
+\text{Cov}(\epsilon_i, \epsilon_j) &= 
+\begin{cases}
+0 & i \not=j \\
+\sigma^2 & i = j
+\end{cases} 
+\;\;\;i,j = 1, 2,\dots,T \\ 
+E(\epsilon_t) &= 0  
+\;\;\;t = 1,2,\dots,T
+\end{aligned}
+\end{equation}
+
+
+
+Equation \@ref(eq:GM) is also called a G-M (Gauss-Markov) condition.  
+
+- Residuals follow a approximate **normal** distribution, meaning: 
+
+$$
+\epsilon_t \sim N(0, \sigma^2) \;\;\; t = 1,2, \dots,T
+$$
+
+
+
+Another important assumption in the linear regression model is that **each predictor $x$ is not a random variable**. If we were performing a controlled experiment in a laboratory, we could control the values of each $x$ (so they would not be random) and observe the resulting values of $y$. With observational data (including most data in business and economics), it is not possible to control the value of x, we simply observe it. Hence we make this an assumption.  
+
+
+## Least squares estimation  
+
+The least squares principle provides a way of choosing the coefficients effectively by minimising the sum of the squared errors. That is, we choose the values of $\beta_0$,$\beta_1$,…,$\beta_k$ that minimise :  
+
+$$
+\sum_{t=1}^{T}{\epsilon_t^2} = \sum_{t=1}^{T}{(y_t -\beta_0 - \beta_1x_{t1} + \beta_2x_{t2} - \cdots- \beta_kx_{tk})^2}
+$$
+
+
+### Fitted values
+
+To get fitted values, use `broom::augment()`:  
+
+```{r}
+us_change_mfit %>% 
+  augment() %>% 
+  pivot_longer(c(Consumption, .fitted)) %>% 
+  ggplot() + 
+  geom_line(aes(Quarter, value, color = name)) +
+  labs(color = "",
+       title = "Percent change in US consumption expenditure")
+```
+
+```{r}
+us_change_mfit %>% 
+  augment() %>% 
+  ggplot() + 
+  geom_point(aes(Consumption, .fitted)) + 
+  geom_abline(intercept = 0, slope = 1) + 
+  ylab("Fitted (predicted values)") +
+  xlab("Data (actual values)") +
+  ggtitle("Percent change in US consumption expenditure")
+```
+
+### Goodness of fit 
+ 
+$$
+R^2 = \frac{\sum{(\hat{y}_t - \bar{y})^2}}{\sum{(y_t - \bar{y})^2}}
+$$
+
+### Standard error of the regression  
+
+Estimate residual standard error $\hat{\sigma}$
+
+$$
+\hat{\sigma} = \sqrt{\frac{1}{T-K-1} \sum_{t=1}^T{e_t^2}}
+$$
+
+
+where $k$ is the number of predictors in the model. Notice that we divide by $T− k − 1$ because we have estimated $k + 1$ parameters (the intercept and a coefficient for each predictor variable) in computing the residuals.   
+
+The standard error is related to the size of the average error that the model produces. We can compare this error to the sample mean of $y$ or with the standard deviation of $y$ to gain some perspective on the accuracy of the model.  
+
+## Evaluating a regression model  
+
+`gg_tsresiduals()` and Ljung-Box test($H_0$ being the residuals are from a white noise series) introduced in Section \@ref(residual-diagnostics) 
+
+```{r}
+us_change_mfit %>% gg_tsresiduals()
+```
+
+
+```{r}
+us_change_mfit %>% 
+  augment() %>% 
+  features(.resid, ljung_box, lag = 10, dof = 5)
+```
+
+The time plot shows some changing variation over time, but is otherwise relatively unremarkable. This heteroscedasticity will potentially make the prediction interval coverage inaccurate.
+
+The histogram shows that the residuals seem to be slightly skewed, which may also affect the coverage probability of the prediction intervals.
+
+The autocorrelation plot shows a significant spike at lag $7$, and a significant Ljung-Box test at the $5\%$ level. However, the autocorrelation is not particularly large, and at lag 7 it is unlikely to have any noticeable impact on the forecasts or the prediction intervals. In Chapter 10 we discuss dynamic regression models used for better capturing information left in the residuals.  
+
+### Residual plots against predictors  
+
+We would expect the residuals to be randomly scattered without showing any systematic patterns. A simple and quick way to check this is to examine scatterplots of the residuals against each of the predictor variables. If these scatterplots show a pattern, then the relationship may be nonlinear and the model will need to be modified accordingly. See Section \@ref(nonlinear-regression) for a discussion of nonlinear regression.  
+
+It is also necessary to plot the residuals against any predictors that are *not* in the model. If any of these show a pattern, then the corresponding predictor may need to be added to the model (possibly in a nonlinear form).  
+
+#### Example    
+
+`residuals()`allow us to extract residuals from a `fable` object, without calling `augment()`.  
+
+The residuals from the multiple regression model for forecasting US consumption plotted against each predictor seem to be randomly scattered. Therefore we are satisfied with these in this case.
+
+```{r}
+df <- us_change %>%
+  left_join(us_change_mfit %>% residuals(), by = "Quarter")
+
+library(patchwork)
+p1 <- ggplot(df, aes(Income, .resid)) +
+  geom_point() + ylab("Residuals")
+p2 <- ggplot(df, aes(Production, .resid)) +
+  geom_point() + ylab("Residuals")
+p3 <- ggplot(df, aes(Savings, .resid)) +
+  geom_point() + ylab("Residuals")
+p4 <- ggplot(df, aes(Unemployment, .resid)) +
+  geom_point() + ylab("Residuals")
+
+p1 + p2 + p3 + p4 + plot_layout(nrow = 2)
+```
+
+
+### Residual plots against fitted values  
+
+A plot of the residuals against the fitted values should also show no pattern. If a pattern is observed, there may be “heteroscedasticity”, or **non-constant variance**. If this problem occurs, a transformation of the forecast variable such as a logarithm or square root may be required (see Section \@ref(transformation-and-adjustments).)
+
+#### Example  
+
+The following plot shows the residuals plotted against the fitted values. The random scatter suggests the errors are homoscedastic.  
+
+```{r}
+augment(us_change_mfit) %>% 
+  ggplot()+ 
+  geom_point(aes(.fitted, .resid)) + 
+  labs(x = "Fitted", y = "Residuals")
+```
+
+
+### Outliers and influential observations    
+
+Observations that take extreme values compared to the majority of the data are called outliers. Observations that have a large influence on the estimated coefficients of a regression model are called influential observations. Usually, influential observations are also outliers that are extreme in the $x$ direction.  
+
+For a formal detection of observation influence, the **leverage** of the t-th observation ${x_{1t}, x_{2t}, \dots, {x_{kt}}$ is defined as the t-th diagonal element of the hat matrix $H = X(X^TX)^{-1}X^T$, i.e. $h_{tt}$.  
+
+And the **Cook distance** of the i-th observation is defined as :  
+
+$$
+C_t = \frac{r_t^2}{k + 2} \times \frac{h_{tt}}{1 - h_{tt}}
+$$
+
+where $k$ is the number of predictors and $r_t$ the i-th internally studentized residuals $r_t = \frac{e_t}{\hat{\sigma}\sqrt{1-h_{tt}}}$  
+
+
+So I followed instructions from another book: *An R Companion to Applied Regression, 3rd* [@fox2018r]. Unfortunately the code is basically base-R style, so I have to refit the model with `lm()` again.  
+
+```{r}
+us_change_lm <- lm(Consumption ~ Income + Production + Savings + Unemployment, 
+                    data = us_change)
+
+us_change_lm %>% influencePlot()
+```
+
+
+
+```{r, fig.height = 8, fig.width = 7}
+us_change_lm %>% influenceIndexPlot()
+```
+

@@ -7,7 +7,7 @@ bookdown::gitbook:
       family: serif
       size: 2
     toc:
-      collapse: section
+      collapse: subsection
       before: |
         <li><a href="./">Notes for fpp3</a></li>
       after: |
