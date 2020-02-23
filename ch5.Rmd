@@ -44,9 +44,9 @@ A model defination
 TSLM(GDP ~ trend())
 ```
 
-`TSLM()` specifies a time series linear model.  
+`TSLM()` specifies a time series linear model, discussed more in \@ref(time-series-regression-models).  
 
-Similar to `tidymodels`: 
+Similar to `tidymodels` where we specify a linear model for regression: 
 
 ```{r}
 library(parsnip)
@@ -71,7 +71,7 @@ More discussed in \@ref(evaluating-model-accuracy)
 
 ### Produce forecasts (forecast)  
 
-Similar to `predict()`: 
+`forecast()` similar to `predict()`: 
 
 ```{r}
 ge_forecast <- ge_fit %>% 
@@ -79,6 +79,8 @@ ge_forecast <- ge_fit %>%
 
 ge_forecast
 ```
+
+Here ourl trend model consists of only a trend variable ${1, 2, \dots, T}$, which can be known in advance when producing forecasts. In this case `forecast()` only needs `h` for a forecast horizon. There are also cases when we need to specify the `new_data` argument, which will be a  `tsibble` containing future information used to forecast.
 
 ```{r}
 ge_forecast %>% 
@@ -126,7 +128,7 @@ $$
 
 This method works remarkably well for many economic and financial time series. 
  
-Because a naive forecast is optimal when data follow a random walk (see Section 9.1), these are also called **random walk** forecasts.   
+Because a naive forecast is optimal when data follow a random walk (see Section \@ref(stationarity-and-differencing)), these are also called **random walk** forecasts.   
 
 `NAIVE()` specifies a naive model:  
 
@@ -697,7 +699,7 @@ fc %>%
 Box cox transformation is mentioned at \@ref(box-cox). When forecasting from a model with transformations, we first produce forecasts of the transformed data. Then, we need to reverse the transformation (or *back-transform*) to obtain forecasts on the original scale. The reverse Box-Cox transformation is given by  
 
 \begin{equation}
-y_t =  (\#eq:box-cox)
+y_t =  
 \begin{cases}
 \exp{(w_t)} & \text{if} \;\lambda = 0 \\
 (\lambda w_t + 1)^{1/\lambda} & \text{otherwise}
@@ -782,7 +784,7 @@ y_t =           (\#eq:bias-adjusted)
 
 where $\sigma_h^2$ is the h-step forecast variance on the transformed scale. The larger the forecast variance, the bigger the difference between the mean and the median. Estimation of $\sigma_h^2$ is mentioned in \@ref(predict-interval)
 
-The difference between the simple back-transformed forecast given by equation \@ref(eq:box-cox) and the mean by equation \@ref(eq:bias-adjusted) is called the **bias**. When we use the mean, rather than the median, we say the point forecasts have been **bias-adjusted**.
+The difference between the simple back-transformed forecast given by Equation \@ref(eq:box-cox) and the mean by equation \@ref(eq:bias-adjusted) is called the **bias**. When we use the mean, rather than the median, we say the point forecasts have been **bias-adjusted**.
 
 ```{r}
 eggs <- fma::eggs %>% as_tsibble()

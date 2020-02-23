@@ -17,6 +17,9 @@ rmd_files: [
   "ch5.Rmd",
   "ch6.Rmd",
   "ch7.Rmd",
+  "ch8.Rmd",
+  "ch9.Rmd",
+  "ch10.Rmd",
   
   "references.Rmd"
 ]

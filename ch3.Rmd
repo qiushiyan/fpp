@@ -64,6 +64,7 @@ If the data shows variation that increases or decreases with the level of the se
 A useful family of transformations, that includes both logarithms and power transformations, is the family of Box-Cox transformations, which depend on the parameter $\lambda$ and are defined as follows:  
 
 \begin{equation}
+(\#eq:box-cox)
 w_t =
 \begin{cases}
 \log{y_t}& \text{if} \; \lambda = 0 \\
