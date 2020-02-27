@@ -119,9 +119,9 @@ us_change %>%
 ```
 
 
-Below is a scatterplot matrix of five variables. The first column shows the relationships between the forecast variable (`consumption`) and each of the predictors. The scatterplots show positive relationships with income and industrial production, and negative relationships with savings and unemployment. The strength of these relationships are shown by the correlation coefficients across the first row. The remaining scatterplots and correlation coefficients show the relationships between the predictors.  
+Below is a scatterplot matrix of five variables. The first column shows the relationships between the forecast variable (`consumption`) and each of the predictors. The scatterplots show positive relationships with income and industrial production, and negative relationships with savings and unemployment. 
 
-```{r pairs}
+```{r pairs, fig.cap = "A scatterplot matrix of all 5 variables"}
 GGally::ggpairs(us_change[, 2:6])
 ```
 
@@ -217,9 +217,9 @@ us_change_mfit %>%
   ggplot() + 
   geom_point(aes(Consumption, .fitted)) + 
   geom_abline(intercept = 0, slope = 1) + 
-  ylab("Fitted (predicted values)") +
-  xlab("Data (actual values)") +
-  ggtitle("Percent change in US consumption expenditure")
+  labs(title = "Percent change in US consumption expenditure",
+       y = "Fitted (predicted values)",
+       x = "Data (actual values)")
 ```
 
 ### Goodness of fit 
@@ -442,10 +442,10 @@ augment(beer_fit) %>%
   ggplot(aes(x = Beer, y = .fitted,
              colour = factor(quarter(Quarter)))) +
     geom_point() +
-    ylab("Fitted") + xlab("Actual values") +
-    ggtitle("Quarterly beer production") +
     scale_colour_brewer(palette="Dark2", name="Quarter") +
-    geom_abline(intercept=0, slope=1)
+    geom_abline(intercept = 0, slope = 1) + 
+    labs(y = "Fitted", x = "Actual values",
+         title = "Quarterly beer production")
 ```
 
 ### Intervention variables  
@@ -652,8 +652,8 @@ Normally, we cannot use actual future values of the predictor variables when pro
 beer_fit %>% 
   forecast(h = "3 years") %>% 
   autoplot(recent_production, level = 90) + 
-  ggtitle("Forecasts of beer production using regression") +
-  xlab("Year") + ylab("megalitres")
+  labs(x = "Year", y = "megalitres",
+       title = "Forecasts of beer production using regression")
 ```
 
 
@@ -854,7 +854,7 @@ $$
 
 In practice, higher order ($>3$) or even quadratic terms are not recommended in forecasting. When they are extrapolated, the resulting forecasts are often unrealistic.  
 
-A better approach is to use the piecewise specification introduced above and fit a piecewise linear trend which bends at some point in time. We can think of this as a nonlinear trend constructed of linear pieces. If the trend bends at time $\tau$, then it can be specified by simply replacing $x=t $ and $c=τ$ above such that we include the predictors  
+A better approach is to use the piecewise specification introduced above and fit a piecewise linear trend which bends at some point in time. We can think of this as a nonlinear trend constructed of linear pieces. If the trend bends at time $\tau$, then it can be specified by simply replacing $x=t$ and $c=τ$ above such that we include the predictors  
 
 $$
 \begin{aligned}
@@ -924,11 +924,12 @@ boston_piece_fc <- boston_piece_fit %>% forecast(h = 10)
 
 boston_piece_fc %>%
   autoplot(boston_men, level = NULL) + 
-  xlab("Year") +  ylab("Winning times in minutes") +
-  ggtitle("Boston Marathon") +
-  guides(colour=guide_legend(title="Model"))
+  labs(title = "Boston Marathon", 
+       x = "Year", 
+       y = "Winning times in minutes",
+       color = "Model")
 ```
 
-### Correlation, causation and forecasting  
+## Correlation, causation and forecasting  
 
 

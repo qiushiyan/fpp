@@ -1,29 +1,4 @@
-```{r include=FALSE, cache=FALSE}
-set.seed(1112)
-options(digits = 3)
-
-knitr::opts_chunk$set(
-  comment = "#>",
-  collapse = TRUE,
-  out.width = "80%",
-  fig.width = 6,
-  fig.asp = 0.618,  # 1 / phi
-  fig.align = "center",
-  message = F,
-  warning = F
-)
-
-library(tidyverse)
-
-options(dplyr.print_min = 6, dplyr.print_max = 6)
-```
-
 # Exponential smoothing 
-
-```{r}
-knitr::opts_chunk$set(cache = TRUE)
-```
-
 
 Exponential smoothing was proposed in the late 1950s ([@brown1959statistical; @holt1957forecasting; @winters1960forecasting]), and has motivated some of the most successful forecasting methods. Forecasts produced using exponential smoothing methods are weighted averages of past observations, with the weights decaying exponentially as the observations get older. In other words, the more recent the observation the higher the associated weight. This framework generates reliable forecasts quickly and for a wide range of time series, which is a great advantage and of major importance to applications in industry.
 
@@ -127,7 +102,7 @@ In some cases, the smoothing parameters may be chosen in a subjective manner —
 $$
 \text{SSE} = \sum_{t = 1}^T{y_t - \hat{y}_{t |t-1 }} = \sum_{t = 1}^T{e_t^2}
 $$
-An alternative to estimating the parameters by minimising the sum of squared errors is the maximum likelihood estimation. This method requires the probability distribution on the part of the response variable $y$, which follows a normal distribution assuming normally distributed errors. This is also discussed in Section \@ref(estimation-and-model-selection).  
+An alternative to estimating the parameters by minimising the sum of squared errors is the maximum likelihood estimation. This method requires the probability distribution on the part of the response variable $y$, which follows a normal distribution assuming normally distributed errors. This is also discussed in Section \@ref(estimation-and-model-election).  
 
 
 ### Example: Algerian exports  
@@ -148,7 +123,7 @@ algeria_fit %>% tidy()
 algeria_fit %>% 
   forecast(h = "5 years") %>% 
   autoplot(algeria_economy, level = 95) + 
-  geom_line(aes(y = .fitted, color = "Fitted"), data = augment(algeria_fit)) +
+  geom_line(aes(y = .fitted, color = "Fitted"), data = augment(algeria_fit)) + 
   scale_color_discrete(name = "")
 ```
 
@@ -177,6 +152,7 @@ algeria_fit %>%
   scale_color_discrete(name = "")
 ```
 
+he prediction intervals shown here are calculated using the methods described in Section \@ref(forecasting-with-prediction-intervals).  
 
 
 
@@ -613,7 +589,7 @@ $$
 
 In a similar fashion, we can write an innovations state space model for each of the exponential smoothing methods in the following table   
 
-```{r, echo = FALSE}
+```{r, png}
 knitr::include_graphics("images/taxonomy.png")
 ```
 
@@ -626,7 +602,7 @@ knitr::include_graphics("images/taxonomy.png")
 In Section \@ref(estimation) we use `opt_crit = "mse"` to estimate smoothing parameters and initial values. However, the default method is maximum likelihood estimation. In this section, we will estimate the smoothing parameters $\alpha$, $\beta$, $\gamma$ and $\phi$, and the initial states $\ell_0$, $b_9$, $s_0$,$s_1$, $\dots$, $s_{m-1}$, by maximising the likelihood.
 
 
-The possible values that the smoothing parameters can take are restricted. Traditionally, the parameters have been constrained to lie between 0 and 1 so that the equations can be interpreted as weighted averages. That is, $0 <\alpha,\beta^*,\gamma^*,\phi < 1$(<span style="color: red;">Why $\gamma^*$ instead of $\gamma$?, \@ref(holt-winters-additive-method)</span>). For the state space models, we have set $\beta = \alpha \beta^∗$ and $\gamma = (1− \alpha)\gamma^*$. Therefore, the traditional restrictions translate to 
+The possible values that the smoothing parameters can take are restricted. Traditionally, the parameters have been constrained to lie between 0 and 1 so that the equations can be interpreted as weighted averages. That is, $0 <\alpha,\beta^*,\gamma^*,\phi < 1$. For the state space models, we have set $\beta = \alpha \beta^∗$ and $\gamma = (1− \alpha)\gamma^*$. Therefore, the traditional restrictions translate to 
 
 $$
 \begin{aligned}
@@ -705,14 +681,14 @@ holidays_fit %>%
 
 Because this model has multiplicative errors, the residuals are not equivalent to the one-step training errors. The residuals are given by $\hat{\epsilon}_t$, while the one-step training errors are defined as $y_t − \hat{y}_{t|t−1}$.
 
-```{r, fig.show = "hold", out.width = "50%", fig.align = "center"}
+```{r, fig.show = "hold", out.width = "50%"}
 residuals(holidays_fit) %>% 
   autoplot() + 
-  ggtitle("Innovation errors")
+  ggtitle("Innovation erros")
 
 residuals(holidays_fit, type = "response") %>%  
   autoplot() + 
-  ggtitle("Response errors")
+  ggtitle("Response erros")
 ```
 
 
@@ -727,7 +703,7 @@ y_{T+2} &= (\ell_{T + 1} + b_{T + 1})(1 + \epsilon_{T+1}) \\
 \end{split}
 $$
 
-By setting $\epsilon_{T+1} = 0$, we get $y_{T+2} =\ell_T + 2b_T$, which is the same to Holt’s linear methodin Section \@ref(holts-linear-trend-method), where innovation state space model is not formally introduced. Thus, the point forecasts obtained from the method and from the two models that underlie the method are identical (assuming that the same parameter values are used).   
+By setting $\epsilon_{T+1} = 0$, we get $y_{T+2} =\ell_T + 2b_T$, which is the same to Holt’s linear methodin Section \@ref(methods-with-trend), where innovation state space model is not formally introduced. Thus, the point forecasts obtained from the method and from the two models that underlie the method are identical (assuming that the same parameter values are used).   
 
 
 ETS point forecasts are equal to the **medians** of the forecast distributions. For models with only additive components, the forecast distributions are normal, so the medians and means are equal. For ETS models with multiplicative errors, or with multiplicative seasonality, the point forecasts will not be equal to the means of the forecast distributions.  
