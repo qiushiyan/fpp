@@ -1,2 +1,66 @@
 
 # ARIMA models 
+
+
+```{r}
+library(tsibble)
+library(tsibbledata)
+library(fable)
+library(feasts)
+library(lubridate)
+library(pins)
+```
+
+## Stationarity and differencing  
+
+3 rules 
+
+1. Constant Mean
+2. Constant variance  
+3. No seasonality
+
+```{r, fig.height = 8, fig.width = 7}
+PBS %>%
+  filter(ATC2 == "H02") %>%
+  summarize(Cost = sum(Cost) / 1e6) %>%
+  transmute(
+     sales = Cost,
+     sales_log = log(Cost),
+     seasonal_difference = log(Cost) %>% difference(lag = 12),
+     double_difference = log(Cost) %>% difference(lag = 12) %>% difference(lag = 1)
+  ) %>% 
+  pivot_longer(-Month, names_to = "measure") %>% 
+  mutate(measure = fct_relevel(measure, 
+                               c("sales", "sales_log", "seasonal_difference", "double_difference"))) %>%
+  ggplot() + 
+  geom_line(aes(Month, value)) + 
+  facet_wrap(~ measure, ncol = 1, scales = "free_y") + 
+  labs(title = "Corticosteroid drug sales", x = "Year", y = NULL)
+```
+
+## Non-seasonal ARIMA models  
+
+
+```{r}
+us_change <- read_csv(pin("https://otexts.com/fpp3/extrafiles/us_change.csv")) %>% 
+  mutate(time = yearquarter(Time)) %>% 
+  as_tsibble(index = time)  
+
+us_change %>% autoplot(Consumption) +
+  labs(x = "Year", 
+       y = "Quarterly percentage change", 
+       title = "US consumption")
+```
+
+```{r}
+us_change_fit <- us_change %>% 
+  model(ARIMA(Consumption ~ PDQ(0, 0, 0)))
+
+us_change_fit %>% report()
+```
+
+This is an ARIMA(1,0,3) model:   
+
+$$
+y_t = 0.307 + 0.589y_{t-1} - 0.352\epsilon_{t-1} + 0.085 \epsilon_{t-2} + 0.174 \epsilon_{t-3} + \epsilon_t
+$$
