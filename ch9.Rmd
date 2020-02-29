@@ -15,9 +15,11 @@ library(pins)
 
 3 rules 
 
-1. Constant Mean
-2. Constant variance  
-3. No seasonality
+1. Constant Mean (local compared to global)
+2. Constant variance  (local compared to global)
+3. No seasonality  
+
+Don't confuse stationarity with **white noise**. In particular, white noise can be considered a special, unpredictable case of stationary time series. It has **zero mean**, constant variance and no seasonality. White noise are often used as a measure against which we test our models. If residuals $\epsilon_1, \epsilon_2, \dots, \epsilon_t$ violates any of the rules of white noise, then there is still valuable information buried under the resiuals, which we will imporve our models to capture. We have not a 'best' model at hand until residuals become unpredictable, in other words, white noise.  
 
 ```{r, fig.height = 8, fig.width = 7}
 PBS %>%
@@ -37,6 +39,181 @@ PBS %>%
   facet_wrap(~ measure, ncol = 1, scales = "free_y") + 
   labs(title = "Corticosteroid drug sales", x = "Year", y = NULL)
 ```
+
+
+https://towardsdatascience.com/stationarity-in-time-series-analysis-90c94f27322
+
+Why does stationarity matter ?  
+
+In the most intuitive sense, stationarity means that the statistical properties of a process generating a time series do not change over time.
+
+## Backshift notation  
+
+The backward shift operator $B$ (or $L$ in some references) is a useful notational device when working with time series lags:  
+
+$$
+By_t = y_{t-1}
+$$
+
+$B$ can be treated as a number in arithmetic.Two applications of $B$ to $y_t$ shifts the data back two periods:   
+
+$$
+B(By_t) = B^2y_t
+$$
+
+The backward shift operator is convenient for describing the process of differencing. A first difference can be written as   
+
+$$
+y'_t = y_t - y_{t-1} = y_t  - By_{y-1} = (1 - B)y_t
+$$
+Similarly, the second-order difference would be 
+
+$$
+\begin{split}
+y_t'' &= (y_t - y_{t-1}) - (y_{t-1} - y_{t - 2})  \\ 
+      &= By_t - 2By_{t} + B^2y_t \\ 
+      &= (1-B)^2y_t
+\end{split}
+$$
+
+In general, a $d$th-order difference can be written as 
+
+$$
+(1 - B)^dy_t
+$$
+
+Backshift notation is particularly useful when combining differences, as the operator can be treated using ordinary algebraic rules. In particular, terms involving $B$ can be multiplied together.
+
+For example, a seasonal difference followed by a first difference can be written as 
+
+$$
+\begin{split}
+(1 - B)(1 - B^m) &= (1 - B^m - B + B^{m + 1})y_t \\
+                 &= y_t - y_{t-m} - y_{t-1} + y_{t-m-1}
+\end{split}
+$$
+
+
+## Autoregressive models   
+
+In an autoregression model, we forecast the variable of interest using a linear combination of past values of the variable. The term autoregression indicates that it is a regression of the variable against itself. Thus, an autoregressive model of order $p$ can be written as 
+
+$$
+y_t = c + \phi_1 y_{t-1} + \phi_2 y_{t-2} + \dots + \phi_p y_{t-p} + \epsilon_t
+$$
+
+where $\epsilon_t$ is white noise. We refer to this model as **AR(p) model**, a autoregressive model with order $p$ 
+
+
+AR models generally require the time series to be stationary.  
+
+```{block2, type = "todo"}
+The relationship between AR models and stationarity, maybe explained by invertibility?
+```
+
+When autoregressive models are confined to stationary data, some constraints on the values of the parameters are required.  
+
+* For an AR(1) model: $-1 < \phi_1 < -1$ (Consider the denominator of the sum of a inifite geometric series) 
+
+* For an AR(2) model: $-1 < \phi_2 < 1$, $\phi_1 + \phi_2 < 1, \phi_2 - \phi_1 < 1$ 
+
+When $p \ge 3$, the restrictions are much more complicated. R takes care of these restrictions when estimating a model.  
+
+How do we decide the order $p $of a AR model? A rule of thumb is to look at **partial autocorrelation coefficients**, PACF. PACF measures the direct effect of a lagged value on its previous value. Suppose we want to measure the effect of $y_{t-2}$ on $y_{t}$, while $r_2$ could be high, it could also carry the effect of $y_{t-2} \rightarrow y_{t-1} \rightarrow y_t$, especially when $r_1$ is also high. This is when partial autocorrelation come to resuce, consider a AR(2) model (if we ignore any observation earlier than $y_{t-2}$ )
+
+$$
+y_t = c + \phi_1 y_{t-1} + \phi_2 y_{t-2} + \epsilon_t
+$$
+
+Then a partial autocorrelation coefficient between $y_t$ and $y_{t-2}$ is defined as the square root of partial determinant coefficient 
+
+$$
+\sqrt{\frac{SSE_{y_{t-2}} - SSE_{y_{t-2}, y_{t-1}}}{SSE_{y_{t-2}}}}
+$$
+Where $SSE_{y_{t-2}, y_{t-1}}$ and  $SSE_{y_{t-2}}$ are sum of squared errors when $y_t$ is regressed on $y_{t-2}, y_{t-1}$ and only $y_{t-1}$ respectively.  
+
+A useful tool is `PACF()` + `autoplot()`, which produces a partial autocorrelation coefficient plot like `ACF()`  
+
+```{r}
+fpp3::aus_airpassengers %>% 
+  PACF(lag_max = 10) %>% 
+  autoplot()
+```
+
+This tells us only PAC at $\text{lag} = 1$ is significantly different than 0. As such only among $y_{t-1}, y_{t-2}, \dots, y_{t-10}$, only $y_{t-1}$ has a significant **direct** effect on the response, so a AR(1) model may be appropriate. We can compare this to the ACF plot 
+
+```{r}
+fpp3::aus_airpassengers %>% 
+  ACF(lag_max = 10) %>% 
+  autoplot()
+```
+
+
+
+
+## Moving average models   
+
+
+Rather than using past values of the forecast variable in a regression, a moving average model uses past forecast errors in a regression-like model ^[Many textbooks and software programs define the model with negative signs before the $\theta$ terms (R uses positive signs). This doesn’t change the general theoretical properties of the model, although it does flip the algebraic signs of estimated coefficient values and (unsquared) $\theta$ terms in formulas for ACFs and variances]. 
+
+$$
+y_t = c + \theta_1\epsilon_{t-1} + \theta_2\epsilon_{t-2} + \dots + \theta_q\epsilon_{t-q} + \epsilon_{t}
+$$
+
+Where $\epsilon_t$ is white noise. We refer to this as an MA(q) model, a moving average model of order $q$. Of course, we do not observe the values of $\epsilon_t$, so it is not really a regression in the usual sense.
+
+
+Notice that each value of yt can be thought of as a weighted moving average of the past few forecast errors. However, moving average models should not be confused with the moving average smoothing we discussed in Section \@ref(moving-averages). A moving average model is used for forecasting future values, while moving average smoothing is used for estimating the trend-cycle of past values.
+
+It is easy to show that a time series that does follow a MA model is **stationary**. A MA(1) process has the following properties 
+
+$$
+\begin{aligned}
+\text{E}(y_t) &= c \\
+\text{Var}(y_t) &= (1 + \theta_1^2)\sigma^2 \\
+\text{ACF} &= 
+\begin{cases}
+\frac{\theta_1}{1 + \theta_1^2}
+\end{cases}
+\end{aligned}
+$$
+
+Proof for ACF :
+$$
+\begin{split}
+\text{ACF}(1) &= \frac{\text{Covariance for lag} 1}{\text{variance for lag}1} \\
+           &= \frac{E[(y_t - E(y_t))(y_{t-1} - E(y_{t-1}))]}{(1 + \theta_1^2)\sigma^2} \\ 
+           &= \frac{E[(\epsilon_{t} + \theta_1\epsilon_{t-1})(\epsilon_{t-1} + \theta_1\epsilon_{t-2})]}{(1 + \theta_1^2)\sigma^2} \\
+           &= \frac{E(\epsilon_t \epsilon_{t-1} + \theta_1\epsilon_t\epsilon_{t-2} + \theta_1 \epsilon_{t-1}^2 + \theta_1^2\epsilon_{t-1}\epsilon_{t-2})}{(1 + \theta_1^2)\sigma^2} \\
+           &= \frac{\theta_1E(\epsilon_{t-1}^2)}{(1 + \theta_1^2)\sigma^2} \\
+           &= \frac{\theta_1\sigma^2}{(1 + \theta_1^2)\sigma^2} \\
+           &= \frac{\theta_1}{1 + \theta_1^2}
+\end{split}
+$$
+
+
+$$
+y_{t-k} = c + \theta_1\epsilon_{t-k -1} + \theta_2\epsilon_{t- k - 2} + \dots + \theta_q\epsilon_{t-k -q} + \epsilon_{t-q}
+$$
+
+$$
+\text{Cov}(y_t, y_{t-k}) = \text{E}(y_ty_{t-k}) - \text{E}(y_t)\text{E}(y_{t-k})
+$$
+
+There will be a $c^2$ term in the result of $y_ty_{t-k}$, and $\text{E}(y_t)\text{E}(y_{t-k}) = c^2$.  
+
+But the problemm is: $\text{E}(\theta_i^2\epsilon_i^2) = \theta_i^2[\text{Var}(\epsilon_i^2)] + E(\epsilon_i)^2 = \theta_i^2\text{Var}(\epsilon_i^2)$
+
+$E(\epsilon_i\epsilon_j) = 0$, because $\text{Cov}(\epsilon_i, \epsilon_j)  = 0 = E(\epsilon_i\epsilon_j) - E(\epsilon_i)E(\epsilon_j)$
+so only when there is no **same** error term in $\epsilon_t, \epsilon_{t-1}, \epsilon_{t-2}, \dots, \epsilon_{t-q}, $ and $\epsilon_{t-k}, \epsilon_{t-k -1}, \epsilon_{t-k -2}, \dots, \epsilon_{t - k -q}$ 
+
+$$
+t - q > t - k
+$$
+
+When $k > q$, ACF will be generally inside 
+
+
 
 ## Non-seasonal ARIMA models  
 
