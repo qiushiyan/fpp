@@ -169,11 +169,12 @@ It is easy to show that a time series that does follow a MA model is **stationar
 
 $$
 \begin{aligned}
-\text{E}(y_t) &= c \\
-\text{Var}(y_t) &= (1 + \theta_1^2)\sigma^2 \\
-\text{ACF} &= 
+\text{Constant mean}: \text{E}(y_t) &= c \\
+\text{Constant variance}:\text{Var}(y_t) &= (1 + \theta_1^2)\sigma^2 \\
+\text{No seasonality}:\text{ACF} &= 
 \begin{cases}
-\frac{\theta_1}{1 + \theta_1^2}
+\frac{\theta_1}{1 + \theta_1^2} & \text{lag} = 1\\  
+0 & \text{otherwise}
 \end{cases}
 \end{aligned}
 $$
@@ -190,30 +191,53 @@ $$
            &= \frac{\theta_1}{1 + \theta_1^2}
 \end{split}
 $$
+For $\text{lag} > 1$, there will be no square term like $\epsilon_{t-k}^2$, but only cross terms like $\epsilon_t\epsilon_{t-k}$，whose expectation would be zero by defination, so that ACF will be zero.  
 
+Surprisingly, this shed light on how we would decide the order $q$. For a MA(2) process, ACF would be 0 for $k = 3, 4, \dots$. In general, for a MA(q) process, ACF will be nonzero for $k = 1, 2, \dots,q$ and zero after $q$.
 
+Let's prove this, a MA(q) model can be written as: 
 $$
 y_{t-k} = c + \theta_1\epsilon_{t-k -1} + \theta_2\epsilon_{t- k - 2} + \dots + \theta_q\epsilon_{t-k -q} + \epsilon_{t-q}
 $$
-
+To see at which point ACF will be zero, consider the covariance (if covariance between $y_t$ and $y_{t-k}$ is zero, then $r_k$ is zero)
 $$
 \text{Cov}(y_t, y_{t-k}) = \text{E}(y_ty_{t-k}) - \text{E}(y_t)\text{E}(y_{t-k})
 $$
 
-There will be a $c^2$ term in the result of $y_ty_{t-k}$, and $\text{E}(y_t)\text{E}(y_{t-k}) = c^2$.  
+We know that $\text{E}(y_t)\text{E}(y_{t-k}) = c^2$.  So the problem is, what is included in $E(y_ty_{t-k})$, and when will it be $c^2$, so that the covariance would be zero? 
 
-But the problemm is: $\text{E}(\theta_i^2\epsilon_i^2) = \theta_i^2[\text{Var}(\epsilon_i^2)] + E(\epsilon_i)^2 = \theta_i^2\text{Var}(\epsilon_i^2)$
-
-$E(\epsilon_i\epsilon_j) = 0$, because $\text{Cov}(\epsilon_i, \epsilon_j)  = 0 = E(\epsilon_i\epsilon_j) - E(\epsilon_i)E(\epsilon_j)$
-so only when there is no **same** error term in $\epsilon_t, \epsilon_{t-1}, \epsilon_{t-2}, \dots, \epsilon_{t-q}, $ and $\epsilon_{t-k}, \epsilon_{t-k -1}, \epsilon_{t-k -2}, \dots, \epsilon_{t - k -q}$ 
+Follow MA(q), $y_t$ includes $(c, \epsilon_t, \epsilon_{t-1}, \epsilon_{t-2}, \dots, \epsilon_{t-q})$, and $y_{t-k}$ includes $(c, \epsilon_{t-k}, \epsilon_{t-k -1}, \epsilon_{t-k -2}, \dots, \epsilon_{t - k -q})$. When they are multiplied together, there will be 
 
 $$
-t - q > t - k
+\begin{aligned}
+\text{constant} &: c^2 \rightarrow E(c^2) = c^2 \\
+\text{cross terms} &: \epsilon_i\epsilon_j, i \not= j \rightarrow E(\epsilon_i\epsilon_j) = 0 \\
+\text{square terms} &: \epsilon_i^2 \rightarrow E(\epsilon_i^2) = \text{Var}(\epsilon_i) + \text{E}(\epsilon_i)^2 = \sigma^2 > 0
+\end{aligned}
+$$
+Now everything is clear, ACF will zero, if and only if there is no single square term. That is to say, 
+there is no **same** error term when we decompose $y_t$ and $y_{t-k}$. This means the earliest error in the RHD of $y_t$ is still earlier than the latest error term in that of $y_{t-k}$ 
+
+$$
+t - q > t - k \quad \rightarrow k > q 
 $$
 
-When $k > q$, ACF will be generally inside 
+We have proved that when $k > q$, ACF would be zero and otherwise non-zero. So, a sample ACF with significant autocorrelations at lag 1 to lag q, but non-significant autocorrelations for after q indicates a possible MA(q) model.
 
+### Invertibility 
 
+It is possible to write any stationary AR(p) model as an MA($\infty$) model. For example, using repeated substitution, we can demonstrate this for an AR(1) model:  
+
+$$
+\begin{split}
+y_t &=  c + \phi_1y_{t-1} + \epsilon_t  \\
+    &=  c +  \phi_1(c + \phi_1y_{t-2} + \epsilon_{t-1}) + \epsilon_t  \\
+    &= (c + \phi_1c)+ \phi_1^2y_{t-2} + \phi_1\epsilon_{t-1} +  + \epsilon_t \\
+    &= (c+ \phi_1c + \phi_1^2c) + \phi_1^3y_{t-3} + \phi_1^2\epsilon_{t-2} + \phi_1\epsilon_{t-1} + \epsilon_t \\ 
+    &=\vdots \\
+    &= (c + \phi_1c + \phi_1^2c + \cdots + \phi_1^kc) + \phi_1^ky_{t-k} + \phi_1^{k-1}\epsilon_{t-(k-1)} + \dots + \phi_1\epsilon_{t-1} + \epsilon_t 
+\end{split}
+$$
 
 ## Non-seasonal ARIMA models  
 
