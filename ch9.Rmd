@@ -378,9 +378,9 @@ y_t = (c + \theta_1c + \theta_1^2c + \cdots) + (\theta_1y_{t-1} + \theta_1^2y_{t
 $$
 With $|\theta_1| < 1$, $(c + \theta_1c + \theta_1^2c + \cdots)$ will converge to a constant and the equation qualifies for a AR($\infty$) model. Thus, when $|\theta_1| < 1$ the MA model is **invertible**. (From another perspective, if $|\theta_1| > 1$ $\phi_1, ... ,\phi_p$ in MA($\infty$) model will not met stationary conditions)
 
+## ARMA models
 
-
-## ARMA models 
+## ARIMA models 
 
 
 If we combine differencing with autoregression and a moving average model, we obtain a non-seasonal ARIMA model. ARIMA is an acronym for **A**uto**R**egressive **I**ntegrated **M**oving **A**verage (in this context, “integration” is the reverse of differencing). The full model can be written as   
