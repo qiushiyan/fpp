@@ -387,40 +387,7 @@ a10 %>% ACF(cost, lag_max = 48) %>% autoplot()
 a10 %>% autoplot()
 ```
 
-## White noise  {#white-noise}
 
-A time series is (discrete) white noise if its values are: 
-
-1. independent
-2. identically distributed with a mean of zero  
-
-Using time series terms, a white noise should have mean 0, no autocorrelation and no seasonality.  
-
-We often assume a more stringent form of white noise, that is **Gaussian white noise**:  
-
-$$
-
-\epsilon_t \stackrel{iid}{\sim} N(0, \sigma^2)
-$$
-
-
-```{r, fig.show = "hold", out.width = "50%", fig.align = "default"}
-# stimulate Guassian and other white nosie
-set.seed(2020)
-y <- tsibble(sample = 1:50, wn = rnorm(50), index = sample)
-z <- tsibble(sample = 1:50, 
-             wn = 2 * rbinom(50, size = 1, prob = 0.5) -1 , 
-             index = sample)
-
-y %>% 
-  autoplot() + 
-  ggtitle("Gaussian white noise")
-
-
-z %>% 
-  autoplot() + 
-  ggtitle("Other white noise")
-```
 
 Let's check with autocorrelation :  
 
@@ -437,5 +404,11 @@ p1 + p2 + p3 + p4
 
 In this example, $T = 50$ and so the bounds are at $±2/\sqrt{50} = \pm 0.28$. All of the autocorrelation coefficients lie within these limits, confirming that the data are white noise.    
 
+## Calendar plots
 
+```{r}
+# remotes::install_github("earowang/sugrrants")
+library(sugrrants)
+```
 
+## TSstudio

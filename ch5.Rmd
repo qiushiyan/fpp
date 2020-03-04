@@ -277,7 +277,7 @@ augment(beer_fit)
 A good forecasting method will yield residuals with the following properties:  
 
 1. The residuals are **uncorrelated.** If there are correlations between residuals, then there is information left in the residuals which should be used in computing forecasts.  
-2. The residuals have **zero mean**(i.e., $E(e) = 0$. If the residuals have a mean other than zero, then the forecasts are biased.  
+2. The residuals have **zero mean**(i.e., $E(e_t) = 0$. If the residuals have a mean other than zero, then the forecasts are biased.  
 
 Any forecasting method that does not satisfy these properties can be improved. However, that does not mean that forecasting methods that satisfy these properties cannot be improved. It is possible to have several different forecasting methods for the same data set, all of which satisfy these properties. Checking these properties is important in order to see whether a method is using all of the available information, but it is not a good way to select a forecasting method.
 
@@ -290,6 +290,41 @@ In addition to these essential properties, it is useful (but not necessary) for 
 > 4. The residuals are **normally distributed**.
 
 These two properties make the calculation of prediction intervals easier (see Section 5.5 for an example). However, a forecasting method that does not satisfy these properties cannot necessarily be improved. Sometimes applying a Box-Cox transformation may assist with these properties, but otherwise there is usually little that you can do to ensure that your residuals have constant variance and a normal distribution. Instead, an alternative approach to obtaining prediction intervals is necessary. Again, we will not address how to do this until later in the book.  
+
+### White noise
+
+A time series is (discrete) white noise if its values are: 
+
+1. independent
+2. identically distributed with a mean of zero  
+
+Using time series terms, a white noise should have mean 0, no autocorrelation and no seasonality.  
+
+We often assume a more stringent form of white noise, that is **Gaussian white noise**:  
+
+$$
+
+\epsilon_t \stackrel{iid}{\sim} N(0, \sigma^2)
+$$
+
+
+```{r, fig.show = "hold", out.width = "50%", fig.align = "default"}
+# stimulate Guassian and other white nosie
+set.seed(2020)
+y <- tsibble(sample = 1:50, wn = rnorm(50), index = sample)
+z <- tsibble(sample = 1:50, 
+             wn = 2 * rbinom(50, size = 1, prob = 0.5) -1 , 
+             index = sample)
+
+y %>% 
+  autoplot() + 
+  ggtitle("Gaussian white noise")
+
+
+z %>% 
+  autoplot() + 
+  ggtitle("Other white noise")
+```
 
 ### Example: Forecasting the Google daily closing stock price  
 
