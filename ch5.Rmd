@@ -1,3 +1,24 @@
+```{r include=FALSE, cache=FALSE}
+set.seed(1112)
+options(digits = 3)
+
+
+
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  out.width = "90%",
+  fig.width = 6,
+  fig.asp = 0.618,  # 1 / phi
+  fig.align = "center",
+  message = F,
+  warning = F
+)
+
+library(tidyverse)
+
+options(dplyr.print_min = 6, dplyr.print_max = 6)
+```
 
 # The forecaster's toolbox   
 
@@ -7,6 +28,7 @@ library(tsibbledata)
 library(fable)
 library(feasts)
 library(lubridate)
+library(patchwork)
 ```
 
 
@@ -303,7 +325,6 @@ Using time series terms, a white noise should have mean 0, no autocorrelation an
 We often assume a more stringent form of white noise, that is **Gaussian white noise**:  
 
 $$
-
 \epsilon_t \stackrel{iid}{\sim} N(0, \sigma^2)
 $$
 
@@ -357,8 +378,9 @@ The following graph shows the Google daily closing stock price for trading days 
 
 ```{r}
 google_2015 %>% autoplot(Close) +
-  xlab("Day") + ylab("Closing Price (US$)") +
-  ggtitle("Google Stock in 2015")
+  labs(x = "Day",
+       y = "Closing Price (US$)",
+       title = "Google Stock in 2015")
 ```
 
 
@@ -407,9 +429,16 @@ aug %>%
 
 Some useful functions for general diagonisis from the [performance](https://easystats.github.io/performance/) are mentioned in Section \@ref(the-performance-package)
 
-### Portmanteau tests for autocorrelation
+### Portmanteau tests for autocorrelation  
 
-In order to overcome this problem, we test whether the first h autocorrelations are significantly different from what would be expected from a white noise process. A test for a group of autocorrelations is called a **portmanteau test**, from a French word describing a suitcase containing a number of items.  
+In order to evaluate estimated time series models, it is important to know
+whether the residuals of the model really have the properties of a white noise, in particular, whether they are uncorrelated. Thus, the null hypothesis to be tested is
+
+$$
+H_0 : r_k = 0, k = 1, 2, ...
+$$
+
+In order to build formal statistical tests to overcome undue reliance on ACF plots, we test whether the first $h$ autocorrelations are significantly different from what would be expected from a white noise process. A test for a group of autocorrelations is called a **portmanteau test**, from a French word describing a suitcase containing a number of items.  
 
 One such test is the **Box-Pierce** test, based on the following statistic:  
 
@@ -426,10 +455,10 @@ $$
 Q^* = T(T + 2)\sum_{k = 1}^{h}{(T-K)^{-1}}r_k^2
 $$
 
- If the autocorrelations did come from a white noise series, then both $Q$ and $Q^*$ follows a  distribution of $\chi^2_{h - K}$ where $K$ is the number of parameters in the model. For naive model where there is no parameter to estimate, we simply set $K = 0$.  
+If the autocorrelations did come from a white noise series, then both $Q$ and $Q^*$ follows a  distribution of $\chi^2_{h - K}$ where $K$ is the number of parameters in the model. For naive model where there is no parameter to estimate, we simply set $K = 0$.  
 
 ```{r}
-# lag = h and fitdf = K
+# lag = h and dof = K
 aug %>% features(.resid, box_pierce, lag = 10, dof = 0)
 
 aug %>% features(.resid, ljung_box, lag = 10, dof = 0)
@@ -437,6 +466,7 @@ aug %>% features(.resid, ljung_box, lag = 10, dof = 0)
 
 For both $Q$ and $Q^∗$, the results are not significant. Thus, we can conclude that the residuals are not distinguishable from a white noise series.  
 
+To see details of these tests, see Section \@ref(ch9-white-noise)
 
 ## Prediction intervals {#predict-interval}
 
@@ -705,7 +735,7 @@ knitr::include_graphics("images/cv_multi.png")
 google_2015 %>%
   slice(1:7) %>% 
   stretch_tsibble(.init = 3, .step = 1) %>%  # initial window size = 3, incremental step = 1
-  as_data_frame()
+  as_tibble()
 ```
 
 
