@@ -389,26 +389,106 @@ a10 %>% autoplot()
 
 
 
-Let's check with autocorrelation :  
 
-```{r, fig.height = 8, fig.width = 7.5}
-p1 <- y %>% gg_lag(geom = "point") + ggtitle("Lag plot forGaussian white noise")
-p2 <- y %>% ACF() %>% autoplot() + ggtitle("ACF plot for Gaussian white noise")
-p3 <- z %>% gg_lag(geom = "point") + ggtitle("Lag plot for Other white noise")
-p4 <- z %>% ACF() %>% autoplot() + ggtitle("ACF plot Other white noise")
 
-p1 + p2 + p3 + p4 
-```
 
-**For white noise series, we expect each autocorrelation to be close to zero.** Of course, they will not be exactly equal to zero as there is some random variation. For a white noise series, we expect $95%$ of the spikes in the `ACF` to lie within $±2/\sqrt{T}$ where $T$  is the length of the time series. It is common to plot these bounds on a graph of the `ACF` (the blue dashed lines above). If one or more large spikes are outside these bounds, or if substantially more than 5% of spikes are outside these bounds, then the series is probably not white noise.
-
-In this example, $T = 50$ and so the bounds are at $±2/\sqrt{50} = \pm 0.28$. All of the autocorrelation coefficients lie within these limits, confirming that the data are white noise.    
 
 ## Calendar plots
+
+
+
+
+Calendar-based graphics arranges the values according to the corresponding dates into a calendar layout, which is comprised of weekdays in columns and weeks of a month in rows for a common monthly calendar. In `sugrrants` the built-in calendars include monthly, weekly, and daily types for the purpose of comparison between different temporal components. 
 
 ```{r}
 # remotes::install_github("earowang/sugrrants")
 library(sugrrants)
 ```
 
-## TSstudio
+`facet_calender()` lay out panels in a calendar format, and a monthly calendar is set up as a 5 by 7 layout matrix
+
+```{r, fig.height = 10, fig.width = 11, out.width = "100%"}
+hourly_peds %>%
+  filter(Date < ymd("2016-04-01")) %>% 
+  ggplot(aes(x = Time, y = Hourly_Counts, colour = Sensor_Name)) +
+  geom_line() +
+  facet_calendar(~ Date) + # a variable contains dates
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+
+
+In contrast,  `frame_calendar()` display calendar plot not by facetting, but by computing a more compact calendar grids as a data frame or a tibble according to its data input, and `ggplot2` takes care of the plotting as you usually do with a data frame. This is a faster, more flexible alternative.    
+
+Note `center` is just a normal tibble:  
+
+```{r}
+# sensor only–Melbourne Convention Exhibition Centre
+center <- hourly_peds %>% 
+  filter(Year == "2017", Sensor_Name == "Melbourne Convention Exhibition Centre")
+
+center
+```
+
+The first argument in `frame_calendar()`is the `data` so that the data frame can directly be piped into the function using `%>%`. `x` is a variable indicating time of day could be, `y` a value variable, `date` a Date variable to organise the data into a correct chronological order
+
+In `center`, we have 24 `Hourly_Counts` observations per day, with the day indicated by `Date`, and time in that day by `Time`, $\text{Time} = 1, 2, \dots, 24$. So `x = Time`, `y = Hourly_Counts`, `date = Date`. We also use calendar = `"monthly"` to specify a calendar type, this could also be "weekly" or "daily" 
+
+```{r}
+center_calendar <- center %>%
+  frame_calendar(x = Time, y = Hourly_Counts, date = Date, calendar = "monthly")
+```
+
+This generates two new columns `.x` and `.y`, in this case `.Time` and `.Hourly_Counts`. This two columns together give new corrdinates computed for different types of calenders. `date` groups the same dates in a chronical order which is useful `geom_line()` and `geom_path()`. The basic use is `ggplot(aes(x = .x, y = .y, group = date)) + geom_*`
+
+```{r}
+p1 <- center_calendar %>% 
+  ggplot(aes(x = .Time, y = .Hourly_Counts, group = Date)) +
+  geom_line()
+
+p1
+```
+
+
+`prettify()` can be used to make the former plot more informative. It takes a `ggplot` object and gives sensible breaks and labels. It can be noted that the calendar-based graphic depicts time of day, day of week, and other calendar effects like public holiday in a clear manner.  
+
+```{r}
+prettify(p1)
+```
+
+
+It’s not necessarily working with lines but other geoms too. And `y` can take multiple variable names in combination with `vars()`. The rectangular glyphs arranged on a “weekly” calendar are plotted to illustrate the usage of the multiple ys and the differences between sensors. 
+
+```{r, fig.height = 6, fig.width = 8}
+two_sensors_wide <- hourly_peds %>%
+  filter(year(Date) == "2017", Sensor_Name %in% c("Lonsdale St (South)", "Melbourne Convention Exhibition Centre")) %>%
+  select(-Sensor_ID) %>% 
+  pivot_wider(names_from = Sensor_Name, values_from = "Hourly_Counts") %>% 
+   rename(
+    Lonsdale = `Lonsdale St (South)`,
+    Centre = `Melbourne Convention Exhibition Centre`
+  ) %>%
+  mutate(
+    diff = Centre - Lonsdale,
+    more = if_else(diff > 0, "Centre", "Lonsdale")
+  )
+
+p2 <- two_sensors_wide %>% 
+  frame_calendar(x = Time, y = vars(Lonsdale, Centre), 
+                 date = Date, calendar = "weekly") %>% 
+  ggplot(aes(.Time, group = Date)) + 
+  geom_rect(aes(
+    xmin = .Time, xmax = .Time + 0.005,
+    ymin = .Lonsdale, ymax = .Centre, fill = more
+  )) + 
+  scale_fill_manual(name = "Which sensor spotted more pedestrians?",
+                    values = c("#798234", "#d0587e")) + 
+  theme_minimal() + 
+  theme(legend.position = "top")  
+  
+
+prettify(p2)
+```
+
+More information in [Package vignette](https://pkg.earo.me/sugrrants/articles/frame-calendar.html)

@@ -293,7 +293,7 @@ These two properties make the calculation of prediction intervals easier (see Se
 
 ### White noise
 
-A time series is (discrete) white noise if its values are: 
+A time series is (discrete) white noise if its values are (see mathematical definition in Section \@ref(ch9-white-noise)): 
 
 1. independent
 2. identically distributed with a mean of zero  
@@ -326,6 +326,25 @@ z %>%
   ggtitle("Other white noise")
 ```
 
+Let's check the autocorrelation of a white noise:  
+
+```{r, fig.height = 8, fig.width = 7.5}
+p1 <- y %>% gg_lag(geom = "point") + ggtitle("Lag plot forGaussian white noise")
+p2 <- y %>% ACF() %>% autoplot() + ggtitle("ACF plot for Gaussian white noise")
+p3 <- z %>% gg_lag(geom = "point") + ggtitle("Lag plot for Other white noise")
+p4 <- z %>% ACF() %>% autoplot() + ggtitle("ACF plot Other white noise")
+
+p1 + p2 + p3 + p4 
+```
+
+Since white noise are uncoorelated, we expect each autocorrelation coefficient of any order to be close to zero. Of course, they will not be exactly equal to zero as there is some random variation. For a white noise series, we expect $95%$ of the spikes in the `ACF` plot to lie within $±2/\sqrt{T}$ where $T$  is the length of the time series. It is common to plot these bounds on a graph of the `ACF` (the blue dashed lines above). If one or more large spikes are outside these bounds, or if substantially more than $5\%$ of spikes are outside these bounds, then the series is probably not white noise.
+
+In this example, $T = 50$ and so the bounds are at $±2/\sqrt{50} = \pm 0.28$. All of the autocorrelation coefficients lie within these limits, confirming that the data are white noise.    
+
+Why white noise matters? Researchers generally assume that white noise is not predictable, and contains no information related to the respose of interest. It follows that we would expect that residuals computed according to a specific model to be white noise. This means the valuable part of model extract information from the data to such an extent that we do not care what's left.   
+
+If residuals $\epsilon_1, \epsilon_2, \dots, \epsilon_t$ violates any of the rules of white noise, then there is still valuable information buried under the resiuals, which we will imporve our models to capture. We have not a 'best' model at hand until residuals become unpredictable, in other words, white noise.  
+
 ### Example: Forecasting the Google daily closing stock price  
 
 We will continue with the Google daily closing stock price example from the previous chapter. For stock market prices and indexes, the best forecasting method is often the naïve method. That is, each forecast is simply equal to the last observed value, or $\hat{y}_t = y_{t−1}$. Hence, the residuals are simply equal to the difference between consecutive observations:   
@@ -343,15 +362,26 @@ google_2015 %>% autoplot(Close) +
 ```
 
 
-```{r}
-aug <- google_2015 %>% model(NAIVE(Close)) %>% augment()
-aug %>% autoplot(.resid) + xlab("Day") + ylab("") +
-  ggtitle("Residuals from naïve method")
+Remeber what an ideal set of residuals shoule be like: they should have mean 0 and constant variance, and behave uncorrelated. In most cases we also want residuals to be normally distributed:
 
+```{r}
+aug <- google_2015 %>% 
+  model(NAIVE(Close)) %>% 
+  augment()
+
+# mean, variance
+aug %>% 
+  autoplot(.resid) + 
+  labs(title = "Residuals from naïve method",
+       x = "Day",
+       y = "")
+
+# distribution
 aug %>% 
   ggplot() + 
   geom_histogram(aes(.resid))
 
+# correlation
 aug %>% 
   ACF(.resid) %>%
   autoplot()
@@ -374,9 +404,10 @@ aug %>%
   stat_qq_line()
 ```
 
+
+Some useful functions for general diagonisis from the [performance](https://easystats.github.io/performance/) are mentioned in Section \@ref(the-performance-package)
+
 ### Portmanteau tests for autocorrelation
-
-
 
 In order to overcome this problem, we test whether the first h autocorrelations are significantly different from what would be expected from a white noise process. A test for a group of autocorrelations is called a **portmanteau test**, from a French word describing a suitcase containing a number of items.  
 

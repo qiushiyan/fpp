@@ -14,13 +14,43 @@ library(slider)
 
 ## Stationarity and differencing  
 
-3 rules 
+Given a stochastic process (a data generating process), $y_1, y_2, \dots, y_T$, the real numbers called time series $y_1^{(1)}, y_2^{(1)}, \cdots, y_T^{(1)}$ is just an set of observed value, or a realization of the process.It is obvious, however, that there
+is not just one realisation of such a process, but, in principle, an arbitrary
+number of realisations which all have the same statistical properties as they
+all result from the same data generating process. 
 
-1. Constant Mean (local compared to global)
-2. Constant variance  (local compared to global)
-3. No seasonality  
+In the following, a time series is considered as one realisation of the underlying stochastic process. We can also regard the stochastic process as the entirety of all of its possible realisations. To make the notation as simple as possible, we will not distinguish between the process itself and itsrealisation. This can be taken out of the context.
 
-Don't confuse stationarity with **white noise**. In particular, white noise can be considered a special, unpredictable case of stationary time series. It has **zero mean**, constant variance and no seasonality. White noise are often used as a measure against which we test our models. If residuals $\epsilon_1, \epsilon_2, \dots, \epsilon_t$ violates any of the rules of white noise, then there is still valuable information buried under the resiuals, which we will imporve our models to capture. We have not a 'best' model at hand until residuals become unpredictable, in other words, white noise.  
+We can define a **strict-sense** stationarity of a time series to be :
+
+$$
+\begin{aligned}
+F_Y(y_{t_1+\alpha}, y_{t_2+\alpha}, \dots, y_{t_n+\alpha}) = F_Y(y_{t_1+}, y_{t_2}, \dots, y_{t_n})
+\end{aligned}
+$$
+Where $F_Y(*)$ stands for the multivariate distribution of a specific window of that time series. This basically means the distribution stays the same stays same when you pick a window on that time series and then make a shift $\alpha$.In the most intuitive sense, stationarity means that the statistical properties of a process generating a time series do not change over time.  
+
+However, strict-sense stationarity are rarely practical or helpful in most cases. For this reason we place more emphasis on **weak** or **wide-sense stationarity**. A stochastic process is weak stationary if $\forall k$ we have:
+
+$$
+\begin{aligned}
+\text{mean stationarity}: \text{E}(y_t) &= \mu_t  = \mu\\
+\text{variance stationarity}:\text{Var}(y_t) &= \sigma_t^2 = \sigma^2  \\
+\text{covariance stationarity}: \text{Cov}(y_t, y_s) &= \text{E}(y_t - \mu)(y_s - \mu) = f(|s-t|)
+\end{aligned}
+$$
+
+(covariance stationarity means that covariance is only a function of the distance $|s-t|$, but not related to point $t$).  
+
+Because we only assume this kind of stationarity in the following, we will mostly drop the adjective weak.
+
+As variance stationarity immediately results from covariance stationarity for $s = t$, a stochastic process is weakly stationary when it is mean and covariance stationary.
+
+We can also refer to a time series to be stationary if the underlying stochastic process is stationary. So for a stationary time series, what do we expect to see?
+
+1. No trend (constant mean, local compared to global)
+2. No sharp rise and fall  (constant variance, local compared to global)
+3. No seasonality (if autocorrelation appears significant different at lag $k$ than others, then covariance will be related to $t$)  
 
 ```{r, fig.height = 8, fig.width = 7}
 PBS %>%
@@ -42,11 +72,20 @@ PBS %>%
 ```
 
 
-https://towardsdatascience.com/stationarity-in-time-series-analysis-90c94f27322
 
-Why does stationarity matter ?  
+[Why does stationarity matter](https://towardsdatascience.com/stationarity-in-time-series-analysis-90c94f27322) 
 
-In the most intuitive sense, stationarity means that the statistical properties of a process generating a time series do not change over time.
+Why is this important? First, because stationary processes are easier to analyze. Without a formal definition for processes generating time series data, it is already clear that stationary processes are a sub-class of a wider family of possible models of reality. This sub-class is much easier to model and investigate. The above informal definition also hints that such processes should be possible to predict, as the way they change is predictable.
+
+Although it sounds a bit streetlight effect-ish that simpler theories or models should become more prominent, it is actually quite a common pattern in science, and for good reason. In many cases simple models can be surprisingly useful, either as building blocks in constructing more elaborate ones, or as helpful approximations to complex phenomena. As it turns out, this also true for stationary processes.
+
+Due to these properties, stationarity has become a common assumption for many practices and tools in time series analysis. These include trend estimation, forecasting and causal inference, among others. 
+
+### White noise {#ch9-white}
+
+White noise is first introduced in Section \@ref(white-noise). As it turns out, the stochastic process behind a white noise is called a **pure** random process or simply white noise process. Such a process satisfies $\text{E}(y_t) = 0$, $\text{Var}(y_t) = \sigma^2$ and $\forall t \not=s, \text{Cov}(y_t, y_s) = 0$. 
+
+Apparently, white noise is generated by a special case of stationary process. Notably it should have contant mean 0, constant variance $\sigma^2$ and no autocorrelation.  
 
 ## Backshift notation  
 
@@ -199,27 +238,36 @@ knitr::include_graphics(c("images/AR_1.png", "images/AR_2.png"))
 Random walk is a special case of autoregressive process, namely AR(1). A time series is a random walk if 
 
 $$
-y_t = y_{t-1} + \epsilon_t \\
-\epsilon_t \;\text{is white noise}
+y_t = 
+\begin{cases}
+\epsilon_1 &t = 1 \\
+y_{t - 1} + \epsilon_t& t = 2, 3, \dots 
+\end{cases}
+$$
+where $\epsilon_t$ comes from a white noise process. It can also be expressed in the following form: 
+
+$$
+y_t = \sum_{i=1}^{t}{\epsilon_t}
 $$
 
-We often set a initial, fixed state $y_0 = 0$ at the beginning of white noise. And the following apply to random walks (with a fixed $y_1$)
+According to this, we also have (covariance can be viewed as autocorrelation in this sense)
 
 $$
-\text{mean}:  \text{E}(\epsilon_t) = 0 \\
+\text{mean}:  \text{E}(y_t) = 0 \\
+\text{variance}: \text{Var}(y_t) = t\sigma^2 \\
 \text{ACF}: r_k(t) = \frac{t\sigma^2}{\sqrt{t\sigma^2(t+k)\sigma^2}}
 $$
 
-Note that a random walk process has its ACF both related to $k$ and $t$, meaning that it is not a white noise. 
+Note that a random walk process has changable variance and a ACF not only related to the distance, meaning that it is not a white noise. In other words, it does not satisfy variance stationarity and covariance stationarity. This non-stationary process is often suitable fro describing economic phenomenon.
 
-Random walk can be extende by adding a **drift** $\mu$, which would be the new expectation of the process. Random walk with a drift (also called a *biased random walk*) is the process behind a drift model 
+Random walk can be extended by adding a **drift** $\mu$, which would be the new expectation of the process. Random walk with a drift (also called a *biased random walk*) is the process behind a drift model 
 
 $$
 \begin{split}
 y_t &= \mu + y_{t-1} + \epsilon_t \\ 
     &= \mu + \mu + y_{t-2} + \epsilon_t + \epsilon_{t-1}\\ 
     \vdots \\
-    &= \mu t + y_0 + \sum_{i=1}^{t}\epsilon_i 
+    &=  t\mu + \sum_{i=1}^{t}\epsilon_i 
 \end{split}
 $$
 

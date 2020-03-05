@@ -1,25 +1,3 @@
-```{r include=FALSE, cache=FALSE}
-set.seed(1112)
-options(digits = 3)
-
-
-
-knitr::opts_chunk$set(
-  comment = "#>",
-  collapse = TRUE,
-  out.width = "80%",
-  fig.width = 6,
-  fig.asp = 0.618,  # 1 / phi
-  fig.align = "center",
-  message = F,
-  warning = F
-)
-
-library(tidyverse)
-
-options(dplyr.print_min = 6, dplyr.print_max = 6)
-```
-
 # Time series regression models  
 
 ```{r}
@@ -107,7 +85,7 @@ us_change %>%
 y_t = \beta_0 + \beta_1x_{1t} + \beta_2x_{2t} + \dots + \beta_kx_{kt} + \epsilon_t
 \end{equation}
 
-We could simply use more predictors in `us_change` to create a multiple linear regression model. This time, the last 4 columns are included in the model. Take a look at the rest 3 time seires determined by `Production`, `Savings` and `Unemployment`  
+We could simply use more predictors in `us_change` to create a multiple linear regression model. This time, the last 4 columns are included in the model. Take a look at the rest 3 time series determined by `Production`, `Savings` and `Unemployment`  
 
 ```{r}
 us_change %>% 
@@ -337,9 +315,21 @@ us_change_lm <- lm(Consumption ~ Income + Production + Savings + Unemployment,
 us_change_lm %>% car::influenceIndexPlot()
 ```
 
+
+### The `performance` package  
+
+The [performance](https://easystats.github.io/performance/) package is dedicated to  providing utilities for computing indices of model quality and goodness of fit. In the case of regression, `performance` provides many functions to check model assumptions, like `check_collinearity()`, `check_normality()` or `check_heteroscedasticity()`. To get a comprehensive check, use `check_model()`  
+
+```{r, fig.height = 8, fig.width = 9}
+library(performance)
+check_model(us_change_lm)
+```
+
+
+
 ### Spurious regression  
 
-More often than not, time series data are “non-stationary”; that is, the values of the time series do not fluctuate around a constant mean or with a constant variance. We will deal with time series stationarity in more detail in Chapter \@ref(arima-models), but here we need to address the effect that non-stationary data can have on regression models.   
+More often than not, time series data are “non-stationary”; that is, the values of the time series do not fluctuate around a constant mean or with a constant variance. We will come to the formal definition of stationarity in more detail in Section \@ref(stationarity-and-differencing), but here we need to address the effect that non-stationary data can have on regression models.   
 
 For example, consider the two variables plotted in below. These appear to be related simply because they both trend upwards in the same manner. However, air passenger traffic in Australia has nothing to do with rice production in Guinea.  
 
@@ -517,11 +507,11 @@ and so on. If we have monthly seasonality, and we use the first 11 of these pred
 
 With Fourier terms, we often need fewer predictors than with dummy variables, especially when m is large. This makes them useful for weekly data, for example, where $m \approx 52$. For short seasonal periods (e.g., quarterly data), there is little advantage in using Fourier terms over seasonal dummy variables.  
 
-These Fourier terms are produced using the `fourier(k)` function. The `K` argument specifies the maximum order of Fourier terms (i.e., how many pairs of $\sin$ and $\cos$ terms to include). For example, the Australian beer data (quarterly, should include 3 terms so `K = 2`) can be modelled like this.     
+These Fourier terms are produced using the `fourier(K)` function. The `K` argument specifies the maximum order of Fourier terms (i.e., how many pairs of $\sin$ and $\cos$ terms to include). For example, the Australian beer data (quarterly, should include 3 terms so `K = 2`) can be modelled like this.     
 
 ```{r}
 fourier_beer <- recent_production %>%
-  model(TSLM(Beer ~ trend() + fourier(K=2)))
+  model(TSLM(Beer ~ trend() + fourier(K = 2)))
 
 fourier_beer %>% report()
 ```
