@@ -18,6 +18,7 @@ rmd_files: [
   "ch6.Rmd",
   "ch7.Rmd",
   "ch8.Rmd",
+  "stationary.Rmd",
   "ch9.Rmd",
   "ch10.Rmd",
   
