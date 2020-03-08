@@ -13,6 +13,7 @@ library(feasts)
 library(lubridate)
 library(pins)
 library(slider)
+library(patchwork)
 ```
 
 ## Stationarity and differencing  
@@ -337,10 +338,60 @@ B &= 2
 $$
 This model is indeed stationary because $|B| > 1$. From this we can also derive $|\phi_1| < 1$ for AR(1) model.  
 
+### Stimulating an AR(p) process 
 
- 
+```{r}
+set.seed(2020)
+# specification for AR(1) model with small coef
+AR_small_spec <- list(order = c(1, 0, 0), ar = 0.1, sd = 0.1)
+# specification for AR(1) model with large coef
+AR_large_spec <- list(order = c(1, 0, 0), ar = 0.9, sd = 0.1)
+## simulate AR(1)
+AR1_small <- arima.sim(n = 50, model = AR_small_spec) %>% as_tsibble()
+AR1_large <- arima.sim(n = 50, model = AR_large_spec) %>% as_tsibble()
 
-### Decision of order
+wrap_plots(
+  autoplot(AR1_small) + ggtitle(expression(paste(phi, " = 0.1"))),
+  autoplot(AR1_large) + ggtitle(expression(paste(phi, " = 0.9"))),
+  ACF(AR1_small) %>% autoplot() + ggtitle(expression(paste(phi, " = 0.1"))),
+  ACF(AR1_large) %>% autoplot() + ggtitle(expression(paste(phi, " = 0.9")))
+)
+```
+
+It looks like the time series with the smaller AR coefficient is more “choppy” and seems to stay closer to 0 whereas the time series with the larger AR coefficient appears to wander around more. Remember that as the coefficient in an AR(1) model goes to 0, the model approaches a WN sequence, which is stationary in both the mean and variance. As the coefficient goes to 1, however, the model approaches a random walk (\@ref(random-walk)), which is not stationary in either the mean or covariance.  
+
+Next, let’s generate two AR(1) models that have the same magnitude coeficient, but opposite signs, and compare their behavior.
+
+```{r}
+set.seed(2020)
+# specification for AR(1) model with positive coef
+AR_pos_spec <- list(order = c(1, 0, 0), ar = 0.5, sd = 0.1)
+# specification for AR(1) model with negative coef
+AR_neg_spec <- list(order = c(1, 0, 0), ar = -0.5, sd = 0.1)
+# simulate AR(1)
+AR1_pos <- arima.sim(n = 50, model = AR_pos_spec) %>% as_tsibble()
+AR1_neg <- arima.sim(n = 50, model = AR_neg_spec) %>% as_tsibble()
+
+wrap_plots(
+  autoplot(AR1_pos) + ggtitle(expression(paste(phi, " = 0.5"))),
+  autoplot(AR1_neg) + ggtitle(expression(paste(phi, " = -0.5"))),
+  ACF(AR1_pos) %>% autoplot() + ggtitle(expression(paste(phi, " = 0.5"))),
+  ACF(AR1_neg) %>% autoplot() + ggtitle(expression(paste(phi, " = -0.5")))
+)
+```
+
+
+Now it appears like both time series vary around the mean by about the same amount, but the model with the negative coefficient produces a much more “sawtooth” time series. It turns out that any AR(1) model with $−1 < \phi_1 < 0$ will exhibit the 2-point oscillation we see here.
+
+We can simulate higher order AR(p) models in the same manner, but care must be exercised when choosing a set of coefficients that result in a stationary model or else `arima.sim()` will fail and report an error. For example, an AR(2) model with both coefficients equal to 0.5 is not stationary, and therefore this function call will not work:  
+
+```{r, error = TRUE}
+arima.sim(n = 100, model = list(order(2, 0, 0), ar = c(0.5, 0.5)))
+```
+
+
+
+### Decision of order p 
 
 How do we decide the order $p $of a AR model? A rule of thumb is to look at **partial autocorrelation coefficients**, PACF. PACF measures the direct effect of a lagged value on its previous value. Suppose we want to measure the effect of $y_{t-2}$ on $y_{t}$, while $r_2$ could be high, it could also carry the effect of $y_{t-2} \rightarrow y_{t-1} \rightarrow y_t$, especially when $r_1$ is also high. This is when partial autocorrelation come to resuce, consider a AR(2) model (if we ignore any observation earlier than $y_{t-2}$, assuming that they are too distant to exert an effect)
 
@@ -373,9 +424,22 @@ fpp3::aus_airpassengers %>%
 
 Another characteristic of AR(p) is that ACF plots tails slowly.  
 
-```{r, echo = FALSE}
-knitr::include_graphics(c("images/AR_1.png", "images/AR_2.png"))
+```{r}
+# model with larger phi has longer tail 
+wrap_plots(
+  ACF(AR1_small) %>% autoplot() + ggtitle(expression(paste(phi, " = 0.1"))),
+  ACF(AR1_large) %>% autoplot() + ggtitle(expression(paste(phi, " = 0.9"))),
+  nrow = 2
+)
 ```
+
+Further illustration: the ACF for an AR(p) process tails off toward zero very slowly, but the PACF goes to zero for lags > $p$.
+
+```{r, echo = FALSE}
+knitr::include_graphics("images/AR_decision.png")
+```
+
+
 
 
 ### Random walk 
@@ -435,7 +499,7 @@ rw <- RW(500, 0, 1, 1) %>%
   enframe() %>% 
   as_tsibble(index = name)
 
-rw %>% autoplot()
+rw %>% autoplot() + geom_abline(slope = 1, intercept = 0, color = "red")
 rw %>% ACF() %>% autoplot()
 ```
 
@@ -449,7 +513,7 @@ rw %>% ACF() %>% autoplot()
 Rather than using past values of the forecast variable in a regression, a moving average model uses past forecast errors in a regression-like model ^[Many textbooks and software programs define the model with negative signs before the $\theta$ terms (R uses positive signs). This doesn’t change the general theoretical properties of the model, although it does flip the algebraic signs of estimated coefficient values and (unsquared) $\theta$ terms in formulas for ACFs and variances]. 
 
 $$
-y_t = \theta_1\epsilon_{t-1} + \theta_2\epsilon_{t-2} + \dots + \theta_q\epsilon_{t-q} + \epsilon_{t}
+y_t = c + \theta_1\epsilon_{t-1} + \theta_2\epsilon_{t-2} + \dots + \theta_q\epsilon_{t-q} + \epsilon_{t}
 $$
 
 where $\epsilon_t$ is white noise. We refer to this as a MA(q) model, a moving average model of order $q$. Of course, we do not observe the values of $\epsilon_t$, so it is not really a regression in the usual sense.
@@ -457,7 +521,7 @@ where $\epsilon_t$ is white noise. We refer to this as a MA(q) model, a moving a
 
 Notice that each value of $y_t$ can be thought of as a weighted moving average of the past few forecast errors. However, moving average models should not be confused with the moving average smoothing we discussed in Section \@ref(moving-averages). A moving average model is used for forecasting future values, while moving average smoothing is used for estimating the trend-cycle of past values.
 
-It is easy to show that a time series that does follow a MA model is **stationary**. A MA(1) process has the following properties 
+It is easy to show **MA(q) process is always stationary**. A MA(1) process has the following properties 
 
 $$
 \begin{aligned}
@@ -474,7 +538,7 @@ $$
 Proof for ACF :
 $$
 \begin{split}
-\text{ACF}(1) &= \frac{\text{Covariance for lag} 1}{\text{variance for lag}1} \\
+\frac{\gamma(1)}{\gamma(0)} &= \frac{\text{Covariance for lag} 1}{\text{variance for lag}1} \\
            &= \frac{E[(y_t - E(y_t))(y_{t-1} - E(y_{t-1}))]}{(1 + \theta_1^2)\sigma^2} \\ 
            &= \frac{E[(\epsilon_{t} + \theta_1\epsilon_{t-1})(\epsilon_{t-1} + \theta_1\epsilon_{t-2})]}{(1 + \theta_1^2)\sigma^2} \\
            &= \frac{E(\epsilon_t \epsilon_{t-1} + \theta_1\epsilon_t\epsilon_{t-2} + \theta_1 \epsilon_{t-1}^2 + \theta_1^2\epsilon_{t-1}\epsilon_{t-2})}{(1 + \theta_1^2)\sigma^2} \\
@@ -483,10 +547,37 @@ $$
            &= \frac{\theta_1}{1 + \theta_1^2}
 \end{split}
 $$
-For $\text{lag} > 1$, there will be no square term like $\epsilon_{t-k}^2$, but only cross terms like $\epsilon_t\epsilon_{t-k}$，whose expectation would be zero by defination, so that ACF will be zero.  
+For $\text{lag} > 1$, there will be no square term like $\epsilon_{t-k}^2$, but only cross terms like $\epsilon_t\epsilon_{t-k}$，whose expectation would be zero by defination, so that ACF will be zero, which leads to covariance stationarity.   
 
 
-### Decision of order
+
+
+###  Simulating an MA(q) process
+
+We can simulate MA(q) processes just as we did for AR(p) processes using `arima.sim()`. Here are 3 different ones with contrasting $\theta$: 
+
+```{r}
+set.seed(2020)
+## list description for MA(1) model with small coef
+MA_sm_spec <- list(order = c(0, 0, 1), ma = 0.2, sd = 0.1)
+## list description for MA(1) model with large coef
+MA_lg_spec <- list(order = c(0, 0, 1), ma = 0.8, sd = 0.1)
+## list description for MA(1) model with large coef
+MA_neg_spec <- list(order = c(0, 0, 1), ma = -0.5, sd = 0.1)
+## simulate MA(1)
+MA1_sm <- arima.sim(n = 50, model = MA_sm_spec) %>% as_tsibble()
+MA1_lg <- arima.sim(n = 50, model = MA_lg_spec) %>% as_tsibble()
+MA1_neg <- arima.sim(n = 50, model = MA_neg_spec) %>% as_tsibble()
+
+wrap_plots(
+  autoplot(MA1_sm) + ggtitle(expression(paste(theta, " = 0.2"))),
+  autoplot(MA1_lg) + ggtitle(expression(paste(theta, " = 0.8"))),
+  autoplot(MA1_neg) + ggtitle(expression(paste(theta, " = -0.5")))
+)
+```
+
+
+### Decision of order q 
 
 The derivation of the ACF function has shed light on how we would decide the order $q$. For a MA(2) process, ACF would be 0 for $k = 3, 4, \dots$. In general, for a MA(q) process, ACF will be nonzero for $k = 1, 2, \dots,q$ and zero after $q$.
 
@@ -520,6 +611,8 @@ k &> q
 $$
 
 Now that we have proved that when $k > q$, ACF would be zero and otherwise non-zero. So, a sample ACF with significant autocorrelations at lag 1 to lag q, but non-significant autocorrelations for after q indicates a possible MA(q) model(i.e., an ACF plot that cuts off at lag q).
+
+
 
 ### Koyck transformation and Invertibility 
 
