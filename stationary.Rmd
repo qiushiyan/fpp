@@ -527,9 +527,9 @@ $$
 \begin{aligned}
 \text{Constant mean}: \text{E}(y_t) &= c \\
 \text{Constant variance}:\text{Var}(y_t) &= (1 + \theta_1^2)\sigma^2 \\
-\text{No seasonality}:\text{ACF} &= 
+\text{No seasonality}:\text{ACF} = \gamma(k) &= 
 \begin{cases}
-\frac{\theta_1}{1 + \theta_1^2} & \text{lag} = 1\\  
+\frac{\theta_1}{1 + \theta_1^2} & k = 1\\  
 0 & \text{otherwise}
 \end{cases}
 \end{aligned}
@@ -613,6 +613,16 @@ $$
 Now that we have proved that when $k > q$, ACF would be zero and otherwise non-zero. So, a sample ACF with significant autocorrelations at lag 1 to lag q, but non-significant autocorrelations for after q indicates a possible MA(q) model(i.e., an ACF plot that cuts off at lag q).
 
 
+Another characteristic of a MA(q) process is that their PACF tails off toward zero very slowly, in contrast to AR(p) whose ACF plot has a long tail.  
+
+```{r, echo = FALSE}
+knitr::include_graphics("images/MA_decision.png")
+```
+
+```{r, echo = FALSE}
+knitr::include_graphics("images/AR_MA_decision.png")
+```
+
 
 ### Koyck transformation and Invertibility 
 
@@ -664,7 +674,34 @@ The rest is the same, $\frac{y_t - c}{1 - \theta_1B}$ can be considered as the i
 $$
 y_t = (c + \theta_1c + \theta_1^2c + \cdots) + (\theta_1y_{t-1} + \theta_1^2y_{t-2} + \cdots) + \epsilon_t
 $$
-With $|\theta_1| < 1$, $(c + \theta_1c + \theta_1^2c + \cdots)$ will converge to a constant and the equation qualifies for a AR($\infty$) model. Thus, when $|\theta_1| < 1$ the MA model is **invertible**. (From another perspective, if $|\theta_1| > 1$ $\phi_1, ... ,\phi_p$ in MA($\infty$) model will not met stationary conditions)
+With $|\theta_1| < 1$, $(c + \theta_1c + \theta_1^2c + \cdots)$ will converge to a constant and the equation qualifies for a AR($\infty$) model. Thus, when $|\theta_1| < 1$ the MA model is **invertible**. (From another perspective, if $|\theta_1| > 1$ $\phi_1, ... ,\phi_p$ in MA($\infty$) model will not met stationary conditions).   
+
+Although we no longer need to place constraints on MA models like we did on AR models since it is always stationary, we do hope that MA models are invertible, because only when an MA(q) process is invertible can it be **uniquely identified**. Consider, for example, the following case in which we know that for a MA(1) model $\gamma(1) = r_1$, and the way we would compute $\theta_1$: 
+
+$$
+\frac{\theta}{1 + \theta^2} = r_1 \\
+(1 + \theta^2)r_1 - \theta = 0 \\
+\theta^2 + \frac{1}{r_1}\theta + 1 = 0
+$$
+
+The equation has the following two roots:  
+
+$$
+\theta_{1,2} = -\frac{1}{2r}(1 \pm \sqrt{1 - 4r_1^2}) 
+$$
+
+Because $|r_1| = |\frac{\theta_1}{1 + \theta_1^2}| < 1/2$ the quadratic equation always results in real roots. They also have the property that $\theta_1\theta_2 = 1$ (Vieta theorem). This gives us the possibility to model the same autocorrelation structure with two different parameters, where one is the inverse of the other.  
+
+n order to get a unique parameterisation, we require a further property
+of the MA(1) process. We ask under which conditions the MA(1) process can have an autoregressive representation. And we already know that this is true when $|\theta| < 1$, and this condition also helps us to choose between $\theta_1$ and $\theta_2$, so that unique model is identified.  
+
+For higher order models, given $\gamma(1), \gamma(2), \dots, \gamma(q)$ (we already proved that when k > q $\gamma(k) = 0$), we would still have multiple solution set $\theta_1, \theta_2, \dots, \theta_q$. To get a unique parameterisation, the invertibility condition is again required, i.e. it must be possible to represent the MA(q) process as a stationary AR(p) process. The condition for order q, similar to AR(p), is that all roots of 
+
+$$
+1 + \theta_1L + \theta_2L^2 + \dots + \theta_qL^q = 0 
+$$
+
+are larger than one in absolute value.
 
 ## ARMA models  
 

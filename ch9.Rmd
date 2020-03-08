@@ -13,7 +13,7 @@ library(slider)
 ```
 
 
-## ARIMA models 
+## Non-seasonal ARIMA models 
 
 
 If we combine differencing with autoregression and a moving average model, we obtain a non-seasonal ARIMA model. ARIMA is an acronym for **A**uto**R**egressive **I**ntegrated **M**oving **A**verage (in this context, “integration” is the reverse of differencing). The full model can be written as   
@@ -71,3 +71,6 @@ This is an ARIMA(1,0,3) model:
 $$
 y_t = 0.307 + 0.589y_{t-1} - 0.352\epsilon_{t-1} + 0.085 \epsilon_{t-2} + 0.174 \epsilon_{t-3} + \epsilon_t
 $$
+
+## Estimation and order selection  
+
