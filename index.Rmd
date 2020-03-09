@@ -28,7 +28,7 @@ Other references include
 
 - an [online course](https://online.stat.psu.edu/stat510) offered by the Department of Statistics at PennState   
 
-Tidyverse is automatically loaded before each chapter.
+`tidyverse` is assumed to be loaded before each chapter.
 
 ```{r, eval = FALSE}
 library(tidyverse)

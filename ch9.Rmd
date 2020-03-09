@@ -12,6 +12,52 @@ library(pins)
 library(slider)
 ```
 
+## Differencing  
+
+All processes (AR, MA, ARMA) disscussed in Chapter \@ref(stationary) belong to a larger family called *linear stationary processes*. This means our models would normally be confined to a stataionry data-generating system.  
+
+By **differencing**, we compute the differences between consecutive observations, and this has been shown as a easy but effective way to make a non-stationary time series stationary. While transformations such as logarithms can help to stabilise the variance of a time series, differencing can help stabilise the mean of a time series by removing changes in the level of a time series, and therefore eliminating (or reducing) trend and seasonality.  
+
+Suppose there is a undelying linear trend behind the observed time series
+$$
+y_t = \beta_0 + \beta_1t + \epsilon_t  
+$$
+where $\epsilon_t$ is white noise. The first difference is defined as 
+
+$$
+\begin{split}
+y'_t &= y_t - y_{t-1} \\
+     &= (\beta_0 + \beta_1t + \epsilon_t) - [\beta_0 + \beta_1(t-1) + \epsilon_{t-1}] \\ 
+     &= \beta_1 + (\epsilon_t - \epsilon_{t-1})
+
+\end{split}
+$$
+
+Note that $y'_t$ satisfies all stationary conditions, $\text{E}(y'_t) =0$, $\text{Var}(y'_t) = 2\sigma^2$, $\text{Cov}(y'_t, y'_{t+k}) = 0$. So it can be modelled as previously discussed.  
+
+
+
+```{r, fig.height = 8, fig.width = 7}
+PBS %>%
+  filter(ATC2 == "H02") %>%
+  summarize(Cost = sum(Cost) / 1e6) %>%
+  transmute(
+     sales = Cost,
+     sales_log = log(Cost),
+     seasonal_difference = log(Cost) %>% difference(lag = 12),
+     double_difference = log(Cost) %>% difference(lag = 12) %>% difference(lag = 1)
+  ) %>% 
+  pivot_longer(-Month, names_to = "measure") %>% 
+  mutate(measure = fct_relevel(measure, 
+                               c("sales", 
+                                 "sales_log", 
+                                 "seasonal_difference", 
+                                 "double_difference"))) %>%
+  ggplot() + 
+  geom_line(aes(Month, value)) + 
+  facet_wrap(~ measure, ncol = 1, scales = "free_y") + 
+  labs(title = "Corticosteroid drug sales", x = "Year", y = NULL)
+```
 
 ## Non-seasonal ARIMA models 
 
@@ -23,7 +69,7 @@ If we combine differencing with autoregression and a moving average model, we ob
 y'_t =c + \phi_1y_{t-1} + \cdots + \phi_py_{t-p} + \theta_1\epsilon_{t-1} + \cdots \theta_q\epsilon_{t-q} + \epsilon_t  
 \end{equation}
 
-We call this an ARIMA(p,d,q) model, where 
+We call this an ARIMA(p, d, q) model, where 
 $$
 \begin{aligned}
 p &= \text{order of the autoregressive part} \\
@@ -45,7 +91,7 @@ $$
 (1 - \phi_1B - \cdots - \phi_pB^p)(1 - B)^dy_t = c + (1 + \theta_1B + \cdots + \theta_1B^q)\epsilon_t
 $$
 
-## Non-seasonal ARIMA models  
+## US consumption expenditure
 
 
 ```{r}
@@ -53,11 +99,14 @@ us_change <- read_csv(pin("https://otexts.com/fpp3/extrafiles/us_change.csv")) %
   mutate(time = yearquarter(Time)) %>% 
   as_tsibble(index = time)  
 
-us_change %>% autoplot(Consumption) +
+us_change %>% 
+  autoplot(Consumption) +
   labs(x = "Year", 
        y = "Quarterly percentage change", 
        title = "US consumption")
 ```
+
+The following R code was used to select a model automatically. 
 
 ```{r}
 us_change_fit <- us_change %>% 
@@ -66,11 +115,131 @@ us_change_fit <- us_change %>%
 us_change_fit %>% report()
 ```
 
-This is an ARIMA(1,0,3) model:   
+This is an ARIMA(1, 0, 3) model:   
 
 $$
 y_t = 0.307 + 0.589y_{t-1} - 0.352\epsilon_{t-1} + 0.085 \epsilon_{t-2} + 0.174 \epsilon_{t-3} + \epsilon_t
 $$
 
+```{r}
+# forecasst
+us_change_fit %>% 
+  forecast(h = 10) %>% 
+  autoplot(slice(us_change, (n()-80):n()))
+```
+
+
+### Understanding ARIMA models  
+
+
+
+The constant $c$ has an important effect on the long-term forecasts obtained from these models.
+
+- If $c = 0$ and $d = 0$ , the long-term forecasts will go to zero.
+
+- If $c = 0$ and $d = 1$, the long-term forecasts will go to a non-zero constant.
+
+- If $c = 0$ and $d = 2$, the long-term forecasts will follow a straight line.
+
+- If $c \not= 0$ and $d = 0$, the long-term forecasts will go to the mean of the data.
+
+- If $c \not= 0$ and $d = 1$ , the long-term forecasts will follow a straight line.
+
+- If $c \not= 0$ and $d = 2$, the long-term forecasts will follow a quadratic trend.  
+
+The value of $d$ also has an effect on the prediction intervals — the higher the value of $d$, the more rapidly the prediction intervals increase in size. For $d = 0$, the long-term forecast standard deviation will go to the standard deviation of the historical data, so the prediction intervals will all be essentially the same.  
+
+In the case of `us_change_fit`, $c \not= 0$ and $d = 0$, long-term forecasts go to the mean of the data. 
+
+The value of $p$ is important if the data show cycles. To obtain cyclic forecasts, it is necessary to have $p \ge 2$, along with some additional conditions on the parameters. For an AR(2) model, cyclic behaviour occurs if $\phi_1^2 + 4\phi_2<0$. In that case, the average period of the cycles is  
+
+$$
+\frac{2\pi}{\arccos[-\phi_1(1 - \phi_2) / 4\phi_2]}
+$$
+
+
 ## Estimation and order selection  
+
+
+Recall how ACF and PACF plot would help us pick an appropriate AR(p) or MA(q) model. 
+```{r, echo = FALSE}
+knitr::include_graphics("images/AR_MA_decision.png")
+```
+
+However, for ARIMA models, **ACF and PACF plots are only helpful when one of $p$ and $q$ is zero**. If $p$ and $q$ are both positive, then the plots do not help in finding suitable values of $p$ and $q$. (Think of an ARMA(p, q) process, neither its autocorrelation nor its partial autocorrelation function breaks off)
+
+The data may follow an ARIMA(p, d, 0) model if the ACF and PACF plots of the differenced data show the following patterns:
+
+- the ACF is exponentially decaying or sinusoidal;
+
+- there is a significant spike at lag p in the PACF, but none beyond lag p  
+
+The data may follow an ARIMA(0,d,q) model if the ACF and PACF plots of the differenced data show the following patterns: 
+
+- the PACF is exponentially decaying or sinusoidal;
+
+- there is a significant spike at lag q in the ACF, but none beyond lag q.  
+
+```{r}
+us_change %>% ACF(Consumption) %>% autoplot()
+us_change %>% PACF(Consumption) %>% autoplot()
+```
+
+The pattern in the first three spikes is what we would expect from an ARIMA(3, 0, 0), as the PACF tends to decrease. So in this case, the ACF and PACF lead us to think an ARIMA(3, 0, 0) model might be appropriate.   
+
+We also specify particular values of `pdq()` and `PDQ()` that ARIMA can search for. For example, to search the best non-seasonal ARIMA model with $p \in \{1,2,3\}$, $q \in \{0, 1, 2\}$ and $d = 1$, you could use `ARIMA(y ~ pdq(1:3, 1, 0:2) + PDQ(0, 0, 0))`. We will consider seasonal ARIMA models in Section \@ref(seasonal-arima-models).
+
+```{r}
+us_change_fit2 <- us_change %>% 
+  model(ARIMA(Consumption ~ PDQ(0, 0, 0) + pdq(3, 0, 0)))
+
+us_change_fit2 %>% report()
+```
+
+This model is actually slightly better than the model identified by `ARIMA()` (with an AICc value of 340.67 compared to 342.08). The `ARIMA()` function did not find this model because it does not consider all possible models in its search. Use `stepwise = FALSE` and `approximation = FALSE` to expand search region 
+
+```{r}
+us_change_fit3 <- us_change %>%
+  model(ARIMA(Consumption ~ PDQ(0,0,0),
+              stepwise = FALSE, approximation = FALSE))
+
+report(us_change_fit3)
+```
+
+## Estimation and order selection  
+
+### MLE
+
+Once the model order has been identified (i.e., the values of p, d and q), we need to estimate the parameters $c, \phi_1, \dots, \phi_p, \theta_1, \dots, \theta_q$. When R estimates the ARIMA model, it uses MLE. For ARIMA models, MLE is similar to the least squares estimates that would be obtained by minimising 
+
+$$
+\sum_{t=1}^{T}{\epsilon_t^2}
+$$
+
+### Information Criteria  
+
+Akaike’s Information Criterion (AIC), which was useful in selecting predictors for regression, is also useful for determining the order of an ARIMA model. It can be written as   
+
+$$
+\text{AIC} = -2\log{L} + 2(p + q + k + 1)
+$$
+
+where $L$ is the likelihood of the data. Note that the last term in parentheses is the number of parameters in the model (including $\sigma^2$, the variance of the residuals). 
+
+For ARIMA models, the corrected AIC can be written as   
+
+$$
+\text{AIC}_c = AIC + \frac{2(p + q + k + 1)(p + q + k + 2)}{T - p -q -k -2}
+$$
+
+
+and the Bayesian Information Criterion can be written as   
+
+$$
+\text{BIC} = \text{AIC} + (\log{T} - 2)(p + q + k + 1)
+$$
+
+**It is important to note that these information criteria tend not to be good guides to selecting the appropriate order of differencing ($d$) of a model**, but only for selecting the values of $p$ and $q$. This is because the differencing changes the data on which the likelihood is computed, making the AIC values between models with different orders of differencing not comparable. So we need to use some other approach to choose $d$, and then we can use the AICc to select $p$ and $q$.
+
+## The `ARIMA()` function  
 

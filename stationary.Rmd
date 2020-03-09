@@ -16,7 +16,7 @@ library(slider)
 library(patchwork)
 ```
 
-## Stationarity and differencing  
+## Stationarity 
 
 Given a stochastic process (a data generating process), $y_1, y_2, \dots, y_T$, the real numbers called time series $y_1^{(1)}, y_2^{(1)}, \cdots, y_T^{(1)}$ is just an set of observed value, or a realization of the process.It is obvious, however, that there
 is not just one realisation of such a process, but, in principle, an arbitrary
@@ -52,31 +52,10 @@ As variance stationarity immediately results from covariance stationarity for $s
 
 We can also refer to a time series to be stationary if the underlying stochastic process is stationary. So for a stationary time series, what do we expect to see?
 
-1. No trend (constant mean, local compared to global)
-2. No sharp rise and fall  (constant variance, local compared to global)
-3. No seasonality (if autocorrelation appears significant different at lag $k$ than others, then covariance will be related to $t$)  
+1. No trend and seasonality (constant mean, local compared to global)
+2. No sharp rise and fall  (constant variance, local compared to global) 
 
-```{r, fig.height = 8, fig.width = 7}
-PBS %>%
-  filter(ATC2 == "H02") %>%
-  summarize(Cost = sum(Cost) / 1e6) %>%
-  transmute(
-     sales = Cost,
-     sales_log = log(Cost),
-     seasonal_difference = log(Cost) %>% difference(lag = 12),
-     double_difference = log(Cost) %>% difference(lag = 12) %>% difference(lag = 1)
-  ) %>% 
-  pivot_longer(-Month, names_to = "measure") %>% 
-  mutate(measure = fct_relevel(measure, 
-                               c("sales", 
-                                 "sales_log", 
-                                 "seasonal_difference", 
-                                 "double_difference"))) %>%
-  ggplot() + 
-  geom_line(aes(Month, value)) + 
-  facet_wrap(~ measure, ncol = 1, scales = "free_y") + 
-  labs(title = "Corticosteroid drug sales", x = "Year", y = NULL)
-```
+
 
 
 
@@ -393,20 +372,14 @@ arima.sim(n = 100, model = list(order(2, 0, 0), ar = c(0.5, 0.5)))
 
 ### Decision of order p 
 
-How do we decide the order $p $of a AR model? A rule of thumb is to look at **partial autocorrelation coefficients**, PACF. PACF measures the direct effect of a lagged value on its previous value. Suppose we want to measure the effect of $y_{t-2}$ on $y_{t}$, while $r_2$ could be high, it could also carry the effect of $y_{t-2} \rightarrow y_{t-1} \rightarrow y_t$, especially when $r_1$ is also high. This is when partial autocorrelation come to resuce, consider a AR(2) model (if we ignore any observation earlier than $y_{t-2}$, assuming that they are too distant to exert an effect)
+How do we decide the order $p $of a AR model? A rule of thumb is to look at **partial autocorrelation coefficients**, PACF. PACF measures the direct effect of a lagged value on its previous value. Suppose we want to measure the effect of $y_{t-2}$ on $y_{t}$, while $r_2$ could be high, it could also carry the effect of $y_{t-2} \rightarrow y_{t-1} \rightarrow y_t$, especially when $r_1$ is also high. This is when partial autocorrelation come to resuce, consider a AR(2) process (which means past values earlier than $y_{t-2}$ cannot have an effect on $y_t$)
 
 $$
 y_t = c + \phi_1 y_{t-1} + \phi_2 y_{t-2} + \epsilon_t
 $$
 
-Then a partial autocorrelation coefficient between $y_t$ and $y_{t-2}$ is defined as the square root of partial determinant coefficient 
+The partial correlation coefficient for $y_{t-k}$ is simply defined as $\phi_k$ in the model, i.e., $\phi_1$ for $y_{t-1}$ and $\phi_2$ for $y_{t-2}$.  Partial correlation coefficient for $k > 2$ is think of as zero. In practice, there are more efficient algorithms for computing $\phi_k$ than fitting all of these autoregressions, but they give the same results.
 
-$$
-\sqrt{\frac{SSE_{y_{t-2}} - SSE_{y_{t-2}, y_{t-1}}}{SSE_{y_{t-2}}}}
-$$
-Where $SSE_{y_{t-2}, y_{t-1}}$ and  $SSE_{y_{t-2}}$ are sum of squared errors when $y_t$ is regressed on $y_{t-2}, y_{t-1}$ and only $y_{t-1}$ respectively.  
-
-A useful tool is partial correlation coefficient: 
 
 ```{r}
 fpp3::aus_airpassengers %>% 
