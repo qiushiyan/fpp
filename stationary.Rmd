@@ -199,10 +199,10 @@ the basis of a linear function of lagged $y$(i.e., the RHS of a MA($\infty$) mod
 
 \begin{equation}
 (\#eq:wold-decomposition)
-y_t - \mu_t = \sum_{i-0}^{\infty}\phi_i\epsilon_i
+y_t - \mu_t = \sum_{i-0}^{\infty}\psi_i\epsilon_i
 \end{equation}
 
-where $\epsilon_t$ is white noise and $\phi_i$ satisfy $\sum_{i-0}^{\infty}\phi_i^2 < \infty$. The quadratic convergence of the series of the $\phi_i$ guarantees the existence
+where $\epsilon_t$ is white noise and $\psi_i$ satisfy $\sum_{i-0}^{\infty}\psi_i^2 < \infty$. The quadratic convergence of the series of the $\psi_i$ guarantees the existence
 of second moments of the process $y_t$. There is no need of any distributional assumption for this decomposition to hold. Especially, there is no need of the $\epsilon_t$ to be independent, it is sufficient that they are (linearly) uncorrelated.  
 
 From Wold Decomposition we can derive $y_t$ has properties as follows:
@@ -210,22 +210,22 @@ From Wold Decomposition we can derive $y_t$ has properties as follows:
 $$
 \begin{aligned}
 \text{E}(y_t) &= \mu_t \\
-\text{Var}(y_t) = \text{E}[(y_t - \mu_t)^2] &= E[(\epsilon_t + \phi_1\epsilon_{t-1} + ...)^2] = \sigma^2\sum_{i=0}^{\infty}\phi_i^2 \\ 
+\text{Var}(y_t) = \text{E}[(y_t - \mu_t)^2] &= E[(\epsilon_t + \psi_1\epsilon_{t-1} + ...)^2] = \sigma^2\sum_{i=0}^{\infty}\psi_i^2 \\ 
 \end{aligned}
 $$
 And as for variance: 
 $$
 \begin{split}
 \text{Cov}(y_t, y_{t+k}) &= \text{E}[(y_t - \mu_t)(y_{t+k} - \mu_{t+k})] \\ 
-&= \text{E}[(\epsilon_t + \phi_1\epsilon_{t-1} + \cdots + \phi_k\epsilon_{t-k} + \phi_{k+1}\epsilon_{t-k-1}) * (\epsilon_{t+k} + \phi_1\epsilon_{t+k-1} + \cdots + \phi_{k}\epsilon_t) + \phi_{k+1}\epsilon_{t-1})] \\
+&= \text{E}[(\epsilon_t + \psi_1\epsilon_{t-1} + \cdots + \psi_k\epsilon_{t-k} + \psi_{k+1}\epsilon_{t-k-1}) * (\epsilon_{t+k} + \psi_1\epsilon_{t+k-1} + \cdots + \psi_{k}\epsilon_t) + \psi_{k+1}\epsilon_{t-1})] \\
 \end{split}
 $$
 We know that for $i \not= j, \text{E}(\epsilon_i\epsilon_j) = \text{Cov}(\epsilon_i, \epsilon_j) = 0$ and $\text{E}(\epsilon_i^2) = \text{Var}(\epsilon_i^2) = \sigma^2$, so the result can be simplfied as :
 
 $$
 \begin{split}
-\text{Cov}(y_t, y_{t+k}) &= \sigma^2(1 ·\phi_k + \phi_1\phi_{k+1} + \phi_{2}\phi_{k+2} + \cdots) \\
-&= \sigma^2\sum_{i=0}^{\infty}{\phi_i\phi_{k+i}}
+\text{Cov}(y_t, y_{t+k}) &= \sigma^2(1 ·\psi_k + \psi_1\psi_{k+1} + \psi_{2}\psi_{k+2} + \cdots) \\
+&= \sigma^2\sum_{i=0}^{\infty}{\psi_i\psi_{k+i}}
 \end{split}
 $$
 This derivation matches where we started, that $y_t$ is a **covariance stationary** stochastic process(and by extension variance stationary), since its variance and covariance function is not related to $t$.
@@ -525,9 +525,9 @@ It is easy to show **MA(q) process is always stationary**. A MA(1) process has t
 
 $$
 \begin{aligned}
-\text{Constant mean}: \text{E}(y_t) &= c \\
-\text{Constant variance}:\text{Var}(y_t) &= (1 + \theta_1^2)\sigma^2 \\
-\text{No seasonality}:\text{ACF} = \gamma(k) &= 
+\text{Mean stationarity}: \text{E}(y_t) &= c \\
+\text{Variance stationarity}:\text{Var}(y_t) &= (1 + \theta_1^2)\sigma^2 \\
+\text{Covariance stationarity}:\text{ACF} = \gamma(k) &= 
 \begin{cases}
 \frac{\theta_1}{1 + \theta_1^2} & k = 1\\  
 0 & \text{otherwise}
@@ -698,10 +698,119 @@ of the MA(1) process. We ask under which conditions the MA(1) process can have a
 For higher order models, given $\gamma(1), \gamma(2), \dots, \gamma(q)$ (we already proved that when k > q $\gamma(k) = 0$), we would still have multiple solution set $\theta_1, \theta_2, \dots, \theta_q$. To get a unique parameterisation, the invertibility condition is again required, i.e. it must be possible to represent the MA(q) process as a stationary AR(p) process. The condition for order q, similar to AR(p), is that all roots of 
 
 $$
-1 + \theta_1L + \theta_2L^2 + \dots + \theta_qL^q = 0 
+1 + \theta_1B + \theta_2B^2 + \dots + \theta_qB^q = 0 
 $$
 
 are larger than one in absolute value.
 
 ## ARMA models  
 
+In the following, we introduce processes which contain both an autoregressive (AR) term of finite order p and a moving average (MA) term of finite order q. Hence, these mixed processes are denoted as ARMA(p, q) processes. They enable us to describe processes in which neither the autocorrelation nor the partial autocorrelation function breaks off after a finite
+number of lags. Again, we start with the simplest case, the ARMA(1, 1) process.  
+
+An ARMA(1, 1) process can be written as follows (Note the negative sign before $\theta_1$)
+
+$$
+y_t = c + \phi_1y_{t-1} - \theta_1\epsilon_{t-1}  + \epsilon_t
+$$
+using the backshift notation 
+
+$$
+(1 - \phi_1B)y_t = c + (1 - \theta_1B)\epsilon_t
+$$
+where $\epsilon_t$ comes from pure random process. To get the Wold representation of an
+ARMA(1, 1) process, we solve the equation below for $y_t$
+
+\begin{equation}
+(\#eq:arma11)
+y_t = \frac{c}{1 - \phi_1B} + \frac{1 - \theta_1B}{1 - \phi_1B}\epsilon_t
+\end{equation}
+
+It is obvious that $\phi_1 \not= \theta_1$ must hold, because otherwise $y_t$ would be a pure
+random process fluctuating around the mean $\mu = c/(1 – \phi_1B)$. 
+
+Recall the Wold Decomposition in Equation \@ref(eq:wold-decomposition). The $\phi_i,i = 0, 1, 2, ...$, can be determined as follows: 
+
+$$
+\begin{aligned}
+\frac{1 - \theta_1B}{1 - \phi_1B} &= \psi_0 + \psi_1B + \psi_2B^2 + \psi_3B^2 + \cdots \\
+1 - \theta_1B &= (1 - \phi_1B)( \psi_0 + \psi_1B + \psi_2B^2 + \psi_3B^2 + \cdots) \\
+1 - \theta_1B &= \psi_0 + \psi_1B + \psi_2B^2 + \psi_3B^2 +\cdots - \phi_1\psi_0B -  \phi_1\psi_1B^2 -  \phi_1\psi_2B^3 - \cdots
+\end{aligned}
+$$
+
+Comparing the coefficients of the two lag polynomials we get 
+
+$$
+\begin{aligned}
+B^0&:  \psi_0 = 1 \\
+B^1&:  \psi_1 - \phi_1\psi_0 = \theta_1 \Rightarrow \psi_1 = \phi_1 - \theta_1 \\
+B^2&:  \psi_2 - \phi_1\psi_1 = 0 \Rightarrow \psi_2 = \phi_1(\phi_1 - \theta_1) \\
+B^3&:  \psi_3 - \phi_1\psi_2= 0 \Rightarrow \psi_3 = \phi_1^2(\phi_1 - \theta_1) \\
+& \vdots \\
+B^i&: \psi_i - \phi_1\psi_{i-1} = 0 \Rightarrow \psi_i = \phi_1^{i-1}(\phi_1 - \theta_1)^2
+\end{aligned}
+$$
+
+Note that the Wold Decomposition also requires $\sum_{i-0}^{\infty}\psi_i^2 < \infty$ (this is in the mean function), and this can be only satisfied when $|\phi_1| < 1$. This corresponds to the stability condition of the AR term.
+
+**Thus, the ARMA(1, 1) process is stationary if, with stochastic initial conditions, it has a stable AR(1) term.** The Wold representation is  
+
+$$
+y_t = \frac{c}{1 - \phi_1} + \epsilon_t + (\phi_1 - \theta_1)\epsilon_{t-1} + \phi_1(\phi_1 - \theta_1)\epsilon_{t-2} + \phi_1^2(\phi_1 - \theta_1)\epsilon_{t-3}
+$$
+
+Thus, the ARMA(1, 1) process can be written as an MA($\infty$) process.
+
+To invert the MA(1) part, $|\theta_1| < 1$ must hold. From Equation \@ref(eq:arma11) we know: 
+
+$$
+\epsilon_t = \frac{-c}{1 - \theta_1} + \frac{1 - \phi_1B}{1 - \theta_1B}y_t
+$$
+
+
+If $1/(1 – \theta_1B)$ is developed into a geometric series we get  
+
+$$
+\begin{aligned}
+\epsilon_t &= \frac{-c}{1 + \theta_1} + (1 - \phi_1B)(1 + \theta_1B + \theta_1^2B^2 + \cdots)y_t \\
+&= \frac{-c}{1 + \theta_1} + y_t + (\theta_1 - \phi_1)y_{t-1} + \theta_1(\theta_1 - \phi_1)y_{t-2} + \theta_1^2(\theta_1 - \phi_1)y_{t-3} + \cdots
+\end{aligned}
+$$
+This proves to be an AR($\infty$) representation. It shows that the combination of an AR(1) and an MA(1) term leads to a process with both MA($\infty$) and AR($\infty$) representation if the AR term is stable and the MA term invertible.
+
+More generally, **ARMA(p, q) is staionary and invertible if the AR term is stationary and the MA term invertible** (all complex roots of $\Phi(B)$ and that of $\Theta(B)$ exceeds 1 in absolute value). It can either be represented as an AR($\infty$) or as an MA($\infty$) process.  Thus, neither its autocorrelation nor its partial autocorrelation function breaks off. In short, it is possible to generate stationary stochastic processes with infinite AR and MA orders by using only a finite number of parameters.
+
+It can be proved that an stationary ARMA(1, 1) has the following properties: 
+
+$$
+\begin{aligned}
+\text{E}(y_t) &= \frac{c}{1 - \phi_1} \\ 
+\text{Var}(y_t) = \gamma(0) &= \frac{1 + \theta_1^2 - 2\phi_1\theta_1}{1 - \alpha^2}\sigma^2 \\
+\text{Cov}(y_t, y_{t+k}) = \gamma(k) &= \phi_1\gamma(k-1)
+\end{aligned}
+$$
+
+We also know that $r_1$, (the initial value of $r_k$)
+
+$$
+r_1 = \frac{(\phi_1 - \theta_1)(1 - \phi_1\theta_1)}{1 + \theta_1^2 - 2\phi_1\theta_1}
+$$
+
+If the process is stable and invertible, i.e. for $|\phi_1| < 1$ and $|\theta_1| < 1$, the sign of $r_k$ is determined by the sign of $(\phi_1 - \theta_1)$ because of$(1 + \theta_1^2 -2\phi_1 \theta_1) = (\theta_1 - \phi_1)^2 + 1 - \phi_1^2 > 0$ and $(1 – \phi_1\theta_1) > 0$. Moreover, it follows from $\gamma(k)$ that the autocorrelation function – as in the AR(1) process – is monotonic for $\phi_1 > 0$ and oscillating for $\phi_1 < 0$. Due to $|\phi_1| < 1$ with $k$ increasing, the autocorrelation function also decreases in absolute value.  
+
+Thus, the following typical autocorrelation structures are possible:  
+
+- $\phi_1 > 0$ and $\phi_1 > \theta_1$: The autocorrelation function is always positive. 
+
+- $\phi_1 < 0$ and $\phi_1 < \theta_1$: The autocorrelation function oscillates; the initial
+condition $r_1$ is negative.  
+
+- $\phi_1 > 0$ and $\phi_1 < \theta_1$: The autocorrelation function is negative from $r_1$ onwards.  
+
+- $\phi_1 < 0$ and  $\phi_1 > \theta_1$: The autocorrelation function oscillates; the initial
+condition $r_1$ is positive.  
+
+```{r, echo = FALSE}
+knitr::include_graphics("images/arma11.png")
+```
