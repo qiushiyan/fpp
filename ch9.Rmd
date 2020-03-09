@@ -35,7 +35,54 @@ $$
 
 Note that $y'_t$ satisfies all stationary conditions, $\text{E}(y'_t) =0$, $\text{Var}(y'_t) = 2\sigma^2$, $\text{Cov}(y'_t, y'_{t+k}) = 0$. So it can be modelled as previously discussed.  
 
+Another example is a (biased) random walk process \@ref(random-walk), where the first difference is 
 
+$$
+y'_t = c + \epsilon_t
+$$
+
+### Second-order differencing  
+
+Occasionally the differenced data will not appear to be stationary and it may be necessary to difference the data a second time to obtain a stationary series: 
+
+$$
+\begin{aligned}
+y''_t &= (y_t - y_{t-1}) - (y_{t-1} - y_{t-2}) \\
+      &= y_t - 2y_{t-1} +  y_{t-2}
+\end{aligned}
+$$
+In practice, it is almost never necessary to go beyond second-order differences.  
+
+### Seasonal differencing 
+
+A seasonal difference is the difference between an observation and the previous observation from the same season. So 
+
+$$
+y'_t = y_t - y_{t-m}
+$$
+
+If seasonally differenced data appear to be white noise, then an appropriate model for the original data is   
+
+$$
+y_t = y_{t-m} + \epsilon_t
+$$
+Forecasts from this model are equal to the last observation from the relevant season. That is, this model gives seasonal naïve forecasts, introduced in Section \@ref(some-simple-forecasting-methods).
+
+And second seasonal difference is 
+
+$$
+\begin{split}
+y''_t &= y't - y'_{t-1} \\
+      &= (y_t - y_{t-m}) - (y_{t-1} - y_{t-1-m}) \\ 
+      &= y_t - y_{t-1} - y_{t-m} + y_{t-1-m}
+\end{split}
+$$
+
+
+
+When both seasonal and first differences are applied, it makes no difference which is done first—the result will be the same. However, **if the data have a strong seasonal pattern, it is recommended that seasonal differencing be done first**, because the resulting series will sometimes be stationary and there will be no need for a further first difference. If first differencing is done first, there will still be seasonality present. 
+
+Sometimes it is necessary to take both a seasonal difference and a first difference to obtain stationary data, as is shown below. Here, the data are first transformed using logarithms (second panel), then seasonal differences are calculated (third panel). The data still seem somewhat non-stationary, and so a further lot of first differences are computed (bottom panel).
 
 ```{r, fig.height = 8, fig.width = 7}
 PBS %>%
@@ -58,6 +105,43 @@ PBS %>%
   facet_wrap(~ measure, ncol = 1, scales = "free_y") + 
   labs(title = "Corticosteroid drug sales", x = "Year", y = NULL)
 ```
+
+
+### Unit root tests
+
+One way to determine more objectively whether differencing is required is to use a **unit root test**. These are statistical hypothesis tests of stationarity that are designed for determining whether differencing is required. 
+
+A number of unit root tests are available, which are based on different assumptions and may lead to conflicting answers. Here we use the Kwiatkowski-Phillips-Schmidt-Shin (KPSS) test implemented by `urca::ur.kpss()`. In this test, the null hypothesis is that the data are stationary, and we look for evidence that the null hypothesis is false. Consequently, small p-values suggest that differencing is required.   
+
+```{r}
+google_2015 <- gafa_stock %>%
+  filter(Symbol == "GOOG") %>%
+  mutate(day = row_number()) %>%
+  update_tsibble(index = day, regular = TRUE) %>% 
+  filter(year(Date) == 2015)
+
+google_2015 %>%
+  features(Close, unitroot_kpss)
+```
+
+The test statistic is much bigger than the 1% critical value, indicating that the null hypothesis is rejected. That is, the data are not stationary. We can difference the data, and apply the test again.  
+
+```{r}
+google_2015 %>%
+  mutate(Close = difference(Close, 1)) %>% 
+  features(Close, unitroot_kpss)
+```
+
+This time, the test statistic is tiny, and well within the range we would expect for stationary data. So we can conclude that the differenced data are stationary.  
+
+This process of using a sequence of KPSS tests to determine the appropriate number of first differences is carried out using the `unitroot_ndiffs()` feature. 
+
+```{r}
+# 1st difference is needed
+google_2015 %>% 
+  features(Close, unitroot_ndiffs)
+```
+
 
 ## Non-seasonal ARIMA models 
 

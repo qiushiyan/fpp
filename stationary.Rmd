@@ -56,9 +56,6 @@ We can also refer to a time series to be stationary if the underlying stochastic
 2. No sharp rise and fall  (constant variance, local compared to global) 
 
 
-
-
-
 [Why does stationarity matter](https://towardsdatascience.com/stationarity-in-time-series-analysis-90c94f27322) 
 
 Why is this important? First, because stationary processes are easier to analyze. Without a formal definition for processes generating time series data, it is already clear that stationary processes are a sub-class of a wider family of possible models of reality. This sub-class is much easier to model and investigate. The above informal definition also hints that such processes should be possible to predict, as the way they change is predictable.
