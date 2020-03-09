@@ -224,14 +224,14 @@ We know that for $i \not= j, \text{E}(\epsilon_i\epsilon_j) = \text{Cov}(\epsilo
 
 $$
 \begin{split}
-\text{Cov}(y_t, y_{t+k}) &= \sigma^2(1 ·\phi_k + \phi_1\phi_{+1} + \phi_{2}\phi_{k+2} + \cdots) \\
+\text{Cov}(y_t, y_{t+k}) &= \sigma^2(1 ·\phi_k + \phi_1\phi_{k+1} + \phi_{2}\phi_{k+2} + \cdots) \\
 &= \sigma^2\sum_{i=0}^{\infty}{\phi_i\phi_{k+i}}
 \end{split}
 $$
-This derivation matches where we started, that $y_t$ is a **covariance stationary** stochastic process(and by extension variance stationary), since its variance and covariance function related to $k$.
+This derivation matches where we started, that $y_t$ is a **covariance stationary** stochastic process(and by extension variance stationary), since its variance and covariance function is not related to $t$.
 
 
-All stationary models discussed in the following chapters can be represent-ed on the basis of the Wold Decomposition \@ref(eq:wold-decomposition). However, this representation is, above all, interesting for theoretical reasons: in practice, applications of models with an infinite number of parameters are hardly useful.
+All stationary models discussed in the following chapters can be represented on the basis of the Wold Decomposition \@ref(eq:wold-decomposition). However, this representation is, above all, interesting for theoretical reasons: in practice, applications of models with an infinite number of parameters are hardly useful.
 
 ## Backshift notation  
 
@@ -494,7 +494,7 @@ RW <- function(N, x0, mu, variance) {
   x
   }
 # mu is the drift
-
+set.seed(2020)
 rw <- RW(500, 0, 1, 1) %>%
   enframe() %>% 
   as_tsibble(index = name)
