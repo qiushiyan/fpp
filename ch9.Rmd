@@ -142,6 +142,45 @@ google_2015 %>%
   features(Close, unitroot_ndiffs)
 ```
 
+A similar feature for determining whether seasonal differencing is required is `unitroot_nsdiffs()`, which uses the measure of seasonal strength introduced in Section \@ref(stl-features). Recall that the strength of seasonality $F_s$ is defined as 
+
+$$
+F_S = \max(0\,, 1- \frac{\text{Var}(R_t)}{\text{Var}(S_t + R_t)})
+$$
+where $R_t$ is the remainder component and $S_t$ the seasonal component. No seasonal differences are suggested if $F_S < 0.64$, otherwise one seasonal difference is suggested.
+
+We can apply `unitroot_nsdiffs()` to the monthly total Australian retail turnover.
+
+```{r}
+aus_total_retail <- aus_retail %>%
+  summarize(Turnover = sum(Turnover))
+aus_total_retail %>%
+  mutate(log_turnover = log(Turnover)) %>% 
+  features(log_turnover, unitroot_nsdiffs)
+```
+
+
+
+```{r}
+aus_total_retail %>%
+  mutate(log_turnover = log(Turnover) %>% difference(12)) %>%
+  features(log_turnover, unitroot_ndiffs)
+```
+
+
+Because `unitroot_nsdiffs()` returns 1 (indicating one seasonal difference is required), we apply the `unitroot_ndiffs()` function to the seasonally differenced data. These functions suggest we should do both a seasonal difference and a first difference.  
+
+
+```{r}
+aus_total_retail %>% 
+  mutate(log_turnover = log(Turnover) %>% 
+           difference(12) %>%
+           difference(1)) %>% 
+  autoplot(log_turnover)
+```
+
+
+
 
 ## Non-seasonal ARIMA models 
 
