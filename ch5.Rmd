@@ -129,7 +129,7 @@ $$
 
 This method works remarkably well for many economic and financial time series. 
  
-Because a naive forecast is optimal when data follow a random walk (see Section \@ref(stationarity-and-differencing)), these are also called **random walk** forecasts.   
+Because a naive forecast is optimal when data follow a random walk (see Section \@ref(stationarity)), these are also called **random walk** forecasts.   
 
 `NAIVE()` specifies a naive model:  
 
@@ -434,7 +434,7 @@ $$
 Q^* = T(T + 2)\sum_{k = 1}^{h}{(T-K)^{-1}}r_k^2
 $$
 
-If the autocorrelations did come from a white noise series, then both $Q$ and $Q^*$ follows a  distribution of $\chi^2_{h - K}$ where $K$ is the number of parameters in the model. For naive model where there is no parameter to estimate, we simply set $K = 0$.  
+If the autocorrelations did come from a white noise series, then both $Q$ and $Q^*$ follows a  distribution of $\chi^2_{h - K}$ where $K$ is the number of parameters in the model. For model where there is no parameter to estimate (such as naive model), we simply set $K = 0$. For a regular time series rather than residuals that come from a particular model, we also set $K = 0$. Note that in `ljung_box()`, argument `dof` specifies `K`, rather than `h - K`  
 
 ```{r}
 # lag = h and dof = K

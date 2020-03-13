@@ -2,7 +2,7 @@
 # ARIMA models 
 
 
-```{r}
+```{r, echo = FALSE}
 knitr::opts_chunk$set(cache = TRUE)
 ```
 
@@ -18,7 +18,7 @@ library(slider)
 
 ## Differencing  
 
-All processes (AR, MA, ARMA) disscussed in Chapter \@ref(stationary) belong to a larger family called *linear stationary processes*. This means our models would normally be confined to a stataionry data-generating system.  
+All processes (AR, MA, ARMA) disscussed in Chapter \@ref(univariate-stationary-processes) belong to a larger family called *linear stationary processes*. This means our models would normally be confined to a stataionry data-generating system.  
 
 By **differencing**, we compute the differences between consecutive observations, and this has been shown as a easy but effective way to make a non-stationary time series stationary. While transformations such as logarithms can help to stabilise the variance of a time series, differencing can help stabilise the mean of a time series by removing changes in the level of a time series, and therefore eliminating (or reducing) trend and seasonality.  
 
@@ -264,13 +264,17 @@ The data may follow an ARIMA(p, d, 0) model if the ACF and PACF plots of the dif
 
 - there is a significant spike at lag p in the PACF, but none beyond lag p  
 
-The data may follow an ARIMA(0, d, q) model if the ACF and PACF plots of the differenced data show the following patterns: 
+The `us_change` data may follow an ARIMA(0, d, q) model if the ACF and PACF plots of the differenced data show the following patterns: 
 
 - the PACF is exponentially decaying or sinusoidal;
 
 - there is a significant spike at lag q in the ACF, but none beyond lag q.  
 
-```{r}
+```{r, fig.align = 'default', fig.show = "hold", out.width = "50%"}
+us_change <- read_csv(pin("https://otexts.com/fpp3/extrafiles/us_change.csv")) %>% 
+  mutate(time = yearquarter(Time)) %>% 
+  as_tsibble(index = time)  
+
 us_change %>% ACF(Consumption) %>% autoplot()
 us_change %>% PACF(Consumption) %>% autoplot()
 ```
@@ -327,11 +331,11 @@ $$
 \text{BIC} = \text{AIC} + (\log{T} - 2)(p + q + k + 1)
 $$
 
-**It is important to note that these information criteria tend not to be good guides to selecting the appropriate order of differencing ($d$) of a model**, but only for selecting the values of $p$ and $q$. This is because the differencing changes the data on which the likelihood is computed, making the AIC values between models with different orders of differencing not comparable. So we need to use some other approach to choose $d$, and then we can use the AICc to select $p$ and $q$.
+**It is important to note that these information criteria tend not to be good guides to selecting the appropriate order of differencing ($d$) of a model**, but only for selecting the values of $p$ and $q$. This is because the differencing changes the data on which the likelihood is computed, making the AIC values between models with different orders of differencing not comparable. So we need to use some other approach to choose $d$, and then we can use the AICc to select $p$ and $q$. **However**, when comparing models using a test set, it does not matter how the forecasts were produced — the comparisons are always valid.
 
 ## The `ARIMA()` function   
 
-By default `ARIMA(value)` creates a automatic specification where the model space are confined to non-seasonal component $p \in \{1, 2, 3, 4, 5\}, d \in \{0, 1, 2\}, q \in \{0, 1, 2, 3, 4, 5\}$ and seasonal component (Section \@ref(Seasonal ARIMA models)) $P \in \{0, 1, 2\}, D \in \{0, 1\}, Q \in \{0, 1, 2\}$. We can also use `p_init` andn `q_init` to specify the initial value for $p$ and $q$ if a stepwise procedure indroduced in the next section is used.  
+By default `ARIMA(value)` creates a automatic specification where the model space are confined to non-seasonal component $p \in \{1, 2, 3, 4, 5\}, d \in \{0, 1, 2\}, q \in \{0, 1, 2, 3, 4, 5\}$ and seasonal component (Section \@ref(seasonal-arima-models)) $P \in \{0, 1, 2\}, D \in \{0, 1\}, Q \in \{0, 1, 2\}$. We can also use `p_init` andn `q_init` to specify the initial value for $p$ and $q$ if a stepwise procedure indroduced in the next section is used.  
 
 We can also achieve manual specification of the model space in `pdq()` and `PDQ()` where `pdq()` specifies the non-seasonal part and `PDQ()` the seasonal part. In the case of  a non-seasonal model, it is common to set `ARIMA(value ~ PDQ(0, 0, 0))`. This eliminates the seasonal part and keeps the default process of searching for a optimal seasonal part. Further, to search the best non-seasonal ARIMA model with $p \in \{1, 2, 3\}$, $q \in \{0, 1, 2\}$ and $d = 1$, you could use `ARIMA(y ~ pdq(1:3, 1, 0:2) + PDQ(0, 0, 0))`.
 
@@ -341,7 +345,7 @@ The default procedure uses some approximations to speed up the search. These app
 
 The `ARIMA()` function in R uses a variation of the Hyndman-Khandakar algorithm [-@JSSv027i03]. The algorithm combines unit root tests, minimization of $\text{AIC}_c$ and $\text{MLE}$ to obtain a "optimal" ARIMA model. The default behaviour is discussed in minute details at https://otexts.com/fpp3/arima-r.html. Here we only cover non-seasonal model, and the procedure for a SARIMA model is quite the same, $P$ and $Q$ are ultimately determined by minimizing $\text{AIC}_c$.   
 
-1. The number of differences $0 \le d \le 2$ is determined using repeated KPSS tests \@ref(Unit-root-tests). (For $D$, use `unitroot_nsdiffs()`)  
+1. The number of differences $0 \le d \le 2$ is determined using repeated KPSS tests \@ref(unit-root-tests). (For $D$, use `unitroot_nsdiffs()`)  
 
 2. Use a stepwise search (rather than exhaustive) to determine $p$ and $q$ after differencing the time series $d$ times. Four initial models are fitted:   
   - ARIMA(0, $d$, 0)  
@@ -378,44 +382,6 @@ knitr::include_graphics("images/arima_process.png")
 ```
 
 
-
-
-### Example: US consumption expenditure
-
-
-```{r}
-us_change <- read_csv(pin("https://otexts.com/fpp3/extrafiles/us_change.csv")) %>% 
-  mutate(time = yearquarter(Time)) %>% 
-  as_tsibble(index = time)  
-
-us_change %>% 
-  autoplot(Consumption) +
-  labs(x = "Year", 
-       y = "Quarterly percentage change", 
-       title = "US consumption")
-```
-
-The following R code was used to select a non-seasonal ARIMA model automatically. 
-
-```{r}
-us_change_fit <- us_change %>% 
-  model(ARIMA(Consumption ~ PDQ(0, 0, 0)))
-
-us_change_fit %>% report()
-```
-
-This is an ARIMA(1, 0, 3) model:   
-
-$$
-y_t = 0.307 + 0.589y_{t-1} - 0.352\epsilon_{t-1} + 0.085 \epsilon_{t-2} + 0.174 \epsilon_{t-3} + \epsilon_t
-$$
-
-```{r}
-# forecasst
-us_change_fit %>% 
-  forecast(h = 10) %>% 
-  autoplot(slice(us_change, (n()-80):n()))
-```
 
 
 ### Example: Seasonally adjusted electrical equipment orders  
@@ -479,7 +445,7 @@ elec_aug <- elec_fit %>%
   augment()
 
 elec_aug %>% 
-  features(.resid, ljung_box)
+  features(.resid, ljung_box, lag = 8, dof = 7)
 ```
 
 Producing forecasts 
@@ -490,6 +456,17 @@ elec_fit %>%
 ```
 
 Note that Section \@ref(understanding-arima-models), we mentioned that the long term forecast of an ARIMA model with no constant and $d = 1$ will go to a constant.  
+
+### Plotting the characteristic roots  
+
+The stationarity conditions for the model are that the p complex roots of $\Phi(B)$ lie outside the unit circle, and the invertibility conditions are that the q complex roots of $\Theta(B)$ lie outside the unit circle. So we can see whether the model is close to invertibility or stationarity by a plot of the roots in relation to the complex unit circle.
+
+It is easier to plot the **inverse** roots instead, as they should all lie within the unit circle. This is easily done in R. For the $\text{ARIMA}(3, 1, 1)$ model fitted to the seasonally adjusted electrical equipment index   
+
+```{r}
+gg_arma(elec_fit)
+```
+**The `ARIMA()` function will never return a model with inverse roots outside the unit circle**. Models automatically selected by the ARIMA() function will not select a model with roots close to the unit circle.
 
 ## Forecasting with ARIMA models  
 
@@ -594,7 +571,7 @@ eu_retail %>% features(value, feat_stl)
 
 
 
-We will first take a seasonal difference.These still appear to be some sort of nonstationarity, so we take an additional first difference
+We will first take a seasonal difference. These still appear to be some sort of nonstationarity, so we take an additional first difference
 
 ```{r}
 eu_retail %>% 
@@ -620,7 +597,7 @@ eu_retail_fit %>% report()
 
 Check residuals 
 
-```{r}
+```{r, fig.align = "default", fig.show = "hold", out.width = "50%"}
 eu_retail_aug <- eu_retail_fit %>% augment()
 
 eu_retail_aug %>% 
@@ -649,7 +626,7 @@ eu_retail_fit2 %>%
 
 eu_retail_fit2 %>%
   augment() %>% 
-  features(.resid, ljung_box)
+  features(.resid, ljung_box, lag = 8, dof = 5)
 ```
 Forecasts from the model for the next three years are shown below 
 
@@ -684,7 +661,7 @@ The data are strongly seasonal and obviously non-stationary, so seasonal differe
 h02 %>% 
   gg_tsdisplay(difference(log(cost), 12), 
                plot_type='partial', 
-               lag_max = 24)
+               lag_max = 24) 
 ```
 In the plots of the seasonally differenced data, there are spikes in the PACF at lags 12 and 24, but nothing at seasonal lags in the ACF. This may be suggestive of a seasonal AR(2) term. In the non-seasonal lags, there are three significant spikes in the PACF, suggesting a possible AR(3) term. The pattern in the ACF is not indicative of any simple model.
 
@@ -695,5 +672,149 @@ knitr::include_graphics("images/seasonal_arima_2.png")
 ```
 
 
-Of these models, the best is the $ARIMA(3, 0, 1)(0, 1, 2)_12$ model
-## ETS and ARIMA  
+Of these models, the best is the $ARIMA(3, 0, 1)(0, 1, 2)_12$ model  
+
+```{r}
+h02_fit <- h02 %>% 
+  model(ARIMA(log(cost) ~ 0 + pdq(3, 0, 1) + PDQ(0, 1, 2))) # without constant
+
+h02_fit %>% report()
+```
+
+```{r, fig.align = "default", fig.show = "hold", out.width = "50%"}
+h02_aug <- h02_fit %>% augment()
+
+h02_aug %>% 
+  ACF(.resid, lag_max = 36) %>%
+  autoplot()
+
+h02_aug %>% 
+  PACF(.resid, lag_max = 36) %>%
+  autoplot()
+```
+
+```{r}
+h02_aug %>% 
+  features(.resid, ljung_box, lag = 24, dof = 7) # h = 2m for seasonal data 
+```
+
+
+Produce forecasts 
+
+```{r}
+h02_fit %>% 
+  forecast() %>% 
+  autoplot(h02)
+```
+
+
+
+## ETS and ARIMA   
+
+While linear exponential smoothing models are all special cases of ARIMA models, the non-linear exponential smoothing models have no equivalent ARIMA counterparts. On the other hand, there are also many ARIMA models that have no exponential smoothing counterparts. In particular, all ETS models are non-stationary, while some ARIMA models are stationary.
+
+The ETS models with seasonality or non-damped trend or both have two unit roots (i.e., they need two levels of differencing to make them stationary). All other ETS models have one unit root (they need one level of differencing to make them stationary).  
+
+```{r, echo = FALSE}
+knitr::include_graphics("images/ets_arima.png")
+```
+
+The AICc is useful for selecting between models in the same class. For example, we can use it to select an ARIMA model between candidate ARIMA models or an ETS model between candidate ETS models. **However, it cannot be used to compare between ETS and ARIMA models because they are in different model classes**, and the likelihood is computed in different ways. The examples below demonstrate selecting between these classes of models.    
+
+### Example: Comparing `ARIMA()` and `ETS()` on non-seasonal data  
+
+We can use time series cross-validation to compare an ARIMA model and an ETS model. Let’s consider the Australian population from the `global_economy` dataset  
+
+```{r}
+aus_economy <- global_economy %>% 
+  filter(Code == "AUS") %>%
+  mutate(Population = Population/1e6)
+
+aus_economy %>%
+  slice(-n()) %>%
+  stretch_tsibble(.init = 10) %>%
+  model(
+    ETS(Population),
+    ARIMA(Population)
+  ) %>%
+  forecast(h = 1) %>%
+  accuracy(aus_economy)
+```
+
+In this case the ETS model has higher accuracy on the cross-validated performance measures. Below we generate and plot forecasts for the next 5 years generated from an ETS model.  
+
+```{r}
+aus_economy %>%
+  model(ETS(Population)) %>%
+  forecast(h = "5 years") %>%
+  autoplot(aus_economy)
+```
+
+### Example: Comparing `ARIMA()` and `ETS()` on seasonal data
+
+In this case we want to compare seasonal ARIMA and ETS models applied to the quarterly cement production data (from aus_production). This time we separate the original data into testing set and training set.  We create a training set from the beginning of 1988 to the end of 2007 and select an ARIMA and an ETS model using the `ARIMA()` and `ETS()` functions.    
+
+
+```{r}
+# Consider the cement data beginning in 1988
+cement <- aus_production %>%
+  filter(year(Quarter) >= 1988)
+
+# Use 20 years of the data as the training set
+train <- cement %>%
+  filter(year(Quarter) <= 2007)
+```
+
+
+```{r}
+cement_fit_arima <- train %>% model(ARIMA(Cement))
+
+report(cement_fit_arima)
+```
+
+Residuals from the ARIMA model appear to be white noise.
+```{r}
+cement_fit_arima %>% gg_tsresiduals()
+
+augment(cement_fit_arima) %>%
+  features(.resid, ljung_box, lag = 8, dof = 7)
+```
+
+
+The output below also shows the ETS model selected and estimated by `ETS()`. This model also does well in capturing all the dynamics in the data  
+
+```{r}
+cement_fit_ets <- train %>% model(ETS(Cement))
+report(cement_fit_ets)
+
+cement_fit_ets %>% gg_tsresiduals()
+
+augment(cement_fit_ets) %>%
+  features(.resid, ljung_box, lag = 8, dof = 6)
+```
+
+
+The output below evaluates the forecasting performance of the two competing models over the test set. In this case the ARIMA model seems to be the slightly more accurate model based on the test set RMSE, MAPE and MASE.  
+
+```{r}
+bind_rows(
+  cement_fit_arima %>% accuracy(),
+  cement_fit_ets %>% accuracy(),
+  cement_fit_arima %>% forecast(h = "2 years 6 months") %>%
+    accuracy(cement),
+  cement_fit_ets %>% forecast(h = "2 years 6 months") %>%
+    accuracy(cement)
+)
+```
+
+Notice that the ETS model fits the training data slightly better than the ARIMA model, but that the ARIMA model provides more accurate forecasts on the test set. A good fit to training data is never an indication that the model will forecast well. Below we generate and plot forecasts from an ETS model for the next 3 years.  
+
+
+```{r}
+# Generate forecasts from an ETS model
+cement %>% 
+  model(ETS(Cement)) %>% 
+  forecast(h = "3 years") %>%
+  autoplot(cement)
+```
+

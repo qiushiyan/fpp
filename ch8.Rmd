@@ -1,22 +1,4 @@
-```{r include=FALSE, cache=FALSE}
-set.seed(1112)
-options(digits = 3)
 
-knitr::opts_chunk$set(
-  comment = "#>",
-  collapse = TRUE,
-  out.width = "80%",
-  fig.width = 6,
-  fig.asp = 0.618,  # 1 / phi
-  fig.align = "center",
-  message = F,
-  warning = F
-)
-
-library(tidyverse)
-
-options(dplyr.print_min = 6, dplyr.print_max = 6)
-```
 
 # Exponential smoothing 
 
@@ -497,7 +479,7 @@ We refer to Equation \@ref(eq:measurement) as the **measurement** (or observatio
 
 The term “**innovations**” comes from the fact that all equations use the same random error process, $\epsilon_t$. For the same reason, this formulation is also referred to as a “single source of error” model. There are alternative multiple source of error formulations that is not presented here.  
 
-The state equation shows the evolution of the state through time. The influence of the smoothing parameter $\alpha$ is the same as for the methods discussed earlier. For example, $\alpha$ governs the amount of change in successive levels: high values of α allow rapid changes in the level; low values of α lead to smooth changes. If $\alpha = 0$, the level of the series does not change over time; if $\alpha = 1$, the model reduces to a random walk model, $y_t = \ell_{t-1} + \epsilon_t = y_{t−1} + \epsilon_t$. (See Section \@ref(stationarity-and-differencing) for a discussion of this model.)
+The state equation shows the evolution of the state through time. The influence of the smoothing parameter $\alpha$ is the same as for the methods discussed earlier. For example, $\alpha$ governs the amount of change in successive levels: high values of α allow rapid changes in the level; low values of α lead to smooth changes. If $\alpha = 0$, the level of the series does not change over time; if $\alpha = 1$, the model reduces to a random walk model, $y_t = \ell_{t-1} + \epsilon_t = y_{t−1} + \epsilon_t$. (See Section \@ref(stationarity) for a discussion of this model.)
 
 ### ETS(M,N,N): simple exponential smoothing with multiplicative errors  
 

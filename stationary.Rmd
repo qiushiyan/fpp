@@ -149,11 +149,11 @@ AR1_aug <- AR1 %>%
   model(ARIMA(value ~ PDQ(1, 0, 0))) %>% 
   augment()
 
-# box pierce test
-AR1_aug %>% features(.resid, box_pierce)
+# box pierce test, non-seasonal data h = 10
+AR1_aug %>% features(.resid, box_pierce, lag = 10, dof = 0)
 # ljung box test
-AR1_aug %>% features(.resid, ljung_box)
-# durbin watson test (1:10 order autocorrelation)
+AR1_aug %>% features(.resid, ljung_box, lag = 10, dof = 0)
+# durbin watson test 
 AR1_aug %>% pull(.resid) %>% car::durbinWatsonTest(max.lag = 10)
 # jb test (normality)
 AR1_aug %>% pull(.resid) %>% normtest::jb.norm.test()
