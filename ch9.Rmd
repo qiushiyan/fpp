@@ -24,15 +24,15 @@ By **differencing**, we compute the differences between consecutive observations
 
 Suppose there is a undelying linear trend behind the observed time series
 $$
-y_t = \beta_0 + \beta_1t + \epsilon_t  
+y_t = \beta_0 + \beta_1t + \varepsilon_t  
 $$
-where $\epsilon_t$ is white noise. The first difference is defined as 
+where $\varepsilon_t$ is white noise. The first difference is defined as 
 
 $$
 \begin{split}
 y'_t &= y_t - y_{t-1} \\
-     &= (\beta_0 + \beta_1t + \epsilon_t) - [\beta_0 + \beta_1(t-1) + \epsilon_{t-1}] \\ 
-     &= \beta_1 + (\epsilon_t - \epsilon_{t-1})
+     &= (\beta_0 + \beta_1t + \varepsilon_t) - [\beta_0 + \beta_1(t-1) + \varepsilon_{t-1}] \\ 
+     &= \beta_1 + (\varepsilon_t - \varepsilon_{t-1})
 
 \end{split}
 $$
@@ -42,7 +42,7 @@ Note that $y'_t$ satisfies all stationary conditions, $\text{E}(y'_t) =0$, $\tex
 Another example is a (biased) random walk process \@ref(random-walk), where the first difference is 
 
 $$
-y'_t = c + \epsilon_t
+y'_t = c + \varepsilon_t
 $$
 
 ### Second-order differencing  
@@ -68,7 +68,7 @@ $$
 If seasonally differenced data appear to be white noise, then an appropriate model for the original data is   
 
 $$
-y_t = y_{t-m} + \epsilon_t
+y_t = y_{t-m} + \varepsilon_t
 $$
 Forecasts from this model are equal to the last observation from the relevant season. That is, this model gives seasonal naïve forecasts, introduced in Section \@ref(some-simple-forecasting-methods).
 
@@ -193,7 +193,7 @@ If we combine differencing with autoregression and a moving average model, we ob
 
 \begin{equation}
 (\#eq:arima)
-y'_t =c + \phi_1y_{t-1} + \cdots + \phi_py_{t-p} + \theta_1\epsilon_{t-1} + \cdots \theta_q\epsilon_{t-q} + \epsilon_t  
+y'_t =c + \phi_1y_{t-1} + \cdots + \phi_py_{t-p} + \theta_1\varepsilon_{t-1} + \cdots \theta_q\varepsilon_{t-q} + \varepsilon_t  
 \end{equation}
 
 We call this an ARIMA(p, d, q) model, where 
@@ -215,7 +215,7 @@ knitr::include_graphics("images/arima_special.png")
 Once we start combining components in this way to form more complicated models, it is much easier to work with the backshift notation. For example, Equation \@ref(eq:arima) can be written in backshift notation as 
 
 $$
-(1 - \phi_1B - \cdots - \phi_pB^p)(1 - B)^dy_t = c + (1 + \theta_1B + \cdots + \theta_1B^q)\epsilon_t
+(1 - \phi_1B - \cdots - \phi_pB^p)(1 - B)^dy_t = c + (1 + \theta_1B + \cdots + \theta_1B^q)\varepsilon_t
 $$
 
 
@@ -305,7 +305,7 @@ report(us_change_fit3)
 Once the model order has been identified (i.e., the values of p, d and q), we need to estimate the parameters $c, \phi_1, \dots, \phi_p, \theta_1, \dots, \theta_q$. When R estimates the ARIMA model, it uses MLE. For ARIMA models, MLE is similar to the least squares estimates that would be obtained by minimising 
 
 $$
-\sum_{t=1}^{T}{\epsilon_t^2}
+\sum_{t=1}^{T}{\varepsilon_t^2}
 $$
 
 ### Information Criteria  
@@ -483,7 +483,7 @@ The first prediction interval is easy to calculate. If $\hat{\sigma}^2$ is the s
 Multi-step prediction intervals for ARIMA(0, 0, q) models are relatively easy to calculate. We can write the model as  
 
 $$
-y_t = \epsilon_t + \sum_{i=1}^{q}\theta_i\epsilon_{t-i}
+y_t = \varvarepsilon_t + \sum_{i=1}^{q}\theta_i\varepsilon_{t-i}
 $$
 
 Then, the estimated forecast variance can be written as   
@@ -513,27 +513,54 @@ knitr::include_graphics("images/seasonal_arima.png")
 ```
 where $m$ is number of observations per year.   
 
-The seasonal part of the model consists of terms that are similar to the non-seasonal components of the model, but involve backshifts of the seasonal period. For example, an $\text{ARIMA}(1, 1, 1)(1, 1, 1)_4$ model (without a constant) is for quarterly data (m=4), and can be written as (Not that a seasonal difference is **not** a m order difference) 
+The seasonal part of the model consists of terms that are similar to the non-seasonal components of the model, but involve backshifts of the seasonal period. For example, an $\text{ARIMA}(1, 1, 1)(1, 1, 1)_4$ model (without a constant) is for quarterly data (m = 4), and can be written as (Not that a seasonal difference is **not** a m order difference) 
 
 $$
-(1 - \Phi_1B^4)(1 - \phi_1B)(1 - B^4)(1 - B)y_t = \epsilon_t(1 - \theta_1B)(1 - \Theta_1B^4)
+(1 - \Phi_1B^4)(1 - \phi_1B)(1 - B^4)(1 - B)y_t = \varepsilon_t(1 - \theta_1B)(1 - \Theta_1B^4)
 $$
 
-Here is an example to see what these pieces work together. Consider the following model $\text{ARIMA}(1, 0, 0)(0, 1, 1)_4$  
+It can be easily shown that a SARIMA model can be converted to an ARMA model. For autoregression terms
+
+
+
 
 $$
-\begin{aligned}
-(1 - \phi_1B)(1 - B^4)y_t &= (1 - \Theta_1B^4)\epsilon_t \\
-(1 - B^4 - \phi_1B - \phi_1B^5)y_t &= \epsilon_t - \Theta_1\epsilon_{t-4} \\
-y_t - y_{t-4} - \phi_1y_{t-1} - \phi_1y_{t - 5} &= \epsilon_t - \Theta_1\epsilon_{t-4} \\
-\end{aligned} 
+ar = (1 - \phi_1B - \cdots - \phi_pB^p)(1 - B)^d \\
+sar = (1 - \Phi_1 B^m - \cdots - B^{Pm})(1 - B^m)^D 
 $$
-
-Let $Z_t = y_t - y_{t - 4}$, then 
+Then, the AR polynomial of the inverted ARMA model can be written as  
 
 $$
-Z_{t} - \phi_1Z_{t-1} = \epsilon_t - \Theta_1\epsilon_{t-4}
+AR = ar \times sar
 $$
+
+For moving average terms, we have
+
+$$
+ma = (1 + \theta_1B + \cdots + \theta_qB^q) \\
+sma = (1 + \Theta_1B^m + \cdots + \Theta_1B^{Pm})(1 - B^m)^D 
+$$
+
+Then, the MA polynomial of the inverted ARMA model can be written as 
+
+$$
+MA = ma \times sma
+$$
+
+
+In this way, we can get the ARMA(u, v) model inverted from the SARIMA model. It can be written as 
+
+$$
+(1 - \phi_1'B - \cdots - \phi_u'B^u)y_t = (1 - \theta_1'B - \cdots - \theta_v'B^v)\varepsilon_t
+$$
+
+From Section \@ref(three-representations-of-an-ARMA-model)  
+
+
+
+
+
+
 
 
 ### ACF and PACF

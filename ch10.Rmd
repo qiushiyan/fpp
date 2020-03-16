@@ -1,2 +1,12 @@
 
 # Dynamic regression models 
+
+```{r}
+library(tsibble)
+library(tsibbledata)
+library(fable)
+library(feasts)
+```
+
+
+$\eta$

@@ -175,28 +175,28 @@ the basis of a linear function of lagged $y$(i.e., the RHS of a MA($\infty$) mod
 
 \begin{equation}
 (\#eq:wold-decomposition)
-y_t - \mu_t = \sum_{i-0}^{\infty}\psi_i\epsilon_i
+y_t - \mu_t = \sum_{i-0}^{\infty}\psi_i\varepsilon_i
 \end{equation}
 
-where $\epsilon_t$ is white noise and $\psi_i$ satisfy $\sum_{i-0}^{\infty}\psi_i^2 < \infty$. The quadratic convergence of the series of the $\psi_i$ guarantees the existence
-of second moments of the process $y_t$. There is no need of any distributional assumption for this decomposition to hold. Especially, there is no need of the $\epsilon_t$ to be independent, it is sufficient that they are (linearly) uncorrelated.  
+where $\varepsilon_t$ is white noise and $\psi_i$ satisfy $\sum_{i-0}^{\infty}\psi_i^2 < \infty$. The quadratic convergence of the series of the $\psi_i$ guarantees the existence
+of second moments of the process $y_t$. There is no need of any distributional assumption for this decomposition to hold. Especially, there is no need of the $\varepsilon_t$ to be independent, it is sufficient that they are (linearly) uncorrelated.  
 
 From Wold Decomposition we can derive $y_t$ has properties as follows:
 
 $$
 \begin{aligned}
 \text{E}(y_t) &= \mu_t \\
-\text{Var}(y_t) = \text{E}[(y_t - \mu_t)^2] &= E[(\epsilon_t + \psi_1\epsilon_{t-1} + ...)^2] = \sigma^2\sum_{i=0}^{\infty}\psi_i^2 \\ 
+\text{Var}(y_t) = \text{E}[(y_t - \mu_t)^2] &= E[(\varepsilon_t + \psi_1\varepsilon_{t-1} + ...)^2] = \sigma^2\sum_{i=0}^{\infty}\psi_i^2 \\ 
 \end{aligned}
 $$
 And as for variance: 
 $$
 \begin{split}
 \text{Cov}(y_t, y_{t+k}) &= \text{E}[(y_t - \mu_t)(y_{t+k} - \mu_{t+k})] \\ 
-&= \text{E}[(\epsilon_t + \psi_1\epsilon_{t-1} + \cdots + \psi_k\epsilon_{t-k} + \psi_{k+1}\epsilon_{t-k-1}) * (\epsilon_{t+k} + \psi_1\epsilon_{t+k-1} + \cdots + \psi_{k}\epsilon_t) + \psi_{k+1}\epsilon_{t-1})] \\
+&= \text{E}[(\varepsilon_t + \psi_1\varepsilon_{t-1} + \cdots + \psi_k\varepsilon_{t-k} + \psi_{k+1}\varepsilon_{t-k-1}) * (\varepsilon_{t+k} + \psi_1\varepsilon_{t+k-1} + \cdots + \psi_{k}\varepsilon_t) + \psi_{k+1}\varepsilon_{t-1})] \\
 \end{split}
 $$
-We know that for $i \not= j, \text{E}(\epsilon_i\epsilon_j) = \text{Cov}(\epsilon_i, \epsilon_j) = 0$ and $\text{E}(\epsilon_i^2) = \text{Var}(\epsilon_i^2) = \sigma^2$, so the result can be simplfied as :
+We know that for $i \not= j, \text{E}(\varepsilon_i\varepsilon_j) = \text{Cov}(\varepsilon_i, \varepsilon_j) = 0$ and $\text{E}(\varepsilon_i^2) = \text{Var}(\varepsilon_i^2) = \sigma^2$, so the result can be simplfied as :
 
 $$
 \begin{split}
@@ -263,18 +263,18 @@ $$
 In an autoregression model, we forecast the variable of interest using a linear combination of past values of the variable. The term autoregression indicates that it is a regression of the variable against itself. Thus, an autoregressive model of order $p$ can be written as 
 
 $$
-y_t =  c + \phi_1 y_{t-1} + \phi_2 y_{t-2} + \dots + \phi_p y_{t-p} + \epsilon_t
+y_t =  c + \phi_1 y_{t-1} + \phi_2 y_{t-2} + \dots + \phi_p y_{t-p} + \varepsilon_t
 $$
 
-where $\epsilon_t$ is white noise. We refer to this model as **AR(p) model**, a autoregressive model with order $p$ 
+where $\varepsilon_t$ is white noise. We refer to this model as **AR(p) model**, a autoregressive model with order $p$ 
 
 We can write out an AR(p) model using the backshift operator: 
 
 $$
 \begin{aligned}
-y_t - \phi_1y_{t-1} - \phi_2y_{t-2} - \cdots - \phi_py_{t-p} &= \epsilon_t + c\\ 
-(1 - \phi_1B - \phi_2B^2 - \cdots - \phi_pB^p)y_t &= \epsilon_t + c\\
-\phi_p(B)y_t &= \epsilon_t + c
+y_t - \phi_1y_{t-1} - \phi_2y_{t-2} - \cdots - \phi_py_{t-p} &= \varepsilon_t + c\\ 
+(1 - \phi_1B - \phi_2B^2 - \cdots - \phi_pB^p)y_t &= \varepsilon_t + c\\
+\phi_p(B)y_t &= \varepsilon_t + c
 \end{aligned}
 $$
 
@@ -293,7 +293,7 @@ Generally, for a AR(p) model, if we treat **B** as number (or numbers), we can w
 
 $$
 \begin{aligned}
-\phi_p(B)y_t &= \epsilon_t + c\\
+\phi_p(B)y_t &= \varepsilon_t + c\\
 &\Downarrow \\
 \phi_p(B) &= 0
 \end{aligned}
@@ -304,9 +304,9 @@ For example, consider this AR(1) model :
 
 $$
 \begin{aligned}
-y_t &= 0.5y_{t-1} + \epsilon_t \\
-y_t - 0.5y_{t-1} &= \epsilon_t \\
-(1 - 0.5B)y_t &= \epsilon_t \\
+y_t &= 0.5y_{t-1} + \varepsilon_t \\
+y_t - 0.5y_{t-1} &= \varepsilon_t \\
+(1 - 0.5B)y_t &= \varepsilon_t \\
 &\Downarrow \\
 1 - 0.5B &= 0 \\
 B &= 2
@@ -372,7 +372,7 @@ arima.sim(n = 100, model = list(order(2, 0, 0), ar = c(0.5, 0.5)))
 How do we decide the order $p $of a AR model? A rule of thumb is to look at **partial autocorrelation coefficients**, PACF. PACF measures the direct effect of a lagged value on its previous value. Suppose we want to measure the effect of $y_{t-2}$ on $y_{t}$, while $r_2$ could be high, it could also carry the effect of $y_{t-2} \rightarrow y_{t-1} \rightarrow y_t$, especially when $r_1$ is also high. This is when partial autocorrelation come to resuce, consider a AR(2) process (which means past values earlier than $y_{t-2}$ cannot have an effect on $y_t$)
 
 $$
-y_t = c + \phi_1 y_{t-1} + \phi_2 y_{t-2} + \epsilon_t
+y_t = c + \phi_1 y_{t-1} + \phi_2 y_{t-2} + \varepsilon_t
 $$
 
 The partial correlation coefficient for $y_{t-k}$ is simply defined as $\phi_k$ in the model, i.e., $\phi_1$ for $y_{t-1}$ and $\phi_2$ for $y_{t-2}$.  Partial correlation coefficient for $k > 2$ is think of as zero. In practice, there are more efficient algorithms for computing $\phi_k$ than fitting all of these autoregressions, but they give the same results.
@@ -419,14 +419,14 @@ Random walk is a special case of autoregressive process, namely AR(1). A time se
 $$
 y_t = 
 \begin{cases}
-\epsilon_1 &t = 1 \\
-y_{t - 1} + \epsilon_t& t = 2, 3, \dots 
+\varepsilon_1 &t = 1 \\
+y_{t - 1} + \varepsilon_t& t = 2, 3, \dots 
 \end{cases}
 $$
-where $\epsilon_t$ comes from a white noise process. It can also be expressed in the following form: 
+where $\varepsilon_t$ comes from a white noise process. It can also be expressed in the following form: 
 
 $$
-y_t = \sum_{i=1}^{t}{\epsilon_t}
+y_t = \sum_{i=1}^{t}{\varepsilon_t}
 $$
 
 According to this, we also have (covariance can be viewed as autocorrelation in this sense)
@@ -443,10 +443,10 @@ Random walk can be extended by adding a **drift** $\mu$, which would be the new 
 
 $$
 \begin{split}
-y_t &= \mu + y_{t-1} + \epsilon_t \\ 
-    &= \mu + \mu + y_{t-2} + \epsilon_t + \epsilon_{t-1}\\ 
+y_t &= \mu + y_{t-1} + \varepsilon_t \\ 
+    &= \mu + \mu + y_{t-2} + \varepsilon_t + \varepsilon_{t-1}\\ 
     \vdots \\
-    &=  t\mu + \sum_{i=1}^{t}\epsilon_i 
+    &=  t\mu + \sum_{i=1}^{t}\varepsilon_i 
 \end{split}
 $$
 
@@ -483,10 +483,10 @@ rw %>% ACF() %>% autoplot()
 Rather than using past values of the forecast variable in a regression, a moving average model uses past forecast errors in a regression-like model ^[Many textbooks and software programs define the model with negative signs before the $\theta$ terms (R uses positive signs). This doesn’t change the general theoretical properties of the model, although it does flip the algebraic signs of estimated coefficient values and (unsquared) $\theta$ terms in formulas for ACFs and variances]. 
 
 $$
-y_t = c + \theta_1\epsilon_{t-1} + \theta_2\epsilon_{t-2} + \dots + \theta_q\epsilon_{t-q} + \epsilon_{t}
+y_t = c + \theta_1\varepsilon_{t-1} + \theta_2\varepsilon_{t-2} + \dots + \theta_q\varepsilon_{t-q} + \varepsilon_{t}
 $$
 
-where $\epsilon_t$ is white noise. We refer to this as a MA(q) model, a moving average model of order $q$. Of course, we do not observe the values of $\epsilon_t$, so it is not really a regression in the usual sense.
+where $\varepsilon_t$ is white noise. We refer to this as a MA(q) model, a moving average model of order $q$. Of course, we do not observe the values of $\varepsilon_t$, so it is not really a regression in the usual sense.
 
 
 Notice that each value of $y_t$ can be thought of as a weighted moving average of the past few forecast errors. However, moving average models should not be confused with the moving average smoothing we discussed in Section \@ref(moving-averages). A moving average model is used for forecasting future values, while moving average smoothing is used for estimating the trend-cycle of past values.
@@ -510,14 +510,14 @@ $$
 \begin{split}
 \frac{\gamma(1)}{\gamma(0)} &= \frac{\text{Covariance for lag} 1}{\text{variance for lag}1} \\
            &= \frac{E[(y_t - E(y_t))(y_{t-1} - E(y_{t-1}))]}{(1 + \theta_1^2)\sigma^2} \\ 
-           &= \frac{E[(\epsilon_{t} + \theta_1\epsilon_{t-1})(\epsilon_{t-1} + \theta_1\epsilon_{t-2})]}{(1 + \theta_1^2)\sigma^2} \\
-           &= \frac{E(\epsilon_t \epsilon_{t-1} + \theta_1\epsilon_t\epsilon_{t-2} + \theta_1 \epsilon_{t-1}^2 + \theta_1^2\epsilon_{t-1}\epsilon_{t-2})}{(1 + \theta_1^2)\sigma^2} \\
-           &= \frac{\theta_1E(\epsilon_{t-1}^2)}{(1 + \theta_1^2)\sigma^2} \\
+           &= \frac{E[(\varepsilon_{t} + \theta_1\varepsilon_{t-1})(\varepsilon_{t-1} + \theta_1\varepsilon_{t-2})]}{(1 + \theta_1^2)\sigma^2} \\
+           &= \frac{E(\varepsilon_t \varepsilon_{t-1} + \theta_1\varepsilon_t\varepsilon_{t-2} + \theta_1 \varepsilon_{t-1}^2 + \theta_1^2\varepsilon_{t-1}\varepsilon_{t-2})}{(1 + \theta_1^2)\sigma^2} \\
+           &= \frac{\theta_1E(\varepsilon_{t-1}^2)}{(1 + \theta_1^2)\sigma^2} \\
            &= \frac{\theta_1\sigma^2}{(1 + \theta_1^2)\sigma^2} \\
            &= \frac{\theta_1}{1 + \theta_1^2}
 \end{split}
 $$
-For $\text{lag} > 1$, there will be no square term like $\epsilon_{t-k}^2$, but only cross terms like $\epsilon_t\epsilon_{t-k}$，whose expectation would be zero by defination, so that ACF will be zero, which leads to covariance stationarity.   
+For $\text{lag} > 1$, there will be no square term like $\varepsilon_{t-k}^2$, but only cross terms like $\varepsilon_t\varepsilon_{t-k}$，whose expectation would be zero by defination, so that ACF will be zero, which leads to covariance stationarity.   
 
 
 
@@ -553,7 +553,7 @@ The derivation of the ACF function has shed light on how we would decide the ord
 
 Let's prove this, a MA(q) model can be written as: 
 $$
-y_{t-k} = c + \theta_1\epsilon_{t-k -1} + \theta_2\epsilon_{t- k - 2} + \dots + \theta_q\epsilon_{t-k -q} + \epsilon_{t-q}
+y_{t-k} = c + \theta_1\varepsilon_{t-k -1} + \theta_2\varepsilon_{t- k - 2} + \dots + \theta_q\varepsilon_{t-k -q} + \varepsilon_{t-q}
 $$
 To see at which point ACF will be zero, consider the covariance (if covariance between $y_t$ and $y_{t-k}$ is zero, then $r_k$ is zero)
 $$
@@ -562,16 +562,16 @@ $$
 
 We know that $\text{E}(y_t)\text{E}(y_{t-k}) = c^2$.  So the problem is, what is included in $E(y_ty_{t-k})$, and when will it be $c^2$, so that the covariance would be zero? 
 
-Follow MA(q), $y_t$ includes $(c, \epsilon_t, \epsilon_{t-1}, \epsilon_{t-2}, \dots, \epsilon_{t-q})$, and $y_{t-k}$ includes $(c, \epsilon_{t-k}, \epsilon_{t-k -1}, \epsilon_{t-k -2}, \dots, \epsilon_{t - k -q})$. When they are multiplied together, there will be 
+Follow MA(q), $y_t$ includes $(c, \varepsilon_t, \varepsilon_{t-1}, \varepsilon_{t-2}, \dots, \varepsilon_{t-q})$, and $y_{t-k}$ includes $(c, \varepsilon_{t-k}, \varepsilon_{t-k -1}, \varepsilon_{t-k -2}, \dots, \varepsilon_{t - k -q})$. When they are multiplied together, there will be 
 
 $$
 \begin{aligned}
 \text{constant} &: c^2 \rightarrow E(c^2) = c^2 \\
-\text{cross terms} &: \epsilon_i\epsilon_j, i \not= j \rightarrow E(\epsilon_i\epsilon_j) = 0 \\
-\text{square terms} &: \epsilon_i^2 \rightarrow E(\epsilon_i^2) = \text{Var}(\epsilon_i) + \text{E}(\epsilon_i)^2 = \sigma^2 > 0
+\text{cross terms} &: \varepsilon_i\varepsilon_j, i \not= j \rightarrow E(\varepsilon_i\varepsilon_j) = 0 \\
+\text{square terms} &: \varepsilon_i^2 \rightarrow E(\varepsilon_i^2) = \text{Var}(\varepsilon_i) + \text{E}(\varepsilon_i)^2 = \sigma^2 > 0
 \end{aligned}
 $$
-Now everything is clear, ACF will be zero, if and only if there is no **square term**. That is to say, there is no same error term when we decompose $y_t$ and $y_{t-k}$. This means the earliest error in $(\epsilon_t, \epsilon_{t-1}, \epsilon_{t-2}, \dots, \epsilon_{t-q})$ is still earlier than the latest error term in  of $(\epsilon_{t-k}, \epsilon_{t-k -1}, \epsilon_{t-k -2}, \dots, \epsilon_{t - k -q})$ 
+Now everything is clear, ACF will be zero, if and only if there is no **square term**. That is to say, there is no same error term when we decompose $y_t$ and $y_{t-k}$. This means the earliest error in $(\varepsilon_t, \varepsilon_{t-1}, \varepsilon_{t-2}, \dots, \varepsilon_{t-q})$ is still earlier than the latest error term in  of $(\varepsilon_{t-k}, \varepsilon_{t-k -1}, \varepsilon_{t-k -2}, \dots, \varepsilon_{t - k -q})$ 
 
 $$
 \begin{aligned}
@@ -602,8 +602,8 @@ knitr::include_graphics("images/AR_MA_decision.png")
 
 $$
 \begin{aligned}
-(1 - \phi_1B)y_t &= \epsilon_t + c \\
-y_t &= \frac{\epsilon_t + c}{1 - \phi_1B} 
+(1 - \phi_1B)y_t &= \varepsilon_t + c \\
+y_t &= \frac{\varepsilon_t + c}{1 - \phi_1B} 
 \end{aligned}
 $$
 
@@ -620,8 +620,8 @@ It follows that we can rewritten our formula as (backshift operator on a constan
 
 $$
 \begin{aligned}
-y_t &= (\epsilon_t + c) + (\epsilon_t + c)\phi_1B + (\epsilon_t + c)(\phi_1B)^2 + \cdots \\
-    &= \epsilon_t + (c + \phi_1c + \phi_1^2c + \dots) + (\phi_1\epsilon_{t-1} + \phi_1^2\epsilon_{t-2} + \cdots) 
+y_t &= (\varepsilon_t + c) + (\varepsilon_t + c)\phi_1B + (\varepsilon_t + c)(\phi_1B)^2 + \cdots \\
+    &= \varepsilon_t + (c + \phi_1c + \phi_1^2c + \dots) + (\phi_1\varepsilon_{t-1} + \phi_1^2\varepsilon_{t-2} + \cdots) 
 \end{aligned}
 $$
 
@@ -634,15 +634,15 @@ This transformation is also a special case of the Wold Decomposition. Since when
 
 $$
 \begin{aligned}
-y_t &= c -  \theta_1\epsilon_{t-1} + \epsilon_t \\
-y_t &= (1 - \theta_1B)\epsilon_t + c\\
-\epsilon_t &= \frac{y_t - c}{1 - \theta_1B}
+y_t &= c -  \theta_1\varepsilon_{t-1} + \varepsilon_t \\
+y_t &= (1 - \theta_1B)\varepsilon_t + c\\
+\varepsilon_t &= \frac{y_t - c}{1 - \theta_1B}
 \end{aligned}
 $$
 The rest is the same, $\frac{y_t - c}{1 - \theta_1B}$ can be considered as the infinite sum of a geometric series, when $|\theta_1| < 1$. And the final equation is 
 
 $$
-y_t = (c + \theta_1c + \theta_1^2c + \cdots) + (\theta_1y_{t-1} + \theta_1^2y_{t-2} + \cdots) + \epsilon_t
+y_t = (c + \theta_1c + \theta_1^2c + \cdots) + (\theta_1y_{t-1} + \theta_1^2y_{t-2} + \cdots) + \varepsilon_t
 $$
 With $|\theta_1| < 1$, $(c + \theta_1c + \theta_1^2c + \cdots)$ will converge to a constant and the equation qualifies for a AR($\infty$) model. Thus, when $|\theta_1| < 1$ the MA model is **invertible**. (From another perspective, if $|\theta_1| > 1$ $\phi_1, ... ,\phi_p$ in MA($\infty$) model will not met stationary conditions).   
 
@@ -681,19 +681,19 @@ number of lags. Again, we start with the simplest case, the ARMA(1, 1) process.
 An ARMA(1, 1) process can be written as follows (Note the negative sign before $\theta_1$)
 
 $$
-y_t = c + \phi_1y_{t-1} - \theta_1\epsilon_{t-1}  + \epsilon_t
+y_t = c + \phi_1y_{t-1} - \theta_1\varepsilon_{t-1}  + \varepsilon_t
 $$
 using the backshift notation 
 
 $$
-(1 - \phi_1B)y_t = c + (1 - \theta_1B)\epsilon_t
+(1 - \phi_1B)y_t = c + (1 - \theta_1B)\varepsilon_t
 $$
-where $\epsilon_t$ comes from pure random process. To get the Wold representation of an
+where $\varepsilon_t$ comes from pure random process. To get the Wold representation of an
 ARMA(1, 1) process, we solve the equation below for $y_t$
 
 \begin{equation}
 (\#eq:arma11)
-y_t = \frac{c}{1 - \phi_1B} + \frac{1 - \theta_1B}{1 - \phi_1B}\epsilon_t
+y_t = \frac{c}{1 - \phi_1B} + \frac{1 - \theta_1B}{1 - \phi_1B}\varepsilon_t
 \end{equation}
 
 It is obvious that $\phi_1 \not= \theta_1$ must hold, because otherwise $y_t$ would be a pure
@@ -727,7 +727,7 @@ Note that the Wold Decomposition also requires $\sum_{i-0}^{\infty}\psi_i^2 < \i
 **Thus, the ARMA(1, 1) process is stationary if, with stochastic initial conditions, it has a stable AR(1) term.** The Wold representation is  
 
 $$
-y_t = \frac{c}{1 - \phi_1} + \epsilon_t + (\phi_1 - \theta_1)\epsilon_{t-1} + \phi_1(\phi_1 - \theta_1)\epsilon_{t-2} + \phi_1^2(\phi_1 - \theta_1)\epsilon_{t-3}
+y_t = \frac{c}{1 - \phi_1} + \varepsilon_t + (\phi_1 - \theta_1)\varepsilon_{t-1} + \phi_1(\phi_1 - \theta_1)\varepsilon_{t-2} + \phi_1^2(\phi_1 - \theta_1)\varepsilon_{t-3}
 $$
 
 Thus, the ARMA(1, 1) process can be written as an MA($\infty$) process.
@@ -735,7 +735,7 @@ Thus, the ARMA(1, 1) process can be written as an MA($\infty$) process.
 To invert the MA(1) part, $|\theta_1| < 1$ must hold. From Equation \@ref(eq:arma11) we know: 
 
 $$
-\epsilon_t = \frac{-c}{1 - \theta_1} + \frac{1 - \phi_1B}{1 - \theta_1B}y_t
+\varepsilon_t = \frac{-c}{1 - \theta_1} + \frac{1 - \phi_1B}{1 - \theta_1B}y_t
 $$
 
 
@@ -743,7 +743,7 @@ If $1/(1 – \theta_1B)$ is developed into a geometric series we get
 
 $$
 \begin{aligned}
-\epsilon_t &= \frac{-c}{1 + \theta_1} + (1 - \phi_1B)(1 + \theta_1B + \theta_1^2B^2 + \cdots)y_t \\
+\varepsilon_t &= \frac{-c}{1 + \theta_1} + (1 - \phi_1B)(1 + \theta_1B + \theta_1^2B^2 + \cdots)y_t \\
 &= \frac{-c}{1 + \theta_1} + y_t + (\theta_1 - \phi_1)y_{t-1} + \theta_1(\theta_1 - \phi_1)y_{t-2} + \theta_1^2(\theta_1 - \phi_1)y_{t-3} + \cdots
 \end{aligned}
 $$
@@ -784,3 +784,55 @@ condition $r_1$ is positive.
 ```{r, echo = FALSE}
 knitr::include_graphics("images/arma11.png")
 ```
+
+### Three representations of an ARMA model
+
+This is a supplementary section elaborating on the details among the relationship between ARMA, AR, and MA models.  
+
+
+For a stationary ARMA(p, q) model: 
+
+$$
+(1 - \phi_1B - \cdots - \phi_p B^p)y_t = c + (1 + \theta_1B + \cdots +\theta_qB^q)\varepsilon_t
+$$
+
+For the AR and MA representations, we use long division of two polynomials. Given two polynomials 
+$\Phi(B) = 1 - \sum_{i=1}^{p}\phi_iB^i$ and $\Theta(B) = 1 - \sum_{i=1}^{q}\theta_iB^i$ we can obtain, by long division, that the following results take form of 
+
+$$
+\frac{\Theta(B)}{\Phi(B)} = 1 + \psi_1 B + \psi_2 B^2 + \cdots  \equiv \Psi(B) \tag{1}
+$$
+
+and 
+
+$$
+\frac{\Phi(B)}{\Theta(B)}= 1 - \pi_1 B - \pi_2 B ^2 - \cdots \equiv \Pi(B) \tag{2}
+$$
+
+#### AR representation 
+
+From Eq (2), the ARMA(p, q) model can be written as 
+
+$$
+\frac{\Phi(B)}{\Theta(B)}y_t = c + \varepsilon_t
+$$
+So 
+
+$$
+y_t = c + \pi_1y_{t-1} + \pi_2y_{t-2} + \pi_3y_{t-3} + \cdots + \varepsilon_t 
+$$
+
+
+#### MA representation  
+
+From Eq(1), the ARMA(p, q) model can be written as 
+
+$$
+y_t = \frac{c}{\Phi(B)} + \frac{\Theta(B)}{\Phi(B)}\varepsilon_t
+$$
+So 
+
+$$
+y_t = \frac{c}{\Phi(B)} + \psi_1\varepsilon_{t-1} + \psi_2\varepsilon_{t-2} + \cdots  + \varepsilon_{t}
+$$
+

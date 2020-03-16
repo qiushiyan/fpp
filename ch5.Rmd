@@ -304,7 +304,7 @@ Using time series terms, a white noise should have mean 0, no autocorrelation an
 We often assume a more stringent form of white noise, that is **Gaussian white noise**:  
 
 $$
-\epsilon_t \stackrel{iid}{\sim} N(0, \sigma^2)
+\varvarepsilon_t \stackrel{iid}{\sim} N(0, \sigma^2)
 $$
 
 
@@ -343,7 +343,7 @@ In this example, $T = 50$ and so the bounds are at $±2/\sqrt{50} = \pm 0.28$. A
 
 Why white noise matters? Researchers generally assume that white noise is not predictable, and contains no information related to the respose of interest. It follows that we would expect that residuals computed according to a specific model to be white noise. This means the valuable part of model extract information from the data to such an extent that we do not care what's left.   
 
-If residuals $\epsilon_1, \epsilon_2, \dots, \epsilon_t$ violates any of the rules of white noise, then there is still valuable information buried under the resiuals, which we will imporve our models to capture. We have not a 'best' model at hand until residuals become unpredictable, in other words, white noise.  
+If residuals $\varepsilon_1, \varepsilon_2, \dots, \varepsilon_t$ violates any of the rules of white noise, then there is still valuable information buried under the resiuals, which we will imporve our models to capture. We have not a 'best' model at hand until residuals become unpredictable, in other words, white noise.  
 
 ### Example: Forecasting the Google daily closing stock price  
 

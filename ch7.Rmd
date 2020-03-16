@@ -29,7 +29,7 @@ using total advertising spend $x$ as a predictor. Or we might forecast daily ele
 In the simplest case, the regression model allows for a linear relationship between the forecast variable $y$ and a single predictor variable $x$:
 
 $$
-y_t = \beta_0 + \beta_1x_t + \epsilon_t
+y_t = \beta_0 + \beta_1x_t + \varvarepsilon_t
 $$
 
 Use the US consumption data, `us_change`, to fit a simple linear model where `Consumption` is predicted against `Income`. First, plot these two time series
@@ -84,7 +84,7 @@ us_change %>%
 
 \begin{equation}
 (\#eq:multiple-linear-reg)
-y_t = \beta_0 + \beta_1x_{1t} + \beta_2x_{2t} + \dots + \beta_kx_{kt} + \epsilon_t
+y_t = \beta_0 + \beta_1x_{1t} + \beta_2x_{2t} + \dots + \beta_kx_{kt} + \varepsilon_t
 \end{equation}
 
 We could simply use more predictors in `us_change` to create a multiple linear regression model. This time, the last 4 columns are included in the model. Take a look at the rest 3 time series determined by `Production`, `Savings` and `Unemployment`  
@@ -137,18 +137,18 @@ When we use a linear regression model, we are implicitly making some assumptions
 
 
 
-- Residuals $\epsilon_t$ are **independent** (not autocorrelated in a time series linear model specifically) and have constant variance $\sigma^2$ and mean $0$ . Otherwise the forecasts will be inefficient, as there is more information in the data that can be exploited. This can be expressed as 
+- Residuals $\varepsilon_t$ are **independent** (not autocorrelated in a time series linear model specifically) and have constant variance $\sigma^2$ and mean $0$ . Otherwise the forecasts will be inefficient, as there is more information in the data that can be exploited. This can be expressed as 
 
 \begin{equation}  
 (\#eq:GM)
 \begin{aligned}
-\text{Cov}(\epsilon_i, \epsilon_j) &= 
+\text{Cov}(\varepsilon_i, \varepsilon_j) &= 
 \begin{cases}
 0 & i \not=j \\
 \sigma^2 & i = j
 \end{cases} 
 \;\;\;i,j = 1, 2,\dots,T \\ 
-E(\epsilon_t) &= 0  
+E(\varepsilon_t) &= 0  
 \;\;\;t = 1,2,\dots,T
 \end{aligned}
 \end{equation}
@@ -160,7 +160,7 @@ Equation \@ref(eq:GM) is also called a G-M (Gauss-Markov) condition.
 - Residuals follow a approximate **normal** distribution, meaning: 
 
 $$
-\epsilon_t \sim N(0, \sigma^2) \;\;\; t = 1,2, \dots,T
+\varepsilon_t \sim N(0, \sigma^2) \;\;\; t = 1,2, \dots,T
 $$
 
 
@@ -173,7 +173,7 @@ Another important assumption in the linear regression model is that **each predi
 The least squares principle provides a way of choosing the coefficients effectively by minimising the sum of the squared errors. That is, we choose the values of $\beta_0$,$\beta_1$,…,$\beta_k$ that minimise :  
 
 $$
-\sum_{t=1}^{T}{\epsilon_t^2} = \sum_{t=1}^{T}{(y_t -\beta_0 - \beta_1x_{t1} + \beta_2x_{t2} - \cdots- \beta_kx_{tk})^2}
+\sum_{t=1}^{T}{\varepsilon_t^2} = \sum_{t=1}^{T}{(y_t -\beta_0 - \beta_1x_{t1} + \beta_2x_{t2} - \cdots- \beta_kx_{tk})^2}
 $$
 
 
@@ -375,7 +375,7 @@ There are several useful predictors that occur frequently when using regression 
 It is common for time series data to be trending. A linear trend can be modelled by simply using $x_{1t} = t$ as a predictor 
 
 $$
-y_t = \beta_0 + \beta_1 t + \epsilon
+y_t = \beta_0 + \beta_1 t + \varepsilon
 $$
 
 where $t = 1, 2, \dots, T$  
@@ -549,7 +549,7 @@ $$
 
 All things being equal, adjusted $R^2$ is generally smaller than $R^2$, unless you are dealing with a null model so that $k = 0$, since it aims to penalize models with too many predictors.  
 
-Using this measure, the best model will be the one with the largest value of ¯R2. Maximising ¯R2 is equivalent to minimising the standard error $\hat{\sigma}$ of $\hat{\epsilon}$ given in Equation \@ref(eq:standard-error).  
+Using this measure, the best model will be the one with the largest value of ¯R2. Maximising ¯R2 is equivalent to minimising the standard error $\hat{\sigma}$ of $\hat{\varepsilon}$ given in Equation \@ref(eq:standard-error).  
 Maximising $\bar{R}^2$ (For the rest of regression measurements, we almost always want to minimize) works quite well as a method of selecting predictors, although it does tend to err on the side of selecting too many predictors.
 
 ### Cross validation  
@@ -619,7 +619,7 @@ The best model contains all four predictors. However, a closer look at the resul
 Recall the regression model Equation \@ref(eq:multiple-linear-reg) 
 
 \begin{equation}
-y_t = \beta_0 + \beta_1x_{1t} + \beta_2x_{2t} + \dots + \beta_kx_{kt} + \epsilon_t
+y_t = \beta_0 + \beta_1x_{1t} + \beta_2x_{2t} + \dots + \beta_kx_{kt} + \varepsilon_t
 \end{equation} 
 
 While we can easily get fitted values ${\hat{y}_1, \hat{y}_2, \dots, \hat{y}_T}$, what we are interested in here, however, is forecasting future values of $y$.
@@ -754,10 +754,10 @@ Including lagged values of the predictors does not only make the model operation
 A linear regression model can be expressed in matrix forms as such:  
 
 $$
-\boldsymbol{y} = \boldsymbol{X} \boldsymbol{\beta} + \boldsymbol{\epsilon}
+\boldsymbol{y} = \boldsymbol{X} \boldsymbol{\beta} + \boldsymbol{\varepsilon}
 $$
 
-where $\boldsymbol{y} = [y_1, y_2, \dots, y_T]$, $\boldsymbol{X}$ being the design matrix and $\boldsymbol{\epsilon} = [\epsilon_1, \epsilon_2, \dots, \epsilon_T]$ thus have mean $\boldsymbol{0}$ and variance-covariance matrix $\sigma^2\boldsymbol{I}$  
+where $\boldsymbol{y} = [y_1, y_2, \dots, y_T]$, $\boldsymbol{X}$ being the design matrix and $\boldsymbol{\varepsilon} = [\varepsilon_1, \varepsilon_2, \dots, \varepsilon_T]$ thus have mean $\boldsymbol{0}$ and variance-covariance matrix $\sigma^2\boldsymbol{I}$  
 
 Least square estimation uses a projection matrix $H = \boldsymbol{X(X^TX)^{-1}X^T}$ (also called "hat matrix") so that $\boldsymbol{Hy = \hat{y} = X\hat{\beta}}$. We can derive that 
 
@@ -789,7 +789,7 @@ $$
 \hat{y} + Z_\alpha \hat{\sigma} \sqrt{[1 + \boldsymbol{x^*}(\boldsymbol{X^T X})^{-1}\boldsymbol{(x^*)^T}]}
 $$
 
-This takes into account the uncertainty due to the error term $\boldsymbol{\epsilon}$ and the uncertainty in the coefficient estimates. However, it ignores any errors in $\boldsymbol{x^*}$. Thus, if the future values of the predictors are uncertain, then the prediction interval calculated using this expression will be too narrow.  
+This takes into account the uncertainty due to the error term $\boldsymbol{\varepsilon}$ and the uncertainty in the coefficient estimates. However, it ignores any errors in $\boldsymbol{x^*}$. Thus, if the future values of the predictors are uncertain, then the prediction interval calculated using this expression will be too narrow.  
 
 ## Nonlinear regression  
 
@@ -799,7 +799,7 @@ The simplest way of modelling a nonlinear relationship is to transform the forec
 
 A **log-log** functional form is specified as 
 $$
-\log{y} = \beta_0 + \beta_1 \log{x} + \epsilon
+\log{y} = \beta_0 + \beta_1 \log{x} + \varepsilon
 $$
 
 Other useful forms can also be specified. The **log-linear** form is specified by only transforming the forecast variable and the **linear-log** form is obtained by transforming the predictor.
@@ -811,7 +811,7 @@ Also, box-cox transformation as a family of both power transformation and log tr
 There are cases for which simply transforming the data will not be adequate and a more general specification may be required. Then the model we use is  
 
 $$
-y = f(x) + \epsilon
+y = f(x) + \varepsilon
 $$
 
 where $f(x)$ could be of any form. In the specification of nonlinear regression that follows, we allow f to be a more flexible nonlinear function of $x$, compared to simply a logarithmic or other transformation.  
@@ -897,7 +897,7 @@ There seems to be a (quadratic) pattern in our residual plot, and our simple lin
 Alternatively, fitting an exponential trend (equivalent to a log-linear regression) to the data can be achieved by transforming the $y$ variable so that the model to be fitted is,   
 
 $$
-\log{y}_t = \beta_0 + \beta_1t + \epsilon_t
+\log{y}_t = \beta_0 + \beta_1t + \varepsilon_t
 $$
 
 The plot of winning times reveals three different periods. There is a lot of volatility in the winning times up to about 1940, with the winning times decreasing overall but with significant increases during the 1920s. After 1940 there is a near-linear decrease in times, followed by a flattening out after the 1980s, with the suggestion of an upturn towards the end of the sample. To account for these changes, **we specify the years 1940 and 1980 as knots**. We should warn here that subjective identification of knots can lead to over-fitting, which can be detrimental to the forecast performance of a model, and should be performed with caution.  
