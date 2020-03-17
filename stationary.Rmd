@@ -107,18 +107,18 @@ $$
 
 Under the null hypothesis it is asymptotically $\chi^2$  distributed with $h - K$ degrees of freedom, $K$ being the number of estimated parameters. It is suggested that use $h = 10$ for non-seasonal data and $h = 2m$ for seasonal data, where $m$ is the period of seasonality.  
 
-As – strictly applied – the distribution of this test statistic holds only asymptotically (under large sample), GRETA M. LJUNG and GEORGE E.P. BOX (1978) proposed the following modification for small samples 
+As – strictly applied – the distribution of this test statistic holds only asymptotically (under large sample), GRETA M. LJUNG and GEORGE E.P. BOX (1978) proposed the following modification for small samples, known as the **ljung-box test**
 
 $$
 Q^* = T(T + 2)\sum_{k = 1}^{h}{(T-K)^{-1}}r_k^2
 $$
-$Q^*$ is also asymptotically $\chi^2$ distributed with $m - k$ degrees of freedom
+$Q^*$ is also asymptotically $\chi^2$ distributed with $m - k$ degrees of freedom, 
 
-An alternative to these testing procedures is the Lagrange-Multiplier Test (LM Test) developed by TREVOR S. BREUSCH (1978) and LESLIE G. GODFREY (1978). Like for the $Q$ ($Q^*$) test the null hypothesis is which is tested against the alternative that the residuals follow an auto-
-regressive or a moving average process of order h. The test can be performed with an auxiliary regression. The estimated residuals are regressed on the explanatory variables of the main model and on the lagged residuals, up to order h. The test statistic which is $\chi^2$ distributed with h degrees of freedom is given by $TR^2$ the auxiliary regression, with T being the number of observations. Alternatively, an F test can be used for testing the combined significance of the lagged residuals in the auxiliary regression.  
+An alternative to these testing procedures is the **Breusch-Godfrey test** (BG test), also known asa the **Lagrange-Multiplier Test** (LM Test) developed by TREVOR S. BREUSCH (1978) and LESLIE G. GODFREY (1978). Like for the $Q$ ($Q^*$) test the null hypothesis is which is tested against the alternative that the residuals follow an autoregressive or a moving average process of order h. The test can be performed with an auxiliary regression. The estimated residuals are regressed on the explanatory variables of the main model and on the lagged residuals, up to order h. The test statistic which is $\chi^2$ distributed with h degrees of freedom is given by $TR^2$ the auxiliary regression, with T being the number of observations. Alternatively, an $F$ test can be used for testing the combined significance of the lagged residuals in the auxiliary regression.   
 
-Compared to the Durbin-Watson test which is used in traditional econometrics for testing autocorrelation of the residuals of an estimated model, the $Q$, $Q^*$ as well as the LM test have two major advantages: firstly, they can check for autocorrelation of any order, and not only one order at a time. Secondly, the results are also correct if there are lagged endogenous variables in the regression equation, whereas in such cases the results of the Durbin-
-Watson test are biased in favour of the null hypothesis.  
+The Breusch-Godfrey test is similar to the Ljung-Box test, but it is specifically designed for use with regression models.  
+
+Compared to the Durbin-Watson test which is used in traditional econometrics for testing autocorrelation of the residuals of an estimated model, the $Q$, $Q^*$ as well as the BG test have two major advantages: firstly, they can check for autocorrelation of any order, and not only one order at a time. Secondly, the results are also correct if there are lagged endogenous variables in the regression equation, whereas in such cases the results of the Durbin-Watson test are biased in favour of the null hypothesis.  
 
 
 As mentioned in Section \@ref(white-noise), we often assume normally distributed white noise. But the fact that the residuals are not autocorrelated does not imply that they are stochastic independence if the variauted, as the usual testing procedures are based on this aspecially the third (skewness) and fourth moments (kurtosis) are important (0 and 3 respectively based on normality hypothesis).  
@@ -153,6 +153,7 @@ AR1_aug <- AR1 %>%
 AR1_aug %>% features(.resid, box_pierce, lag = 10, dof = 0)
 # ljung box test
 AR1_aug %>% features(.resid, ljung_box, lag = 10, dof = 0)
+# Breusch Godfrey test: lmtest::bgtest()
 # durbin watson test 
 AR1_aug %>% pull(.resid) %>% car::durbinWatsonTest(max.lag = 10)
 # jb test (normality)
@@ -749,7 +750,7 @@ $$
 $$
 This proves to be an AR($\infty$) representation. It shows that the combination of an AR(1) and an MA(1) term leads to a process with both MA($\infty$) and AR($\infty$) representation if the AR term is stable and the MA term invertible.
 
-More generally, **ARMA(p, q) is staionary and invertible if the AR term is stationary and the MA term invertible** (all complex roots of $\Phi(B)$ and that of $\Theta(B)$ exceeds 1 in absolute value). It can either be represented as an AR($\infty$) or as an MA($\infty$) process.  Thus, neither its autocorrelation nor its partial autocorrelation function breaks off. In short, it is possible to generate stationary stochastic processes with infinite AR and MA orders by using only a finite number of parameters.
+More generally, **ARMA(p, q) is staionary and invertible if the AR term is stationary and the MA term invertible** (all complex roots of $\Phi(B)$ and that of $\Theta(B)$ exceeds 1 in absolute value, Section \@ref(plotting-the-characteristic-roots introduces `gg_arma()` to visualized characteristic roots)). It can either be represented as an AR($\infty$) or as an MA($\infty$) process.  Thus, neither its autocorrelation nor its partial autocorrelation function breaks off. In short, it is possible to generate stationary stochastic processes with infinite AR and MA orders by using only a finite number of parameters. 
 
 It can be proved that an stationary ARMA(1, 1) has the following properties: 
 

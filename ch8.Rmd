@@ -2,7 +2,7 @@
 
 # Exponential smoothing 
 
-```{r}
+```{r, echo = FALSE}
 knitr::opts_chunk$set(cache = TRUE)
 ```
 

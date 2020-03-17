@@ -301,10 +301,10 @@ A time series is (discrete) white noise if its values are (see mathematical defi
 
 Using time series terms, a white noise should have mean 0, no autocorrelation and no seasonality.  
 
-We often assume a more stringent form of white noise, that is **Gaussian white noise**:  
+We often assume a more stringent form of white noise, that is **Gaussian white noise**, see Section \@ref(tests-for-autocorrelation-and-normality) for JB normality test:  
 
 $$
-\varvarepsilon_t \stackrel{iid}{\sim} N(0, \sigma^2)
+\varepsilon_t \stackrel{iid}{\sim} N(0, \sigma^2)
 $$
 
 
@@ -329,12 +329,12 @@ z %>%
 Let's check the autocorrelation of a white noise:  
 
 ```{r, fig.height = 8, fig.width = 7.5}
-p1 <- y %>% gg_lag(geom = "point") + ggtitle("Lag plot forGaussian white noise")
-p2 <- y %>% ACF() %>% autoplot() + ggtitle("ACF plot for Gaussian white noise")
-p3 <- z %>% gg_lag(geom = "point") + ggtitle("Lag plot for Other white noise")
-p4 <- z %>% ACF() %>% autoplot() + ggtitle("ACF plot Other white noise")
-
-p1 + p2 + p3 + p4 
+wrap_plots(
+  y %>% gg_lag(geom = "point") + ggtitle("Lag plot forGaussian white noise"),
+  y %>% ACF() %>% autoplot() + ggtitle("ACF plot for Gaussian white noise"),
+  z %>% gg_lag(geom = "point") + ggtitle("Lag plot for Other white noise"),
+  z %>% ACF() %>% autoplot() + ggtitle("ACF plot Other white noise")
+)
 ```
 
 Since white noise are uncoorelated, we expect each autocorrelation coefficient of any order to be close to zero. Of course, they will not be exactly equal to zero as there is some random variation. For a white noise series, we expect $95%$ of the spikes in the `ACF` plot to lie within $±2/\sqrt{T}$ where $T$  is the length of the time series. It is common to plot these bounds on a graph of the `ACF` (the blue dashed lines above). If one or more large spikes are outside these bounds, or if substantially more than $5\%$ of spikes are outside these bounds, then the series is probably not white noise.

@@ -293,6 +293,8 @@ augment(us_change_mfit) %>%
 
 Observations that take extreme values compared to the majority of the data are called outliers. Observations that have a large influence on the estimated coefficients of a regression model are called influential observations. Usually, influential observations are also outliers that are extreme in the $x$ direction.  
 
+**It is useful to distinguish outliers from anomalies**. An outlier is mathematically stated as any observation point in given data-set that is more than 1.5 interquartile ranges (IQRs) below the first quartile or above the third quartile. Anomaly is items, events or observations which do not conform to an expected pattern (staistical distributions), simply anything "outside normal". It can be noise, deviations and exceptions defined in application of particular system. The [anomalize](https://github.com/business-science/anomalize) package provides tools in anomaly detection and visualization.
+
 For a formal detection of observation influence, the **leverage** of the t-th observation ${x_{1t}, x_{2t}, \dots, {x_{kt}}$ is defined as the t-th diagonal element of the hat matrix $H = X(X^TX)^{-1}X^T$, i.e. $h_{tt}$.  
 
 And the **Cook distance** of the i-th observation is defined as :  
@@ -304,14 +306,12 @@ $$
 where $k$ is the number of predictors and $r_t$ the i-th internally studentized residuals $r_t = \frac{e_t}{\hat{\sigma}\sqrt{1-h_{tt}}}$  
 
 
-So I followed instructions from another book: *An R Companion to Applied Regression, 3rd* [@fox2018r]. Unfortunately the code is basically base-R style, so I have to refit the model with `lm()` again.  
+Finding influential observations in practice is not covered in the book. So I followed instructions from another book: *An R Companion to Applied Regression, 3rd* [@fox2018r]. 
 
 ```{r}
 us_change_lm <- lm(Consumption ~ Income + Production + Savings + Unemployment, 
                     data = us_change)
 ```
-
-
 
 ```{r, fig.height = 8, fig.width = 7}
 us_change_lm %>% car::influenceIndexPlot()
@@ -331,7 +331,7 @@ check_model(us_change_lm)
 
 ### Spurious regression  
 
-More often than not, time series data are “non-stationary”; that is, the values of the time series do not fluctuate around a constant mean or with a constant variance. We will come to the formal definition of stationarity in more detail in Section \@ref(stationarity), but here we need to address the effect that non-stationary data can have on regression models.   
+Time series data are often “non-stationary”. That is, the values of the time series do not fluctuate around a constant mean or with a constant variance. We will come to the formal definition of stationarity in more detail in Section \@ref(stationarity), but here we need to address the effect that non-stationary data can have on regression models.   
 
 For example, consider the two variables plotted in below. These appear to be related simply because they both trend upwards in the same manner. However, air passenger traffic in Australia has nothing to do with rice production in Guinea.  
 
@@ -352,17 +352,23 @@ p3 <- guinea_rice %>%
 ```
 
 
-Regressing non-stationary time series can lead to spurious regressions. **High $R^2$ and high residual autocorrelation can be signs of spurious regression**. Notice these features in the output below. We discuss the issues surrounding non-stationary data and spurious regressions in more detail in Chapter \@ref(dynamic-regression-models).
+Regressing non-stationary time series can lead to spurious regressions. **High $R^2$ and high residual autocorrelation can be signs of spurious regression**. Notice these features in the output below. We discuss the issues surrounding non-stationary data and spurious regressions in more details in Chapter \@ref(dynamic-regression-models).
 
 Cases of spurious regression might appear to give reasonable short-term forecasts, but they will generally not continue to work into the future.   
 
 ```{r}
 spurious_fit <- guinea_rice %>% 
   left_join(air_passengers) %>% 
-  model(TSLM(Passengers ~ Production)) 
+  lm(Passengers ~ Production, data = .) 
 
-spurious_fit %>% report()
-spurious_fit %>% gg_tsresiduals()
+# high r^2 and sigma
+glance(spurious_fit)
+```
+
+Section \@ref(tests-for-autocorrelation-and-normality) introduces the BG test, which is designed to detect autocorrelation among residuals of a regression model, small p-value suggests that residuals are highly correlated  
+
+```{r}
+spurious_fit %>% lmtest::bgtest()
 ```
 
 
