@@ -11,9 +11,12 @@ library(fable)
 library(feasts)
 library(lubridate)
 library(patchwork)
-options(scipen = 3)
+
 ```
 
+```{r, echo = FALSE}
+options(scipen = 3)
+```
 
 
 
@@ -29,7 +32,7 @@ using total advertising spend $x$ as a predictor. Or we might forecast daily ele
 In the simplest case, the regression model allows for a linear relationship between the forecast variable $y$ and a single predictor variable $x$:
 
 $$
-y_t = \beta_0 + \beta_1x_t + \varvarepsilon_t
+y_t = \beta_0 + \beta_1x_t + \varepsilon_t
 $$
 
 Use the US consumption data, `us_change`, to fit a simple linear model where `Consumption` is predicted against `Income`. First, plot these two time series
