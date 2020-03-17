@@ -793,7 +793,7 @@ This is a supplementary section elaborating on the details among the relationshi
 For a stationary ARMA(p, q) model: 
 
 $$
-(1 - \phi_1B - \cdots - \phi_p B^p)y_t = c + (1 + \theta_1B + \cdots +\theta_qB^q)\varepsilon_t
+(1 - \phi_1 B - \cdots - \phi_p B^p)y_t = c + (1 + \theta_1 B + \cdots +\theta_q B^q)\varepsilon_t
 $$
 
 For the AR and MA representations, we use long division of two polynomials. Given two polynomials 

@@ -554,7 +554,7 @@ $$
 (1 - \phi_1'B - \cdots - \phi_u'B^u)y_t = (1 - \theta_1'B - \cdots - \theta_v'B^v)\varepsilon_t
 $$
 
-From Section \@ref(three-representations-of-an-ARMA-model)  
+From Section \@ref(three-representations-of-an-arma-model), we also know that an ARMA model can be converted to AR or MA models under certain circumstances, so that SARIMA models can be further transformed in a similar way.  
 
 
 
