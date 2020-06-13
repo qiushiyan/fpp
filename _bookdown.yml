@@ -5,6 +5,7 @@ language:
   ui:
     chapter_name: "Chapter "
 
+output_dir: "docs"
 
 before_chapter_script: "_common.R"
 

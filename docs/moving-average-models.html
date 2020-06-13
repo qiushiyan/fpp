@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>9.4 Moving average models | Notes for “Forecasting: Principles and Practice, 3rd edition”</title>
+  <meta name="description" content="“Reproducing”Forecasting: Principles and Practice, 3rd edition"" />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="9.4 Moving average models | Notes for “Forecasting: Principles and Practice, 3rd edition”" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="“Reproducing”Forecasting: Principles and Practice, 3rd edition"" />
+  <meta name="github-repo" content="enixam/fpp" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="9.4 Moving average models | Notes for “Forecasting: Principles and Practice, 3rd edition”" />
+  
+  <meta name="twitter:description" content="“Reproducing”Forecasting: Principles and Practice, 3rd edition"" />
+  
+
+<meta name="author" content="Qiushi Yan" />
+
+
+<meta name="date" content="2020-05-11" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="autoregressive-models.html"/>
+<link rel="next" href="arma-models.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="css\style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Notes for fpp3</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="getting-started.html"><a href="getting-started.html"><i class="fa fa-check"></i><b>1</b> Getting started</a></li>
+<li class="chapter" data-level="2" data-path="time-series-graphics.html"><a href="time-series-graphics.html"><i class="fa fa-check"></i><b>2</b> Time series graphics</a><ul>
+<li class="chapter" data-level="2.1" data-path="tsibble-objects.html"><a href="tsibble-objects.html"><i class="fa fa-check"></i><b>2.1</b> <code>tsibble</code> objects</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="tsibble-objects.html"><a href="tsibble-objects.html#manipulation"><i class="fa fa-check"></i><b>2.1.1</b> manipulation</a></li>
+<li class="chapter" data-level="2.1.2" data-path="tsibble-objects.html"><a href="tsibble-objects.html#importing"><i class="fa fa-check"></i><b>2.1.2</b> importing</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="time-plots.html"><a href="time-plots.html"><i class="fa fa-check"></i><b>2.2</b> Time plots</a></li>
+<li class="chapter" data-level="2.3" data-path="patterns-of-time-series-trend-seasonal-and-cyclic.html"><a href="patterns-of-time-series-trend-seasonal-and-cyclic.html"><i class="fa fa-check"></i><b>2.3</b> Patterns of time series: trend, seasonal and cyclic</a></li>
+<li class="chapter" data-level="2.4" data-path="seasonal-plots.html"><a href="seasonal-plots.html"><i class="fa fa-check"></i><b>2.4</b> Seasonal plots</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="seasonal-plots.html"><a href="seasonal-plots.html#multiple-seasonal-periods-period-in-gg_season"><i class="fa fa-check"></i><b>2.4.1</b> Multiple seasonal periods: <code>period</code> in <code>gg_season()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="seasonal-subseries-plots.html"><a href="seasonal-subseries-plots.html"><i class="fa fa-check"></i><b>2.5</b> Seasonal subseries plots</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="seasonal-subseries-plots.html"><a href="seasonal-subseries-plots.html#example-australian-holiday-tourism"><i class="fa fa-check"></i><b>2.5.1</b> Example: Australian holiday tourism</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="visualization-between-time-series.html"><a href="visualization-between-time-series.html"><i class="fa fa-check"></i><b>2.6</b> Visualization between time series</a><ul>
+<li class="chapter" data-level="2.6.1" data-path="visualization-between-time-series.html"><a href="visualization-between-time-series.html#scatterplot-matrices"><i class="fa fa-check"></i><b>2.6.1</b> scatterplot matrices</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="lag-plots.html"><a href="lag-plots.html"><i class="fa fa-check"></i><b>2.7</b> Lag plots</a><ul>
+<li class="chapter" data-level="2.7.1" data-path="lag-plots.html"><a href="lag-plots.html#autocorrelation"><i class="fa fa-check"></i><b>2.7.1</b> Autocorrelation</a></li>
+<li class="chapter" data-level="2.7.2" data-path="lag-plots.html"><a href="lag-plots.html#trend-and-seasonality-in-acf-plots"><i class="fa fa-check"></i><b>2.7.2</b> Trend and seasonality in ACF plots</a></li>
+</ul></li>
+<li class="chapter" data-level="2.8" data-path="calendar-plots.html"><a href="calendar-plots.html"><i class="fa fa-check"></i><b>2.8</b> Calendar plots</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="time-series-decomposition.html"><a href="time-series-decomposition.html"><i class="fa fa-check"></i><b>3</b> Time series decomposition</a><ul>
+<li class="chapter" data-level="3.1" data-path="transformation-and-adjustments.html"><a href="transformation-and-adjustments.html"><i class="fa fa-check"></i><b>3.1</b> Transformation and adjustments</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="transformation-and-adjustments.html"><a href="transformation-and-adjustments.html#calendar-adjustments"><i class="fa fa-check"></i><b>3.1.1</b> Calendar adjustments</a></li>
+<li class="chapter" data-level="3.1.2" data-path="transformation-and-adjustments.html"><a href="transformation-and-adjustments.html#population-adjustments"><i class="fa fa-check"></i><b>3.1.2</b> Population adjustments</a></li>
+<li class="chapter" data-level="3.1.3" data-path="transformation-and-adjustments.html"><a href="transformation-and-adjustments.html#inflation-adjustments"><i class="fa fa-check"></i><b>3.1.3</b> Inflation adjustments</a></li>
+<li class="chapter" data-level="3.1.4" data-path="transformation-and-adjustments.html"><a href="transformation-and-adjustments.html#box-cox"><i class="fa fa-check"></i><b>3.1.4</b> Mathematical transformation (Box-Cox)</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="moving-averages.html"><a href="moving-averages.html"><i class="fa fa-check"></i><b>3.2</b> Moving averages</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="moving-averages.html"><a href="moving-averages.html#moving-averages-of-moving-averages"><i class="fa fa-check"></i><b>3.2.1</b> Moving averages of moving averages</a></li>
+<li class="chapter" data-level="3.2.2" data-path="moving-averages.html"><a href="moving-averages.html#estimating-the-trend-cycle-component-with-seasonal-data"><i class="fa fa-check"></i><b>3.2.2</b> Estimating the trend-cycle component with seasonal data</a></li>
+<li class="chapter" data-level="3.2.3" data-path="moving-averages.html"><a href="moving-averages.html#weighted-moving-averages"><i class="fa fa-check"></i><b>3.2.3</b> Weighted moving averages</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="classical-decomposition.html"><a href="classical-decomposition.html"><i class="fa fa-check"></i><b>3.3</b> Classical decomposition</a></li>
+<li class="chapter" data-level="3.4" data-path="x11-decomposition.html"><a href="x11-decomposition.html"><i class="fa fa-check"></i><b>3.4</b> X11 decomposition</a></li>
+<li class="chapter" data-level="3.5" data-path="seats-decomposition.html"><a href="seats-decomposition.html"><i class="fa fa-check"></i><b>3.5</b> SEATS decomposition</a></li>
+<li class="chapter" data-level="3.6" data-path="stl-decomposition.html"><a href="stl-decomposition.html"><i class="fa fa-check"></i><b>3.6</b> STL decomposition</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="time-series-features.html"><a href="time-series-features.html"><i class="fa fa-check"></i><b>4</b> Time series features</a><ul>
+<li class="chapter" data-level="4.1" data-path="simple-statistics.html"><a href="simple-statistics.html"><i class="fa fa-check"></i><b>4.1</b> Simple statistics</a></li>
+<li class="chapter" data-level="4.2" data-path="acf-features.html"><a href="acf-features.html"><i class="fa fa-check"></i><b>4.2</b> ACF features</a></li>
+<li class="chapter" data-level="4.3" data-path="stl-features.html"><a href="stl-features.html"><i class="fa fa-check"></i><b>4.3</b> STL features</a></li>
+<li class="chapter" data-level="4.4" data-path="other-features.html"><a href="other-features.html"><i class="fa fa-check"></i><b>4.4</b> Other features</a></li>
+<li class="chapter" data-level="4.5" data-path="exporing-australian-tourism-data.html"><a href="exporing-australian-tourism-data.html"><i class="fa fa-check"></i><b>4.5</b> Exporing Australian tourism data</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html"><i class="fa fa-check"></i><b>5</b> The forecaster’s toolbox</a><ul>
+<li class="chapter" data-level="5.1" data-path="a-tidy-forecasting-workflow.html"><a href="a-tidy-forecasting-workflow.html"><i class="fa fa-check"></i><b>5.1</b> A tidy forecasting workflow</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="a-tidy-forecasting-workflow.html"><a href="a-tidy-forecasting-workflow.html#data-preparation-tidy"><i class="fa fa-check"></i><b>5.1.1</b> Data preparation (tidy)</a></li>
+<li class="chapter" data-level="5.1.2" data-path="a-tidy-forecasting-workflow.html"><a href="a-tidy-forecasting-workflow.html#visualize"><i class="fa fa-check"></i><b>5.1.2</b> Visualize</a></li>
+<li class="chapter" data-level="5.1.3" data-path="a-tidy-forecasting-workflow.html"><a href="a-tidy-forecasting-workflow.html#define-a-model-specify"><i class="fa fa-check"></i><b>5.1.3</b> Define a model (specify)</a></li>
+<li class="chapter" data-level="5.1.4" data-path="a-tidy-forecasting-workflow.html"><a href="a-tidy-forecasting-workflow.html#train-the-model-estimate"><i class="fa fa-check"></i><b>5.1.4</b> Train the model (estimate)</a></li>
+<li class="chapter" data-level="5.1.5" data-path="a-tidy-forecasting-workflow.html"><a href="a-tidy-forecasting-workflow.html#check-model-performance-evaluate"><i class="fa fa-check"></i><b>5.1.5</b> Check model performance (evaluate)</a></li>
+<li class="chapter" data-level="5.1.6" data-path="a-tidy-forecasting-workflow.html"><a href="a-tidy-forecasting-workflow.html#produce-forecasts-forecast"><i class="fa fa-check"></i><b>5.1.6</b> Produce forecasts (forecast)</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="some-simple-forecasting-methods.html"><a href="some-simple-forecasting-methods.html"><i class="fa fa-check"></i><b>5.2</b> Some simple forecasting methods</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="some-simple-forecasting-methods.html"><a href="some-simple-forecasting-methods.html#mean-method"><i class="fa fa-check"></i><b>5.2.1</b> Mean method</a></li>
+<li class="chapter" data-level="5.2.2" data-path="some-simple-forecasting-methods.html"><a href="some-simple-forecasting-methods.html#naive-method"><i class="fa fa-check"></i><b>5.2.2</b> Naive method</a></li>
+<li class="chapter" data-level="5.2.3" data-path="some-simple-forecasting-methods.html"><a href="some-simple-forecasting-methods.html#seasonal-naive-method"><i class="fa fa-check"></i><b>5.2.3</b> Seasonal naive method</a></li>
+<li class="chapter" data-level="5.2.4" data-path="some-simple-forecasting-methods.html"><a href="some-simple-forecasting-methods.html#drift-method"><i class="fa fa-check"></i><b>5.2.4</b> Drift method</a></li>
+<li class="chapter" data-level="5.2.5" data-path="some-simple-forecasting-methods.html"><a href="some-simple-forecasting-methods.html#australian-quarterly-beer-production"><i class="fa fa-check"></i><b>5.2.5</b> Australian quarterly beer production</a></li>
+<li class="chapter" data-level="5.2.6" data-path="some-simple-forecasting-methods.html"><a href="some-simple-forecasting-methods.html#example-googles-daily-closing-stock-price"><i class="fa fa-check"></i><b>5.2.6</b> Example: Google’s daily closing stock price</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="fitted-values-and-residuals.html"><a href="fitted-values-and-residuals.html"><i class="fa fa-check"></i><b>5.3</b> Fitted values and residuals</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="fitted-values-and-residuals.html"><a href="fitted-values-and-residuals.html#residuals"><i class="fa fa-check"></i><b>5.3.1</b> Residuals</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="residual-diagnostics.html"><a href="residual-diagnostics.html"><i class="fa fa-check"></i><b>5.4</b> Residual diagnostics</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="residual-diagnostics.html"><a href="residual-diagnostics.html#white-noise"><i class="fa fa-check"></i><b>5.4.1</b> White noise</a></li>
+<li class="chapter" data-level="5.4.2" data-path="residual-diagnostics.html"><a href="residual-diagnostics.html#example-forecasting-the-google-daily-closing-stock-price"><i class="fa fa-check"></i><b>5.4.2</b> Example: Forecasting the Google daily closing stock price</a></li>
+<li class="chapter" data-level="5.4.3" data-path="residual-diagnostics.html"><a href="residual-diagnostics.html#portmanteau-tests-for-autocorrelation"><i class="fa fa-check"></i><b>5.4.3</b> Portmanteau tests for autocorrelation</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="predict-interval.html"><a href="predict-interval.html"><i class="fa fa-check"></i><b>5.5</b> Prediction intervals</a><ul>
+<li class="chapter" data-level="5.5.1" data-path="predict-interval.html"><a href="predict-interval.html#one-step-prediction-intervals"><i class="fa fa-check"></i><b>5.5.1</b> One-step prediction intervals</a></li>
+<li class="chapter" data-level="5.5.2" data-path="predict-interval.html"><a href="predict-interval.html#multi-step-prediction-intervals"><i class="fa fa-check"></i><b>5.5.2</b> Multi-step prediction intervals</a></li>
+<li class="chapter" data-level="5.5.3" data-path="predict-interval.html"><a href="predict-interval.html#prediction-intervals-from-bootstrapped-residuals"><i class="fa fa-check"></i><b>5.5.3</b> Prediction intervals from bootstrapped residuals</a></li>
+</ul></li>
+<li class="chapter" data-level="5.6" data-path="evaluating-model-accuracy.html"><a href="evaluating-model-accuracy.html"><i class="fa fa-check"></i><b>5.6</b> Evaluating model accuracy</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="evaluating-model-accuracy.html"><a href="evaluating-model-accuracy.html#forecast-errors"><i class="fa fa-check"></i><b>5.6.1</b> Forecast errors</a></li>
+<li class="chapter" data-level="5.6.2" data-path="evaluating-model-accuracy.html"><a href="evaluating-model-accuracy.html#scale-dependent-errors"><i class="fa fa-check"></i><b>5.6.2</b> Scale dependent errors</a></li>
+<li class="chapter" data-level="5.6.3" data-path="evaluating-model-accuracy.html"><a href="evaluating-model-accuracy.html#percentage-errors"><i class="fa fa-check"></i><b>5.6.3</b> Percentage errors</a></li>
+<li class="chapter" data-level="5.6.4" data-path="evaluating-model-accuracy.html"><a href="evaluating-model-accuracy.html#scaled-errors"><i class="fa fa-check"></i><b>5.6.4</b> Scaled errors</a></li>
+<li class="chapter" data-level="5.6.5" data-path="evaluating-model-accuracy.html"><a href="evaluating-model-accuracy.html#examples-beer-production"><i class="fa fa-check"></i><b>5.6.5</b> Examples: beer production</a></li>
+</ul></li>
+<li class="chapter" data-level="5.7" data-path="time-series-cross-validation.html"><a href="time-series-cross-validation.html"><i class="fa fa-check"></i><b>5.7</b> Time series cross-validation</a><ul>
+<li class="chapter" data-level="5.7.1" data-path="time-series-cross-validation.html"><a href="time-series-cross-validation.html#example-forecast-horizon-accuracy-with-cross-validation"><i class="fa fa-check"></i><b>5.7.1</b> Example: Forecast horizon accuracy with cross-validation</a></li>
+</ul></li>
+<li class="chapter" data-level="5.8" data-path="forecasting-using-transformations.html"><a href="forecasting-using-transformations.html"><i class="fa fa-check"></i><b>5.8</b> Forecasting using transformations</a><ul>
+<li class="chapter" data-level="5.8.1" data-path="forecasting-using-transformations.html"><a href="forecasting-using-transformations.html#prediction-intervals-with-transformations"><i class="fa fa-check"></i><b>5.8.1</b> Prediction intervals with transformations</a></li>
+<li class="chapter" data-level="5.8.2" data-path="forecasting-using-transformations.html"><a href="forecasting-using-transformations.html#forecasting-with-constraints"><i class="fa fa-check"></i><b>5.8.2</b> Forecasting with constraints</a></li>
+<li class="chapter" data-level="5.8.3" data-path="forecasting-using-transformations.html"><a href="forecasting-using-transformations.html#bias-adjustments"><i class="fa fa-check"></i><b>5.8.3</b> Bias adjustments</a></li>
+</ul></li>
+<li class="chapter" data-level="5.9" data-path="forecasting-with-decomposition.html"><a href="forecasting-with-decomposition.html"><i class="fa fa-check"></i><b>5.9</b> Forecasting with decomposition</a><ul>
+<li class="chapter" data-level="5.9.1" data-path="forecasting-with-decomposition.html"><a href="forecasting-with-decomposition.html#example-employment-in-the-us-retail-sector"><i class="fa fa-check"></i><b>5.9.1</b> Example: Employment in the US retail sector</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html"><i class="fa fa-check"></i><b>6</b> Judgmental forecasts</a><ul>
+<li class="chapter" data-level="6.1" data-path="beware-of-limitations.html"><a href="beware-of-limitations.html"><i class="fa fa-check"></i><b>6.1</b> Beware of limitations</a></li>
+<li class="chapter" data-level="6.2" data-path="key-principles.html"><a href="key-principles.html"><i class="fa fa-check"></i><b>6.2</b> Key principles</a></li>
+<li class="chapter" data-level="6.3" data-path="the-delphi-method.html"><a href="the-delphi-method.html"><i class="fa fa-check"></i><b>6.3</b> The Delphi method</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="the-delphi-method.html"><a href="the-delphi-method.html#experts-and-anonymity"><i class="fa fa-check"></i><b>6.3.1</b> Experts and anonymity</a></li>
+<li class="chapter" data-level="6.3.2" data-path="the-delphi-method.html"><a href="the-delphi-method.html#setting-the-forecasting-task-in-a-delphi"><i class="fa fa-check"></i><b>6.3.2</b> Setting the forecasting task in a Delphi</a></li>
+<li class="chapter" data-level="6.3.3" data-path="the-delphi-method.html"><a href="the-delphi-method.html#iteration"><i class="fa fa-check"></i><b>6.3.3</b> Iteration</a></li>
+<li class="chapter" data-level="6.3.4" data-path="the-delphi-method.html"><a href="the-delphi-method.html#final-forecasts"><i class="fa fa-check"></i><b>6.3.4</b> Final forecasts</a></li>
+<li class="chapter" data-level="6.3.5" data-path="the-delphi-method.html"><a href="the-delphi-method.html#limitations-and-variations"><i class="fa fa-check"></i><b>6.3.5</b> Limitations and variations</a></li>
+<li class="chapter" data-level="6.3.6" data-path="the-delphi-method.html"><a href="the-delphi-method.html#the-facilitator"><i class="fa fa-check"></i><b>6.3.6</b> The facilitator</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="forecasting-by-analogy.html"><a href="forecasting-by-analogy.html"><i class="fa fa-check"></i><b>6.4</b> Forecasting by analogy</a></li>
+<li class="chapter" data-level="6.5" data-path="scenario-forecasting.html"><a href="scenario-forecasting.html"><i class="fa fa-check"></i><b>6.5</b> Scenario forecasting</a></li>
+<li class="chapter" data-level="6.6" data-path="new-product-forecasting.html"><a href="new-product-forecasting.html"><i class="fa fa-check"></i><b>6.6</b> New product forecasting</a><ul>
+<li class="chapter" data-level="6.6.1" data-path="new-product-forecasting.html"><a href="new-product-forecasting.html#sales-force-composite"><i class="fa fa-check"></i><b>6.6.1</b> Sales force composite</a></li>
+<li class="chapter" data-level="6.6.2" data-path="new-product-forecasting.html"><a href="new-product-forecasting.html#executive-opinion"><i class="fa fa-check"></i><b>6.6.2</b> Executive opinion</a></li>
+<li class="chapter" data-level="6.6.3" data-path="new-product-forecasting.html"><a href="new-product-forecasting.html#customer-intentions"><i class="fa fa-check"></i><b>6.6.3</b> Customer intentions</a></li>
+</ul></li>
+<li class="chapter" data-level="6.7" data-path="judgmental-adjustments.html"><a href="judgmental-adjustments.html"><i class="fa fa-check"></i><b>6.7</b> Judgmental adjustments</a><ul>
+<li class="chapter" data-level="6.7.1" data-path="judgmental-adjustments.html"><a href="judgmental-adjustments.html#use-adjustments-sparingly"><i class="fa fa-check"></i><b>6.7.1</b> Use adjustments sparingly</a></li>
+<li class="chapter" data-level="6.7.2" data-path="judgmental-adjustments.html"><a href="judgmental-adjustments.html#apply-a-structured-approach"><i class="fa fa-check"></i><b>6.7.2</b> Apply a structured approach</a></li>
+<li class="chapter" data-level="6.7.3" data-path="judgmental-adjustments.html"><a href="judgmental-adjustments.html#example-tourism-forecasting-committee-tfc"><i class="fa fa-check"></i><b>6.7.3</b> Example: Tourism Forecasting Committee (TFC)</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html"><i class="fa fa-check"></i><b>7</b> Time series regression models</a><ul>
+<li class="chapter" data-level="7.1" data-path="the-linear-model.html"><a href="the-linear-model.html"><i class="fa fa-check"></i><b>7.1</b> The linear model</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="the-linear-model.html"><a href="the-linear-model.html#simple-linear-regression"><i class="fa fa-check"></i><b>7.1.1</b> Simple linear regression</a></li>
+<li class="chapter" data-level="7.1.2" data-path="the-linear-model.html"><a href="the-linear-model.html#multiple-linear-regression"><i class="fa fa-check"></i><b>7.1.2</b> Multiple linear regression</a></li>
+<li class="chapter" data-level="7.1.3" data-path="the-linear-model.html"><a href="the-linear-model.html#assumptions"><i class="fa fa-check"></i><b>7.1.3</b> Assumptions</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="least-squares-estimation.html"><a href="least-squares-estimation.html"><i class="fa fa-check"></i><b>7.2</b> Least squares estimation</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="least-squares-estimation.html"><a href="least-squares-estimation.html#fitted-values"><i class="fa fa-check"></i><b>7.2.1</b> Fitted values</a></li>
+<li class="chapter" data-level="7.2.2" data-path="least-squares-estimation.html"><a href="least-squares-estimation.html#goodness-of-fit"><i class="fa fa-check"></i><b>7.2.2</b> Goodness of fit</a></li>
+<li class="chapter" data-level="7.2.3" data-path="least-squares-estimation.html"><a href="least-squares-estimation.html#standard-error-of-the-regression"><i class="fa fa-check"></i><b>7.2.3</b> Standard error of the regression</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="evaluating-a-regression-model.html"><a href="evaluating-a-regression-model.html"><i class="fa fa-check"></i><b>7.3</b> Evaluating a regression model</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="evaluating-a-regression-model.html"><a href="evaluating-a-regression-model.html#residual-plots-against-predictors"><i class="fa fa-check"></i><b>7.3.1</b> Residual plots against predictors</a></li>
+<li class="chapter" data-level="7.3.2" data-path="evaluating-a-regression-model.html"><a href="evaluating-a-regression-model.html#residual-plots-against-fitted-values"><i class="fa fa-check"></i><b>7.3.2</b> Residual plots against fitted values</a></li>
+<li class="chapter" data-level="7.3.3" data-path="evaluating-a-regression-model.html"><a href="evaluating-a-regression-model.html#outliers-and-influential-observations"><i class="fa fa-check"></i><b>7.3.3</b> Outliers and influential observations</a></li>
+<li class="chapter" data-level="7.3.4" data-path="evaluating-a-regression-model.html"><a href="evaluating-a-regression-model.html#the-performance-package"><i class="fa fa-check"></i><b>7.3.4</b> The <code>performance</code> package</a></li>
+<li class="chapter" data-level="7.3.5" data-path="evaluating-a-regression-model.html"><a href="evaluating-a-regression-model.html#spurious-regression"><i class="fa fa-check"></i><b>7.3.5</b> Spurious regression</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="some-useful-predictors.html"><a href="some-useful-predictors.html"><i class="fa fa-check"></i><b>7.4</b> Some useful predictors</a><ul>
+<li class="chapter" data-level="7.4.1" data-path="some-useful-predictors.html"><a href="some-useful-predictors.html#trend"><i class="fa fa-check"></i><b>7.4.1</b> Trend</a></li>
+<li class="chapter" data-level="7.4.2" data-path="some-useful-predictors.html"><a href="some-useful-predictors.html#seasonal-dummy-variables"><i class="fa fa-check"></i><b>7.4.2</b> Seasonal dummy variables</a></li>
+<li class="chapter" data-level="7.4.3" data-path="some-useful-predictors.html"><a href="some-useful-predictors.html#example-australian-quarterly-beer-production"><i class="fa fa-check"></i><b>7.4.3</b> Example: Australian quarterly beer production</a></li>
+<li class="chapter" data-level="7.4.4" data-path="some-useful-predictors.html"><a href="some-useful-predictors.html#intervention-variables"><i class="fa fa-check"></i><b>7.4.4</b> Intervention variables</a></li>
+<li class="chapter" data-level="7.4.5" data-path="some-useful-predictors.html"><a href="some-useful-predictors.html#trading-days"><i class="fa fa-check"></i><b>7.4.5</b> Trading days</a></li>
+<li class="chapter" data-level="7.4.6" data-path="some-useful-predictors.html"><a href="some-useful-predictors.html#distributed-lags"><i class="fa fa-check"></i><b>7.4.6</b> Distributed lags</a></li>
+<li class="chapter" data-level="7.4.7" data-path="some-useful-predictors.html"><a href="some-useful-predictors.html#easter"><i class="fa fa-check"></i><b>7.4.7</b> Easter</a></li>
+<li class="chapter" data-level="7.4.8" data-path="some-useful-predictors.html"><a href="some-useful-predictors.html#fourier-sereis"><i class="fa fa-check"></i><b>7.4.8</b> Fourier sereis</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="selecting-predictors.html"><a href="selecting-predictors.html"><i class="fa fa-check"></i><b>7.5</b> Selecting predictors</a><ul>
+<li class="chapter" data-level="7.5.1" data-path="selecting-predictors.html"><a href="selecting-predictors.html#adjusst-r-square"><i class="fa fa-check"></i><b>7.5.1</b> Adjusst R square</a></li>
+<li class="chapter" data-level="7.5.2" data-path="selecting-predictors.html"><a href="selecting-predictors.html#cross-validation"><i class="fa fa-check"></i><b>7.5.2</b> Cross validation</a></li>
+<li class="chapter" data-level="7.5.3" data-path="selecting-predictors.html"><a href="selecting-predictors.html#akaikes-information-criterion"><i class="fa fa-check"></i><b>7.5.3</b> Akaike’s Information Criterion</a></li>
+<li class="chapter" data-level="7.5.4" data-path="selecting-predictors.html"><a href="selecting-predictors.html#bayesian-information-criterion"><i class="fa fa-check"></i><b>7.5.4</b> Bayesian Information Criterion</a></li>
+<li class="chapter" data-level="7.5.5" data-path="selecting-predictors.html"><a href="selecting-predictors.html#which-measure-should-we-suse"><i class="fa fa-check"></i><b>7.5.5</b> Which measure should we suse</a></li>
+<li class="chapter" data-level="7.5.6" data-path="selecting-predictors.html"><a href="selecting-predictors.html#example-us-consumption"><i class="fa fa-check"></i><b>7.5.6</b> Example: US consumption</a></li>
+</ul></li>
+<li class="chapter" data-level="7.6" data-path="forecasting-with-regression.html"><a href="forecasting-with-regression.html"><i class="fa fa-check"></i><b>7.6</b> Forecasting with regression</a><ul>
+<li class="chapter" data-level="7.6.1" data-path="forecasting-with-regression.html"><a href="forecasting-with-regression.html#ex-ante-versus-ex-post-forecasts"><i class="fa fa-check"></i><b>7.6.1</b> Ex-ante versus ex-post forecasts</a></li>
+<li class="chapter" data-level="7.6.2" data-path="forecasting-with-regression.html"><a href="forecasting-with-regression.html#example-australian-quarterly-beer-production-1"><i class="fa fa-check"></i><b>7.6.2</b> Example: Australian quarterly beer production</a></li>
+<li class="chapter" data-level="7.6.3" data-path="forecasting-with-regression.html"><a href="forecasting-with-regression.html#scenario-based-forecasting"><i class="fa fa-check"></i><b>7.6.3</b> Scenario based forecasting</a></li>
+<li class="chapter" data-level="7.6.4" data-path="forecasting-with-regression.html"><a href="forecasting-with-regression.html#prediction-intervals"><i class="fa fa-check"></i><b>7.6.4</b> Prediction intervals</a></li>
+<li class="chapter" data-level="7.6.5" data-path="forecasting-with-regression.html"><a href="forecasting-with-regression.html#building-a-predictive-regression-model"><i class="fa fa-check"></i><b>7.6.5</b> Building a predictive regression model</a></li>
+</ul></li>
+<li class="chapter" data-level="7.7" data-path="matrix-formulation.html"><a href="matrix-formulation.html"><i class="fa fa-check"></i><b>7.7</b> Matrix formulation</a></li>
+<li class="chapter" data-level="7.8" data-path="nonlinear-regression.html"><a href="nonlinear-regression.html"><i class="fa fa-check"></i><b>7.8</b> Nonlinear regression</a><ul>
+<li class="chapter" data-level="7.8.1" data-path="nonlinear-regression.html"><a href="nonlinear-regression.html#forecasting-with-a-nonlinear-trend"><i class="fa fa-check"></i><b>7.8.1</b> Forecasting with a nonlinear trend</a></li>
+<li class="chapter" data-level="7.8.2" data-path="nonlinear-regression.html"><a href="nonlinear-regression.html#example-boston-marathon-winning-times"><i class="fa fa-check"></i><b>7.8.2</b> Example: Boston marathon winning times</a></li>
+</ul></li>
+<li class="chapter" data-level="7.9" data-path="correlation-causation-and-forecasting.html"><a href="correlation-causation-and-forecasting.html"><i class="fa fa-check"></i><b>7.9</b> Correlation, causation and forecasting</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html"><i class="fa fa-check"></i><b>8</b> Exponential smoothing</a><ul>
+<li class="chapter" data-level="8.1" data-path="simple-exponential-smoothing.html"><a href="simple-exponential-smoothing.html"><i class="fa fa-check"></i><b>8.1</b> Simple exponential smoothing</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="simple-exponential-smoothing.html"><a href="simple-exponential-smoothing.html#weighted-average-form"><i class="fa fa-check"></i><b>8.1.1</b> Weighted average form</a></li>
+<li class="chapter" data-level="8.1.2" data-path="simple-exponential-smoothing.html"><a href="simple-exponential-smoothing.html#component-form"><i class="fa fa-check"></i><b>8.1.2</b> Component form</a></li>
+<li class="chapter" data-level="8.1.3" data-path="simple-exponential-smoothing.html"><a href="simple-exponential-smoothing.html#flat-forecast"><i class="fa fa-check"></i><b>8.1.3</b> Flat forecast</a></li>
+<li class="chapter" data-level="8.1.4" data-path="simple-exponential-smoothing.html"><a href="simple-exponential-smoothing.html#estimation"><i class="fa fa-check"></i><b>8.1.4</b> Estimation</a></li>
+<li class="chapter" data-level="8.1.5" data-path="simple-exponential-smoothing.html"><a href="simple-exponential-smoothing.html#example-algerian-exports"><i class="fa fa-check"></i><b>8.1.5</b> Example: Algerian exports</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html"><i class="fa fa-check"></i><b>8.2</b> Methods with trend and seasonality</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#holts-linear-trend-method"><i class="fa fa-check"></i><b>8.2.1</b> Holt’s linear trend method</a></li>
+<li class="chapter" data-level="8.2.2" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#example-australian-population"><i class="fa fa-check"></i><b>8.2.2</b> Example: Australian population</a></li>
+<li class="chapter" data-level="8.2.3" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#damped-trend-methods"><i class="fa fa-check"></i><b>8.2.3</b> Damped trend methods</a></li>
+<li class="chapter" data-level="8.2.4" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#example-australian-population-continued"><i class="fa fa-check"></i><b>8.2.4</b> Example: Australian Population (continued)</a></li>
+<li class="chapter" data-level="8.2.5" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#example-internet-usage"><i class="fa fa-check"></i><b>8.2.5</b> Example: Internet usage</a></li>
+<li class="chapter" data-level="8.2.6" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#holt-winters-additive-method"><i class="fa fa-check"></i><b>8.2.6</b> Holt-Winters’ additive method</a></li>
+<li class="chapter" data-level="8.2.7" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#holt-winters-multiplicative-method"><i class="fa fa-check"></i><b>8.2.7</b> Holt-Winters’ multiplicative method</a></li>
+<li class="chapter" data-level="8.2.8" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#example-domestic-overnight-trips-in-australia"><i class="fa fa-check"></i><b>8.2.8</b> Example: Domestic overnight trips in Australia</a></li>
+<li class="chapter" data-level="8.2.9" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#holt-winters-damped-method"><i class="fa fa-check"></i><b>8.2.9</b> Holt-Winters’ damped method</a></li>
+<li class="chapter" data-level="8.2.10" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#example-holt-winters-method-with-daily-data"><i class="fa fa-check"></i><b>8.2.10</b> Example: Holt-Winters method with daily data</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="a-taxonomy-of-exponential-smoothing-methods.html"><a href="a-taxonomy-of-exponential-smoothing-methods.html"><i class="fa fa-check"></i><b>8.3</b> A taxonomy of exponential smoothing methods</a></li>
+<li class="chapter" data-level="8.4" data-path="innovations-state-space-models-for-exponential-smoothing.html"><a href="innovations-state-space-models-for-exponential-smoothing.html"><i class="fa fa-check"></i><b>8.4</b> Innovations state space models for exponential smoothing</a><ul>
+<li class="chapter" data-level="8.4.1" data-path="innovations-state-space-models-for-exponential-smoothing.html"><a href="innovations-state-space-models-for-exponential-smoothing.html#etsann-simple-exponential-smoothing-with-additive-errors"><i class="fa fa-check"></i><b>8.4.1</b> ETS(A,N,N): simple exponential smoothing with additive errors</a></li>
+<li class="chapter" data-level="8.4.2" data-path="innovations-state-space-models-for-exponential-smoothing.html"><a href="innovations-state-space-models-for-exponential-smoothing.html#etsmnn-simple-exponential-smoothing-with-multiplicative-errors"><i class="fa fa-check"></i><b>8.4.2</b> ETS(M,N,N): simple exponential smoothing with multiplicative errors</a></li>
+<li class="chapter" data-level="8.4.3" data-path="innovations-state-space-models-for-exponential-smoothing.html"><a href="innovations-state-space-models-for-exponential-smoothing.html#etsaan-holts-linear-method-with-additive-errors"><i class="fa fa-check"></i><b>8.4.3</b> ETS(A,A,N): Holt’s linear method with additive errors</a></li>
+<li class="chapter" data-level="8.4.4" data-path="innovations-state-space-models-for-exponential-smoothing.html"><a href="innovations-state-space-models-for-exponential-smoothing.html#ets-man"><i class="fa fa-check"></i><b>8.4.4</b> ETS(M,A,N): Holt’s linear method with multiplicative errors</a></li>
+<li class="chapter" data-level="8.4.5" data-path="innovations-state-space-models-for-exponential-smoothing.html"><a href="innovations-state-space-models-for-exponential-smoothing.html#other-ets-models"><i class="fa fa-check"></i><b>8.4.5</b> Other ETS models</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="estimation-and-model-selection.html"><a href="estimation-and-model-selection.html"><i class="fa fa-check"></i><b>8.5</b> Estimation and model selection</a><ul>
+<li class="chapter" data-level="8.5.1" data-path="estimation-and-model-selection.html"><a href="estimation-and-model-selection.html#estimating-ets-models"><i class="fa fa-check"></i><b>8.5.1</b> Estimating ETS models</a></li>
+<li class="chapter" data-level="8.5.2" data-path="estimation-and-model-selection.html"><a href="estimation-and-model-selection.html#model-selection-criteria"><i class="fa fa-check"></i><b>8.5.2</b> Model selection criteria</a></li>
+<li class="chapter" data-level="8.5.3" data-path="estimation-and-model-selection.html"><a href="estimation-and-model-selection.html#example-domestic-holiday-tourist-visitor-nights-in-australia"><i class="fa fa-check"></i><b>8.5.3</b> Example: Domestic holiday tourist visitor nights in Australia</a></li>
+</ul></li>
+<li class="chapter" data-level="8.6" data-path="forecasting-with-ets-models.html"><a href="forecasting-with-ets-models.html"><i class="fa fa-check"></i><b>8.6</b> Forecasting with ETS models</a><ul>
+<li class="chapter" data-level="8.6.1" data-path="forecasting-with-ets-models.html"><a href="forecasting-with-ets-models.html#example-australia-gas-production"><i class="fa fa-check"></i><b>8.6.1</b> Example: Australia gas production</a></li>
+<li class="chapter" data-level="8.6.2" data-path="forecasting-with-ets-models.html"><a href="forecasting-with-ets-models.html#prediction-intervals-1"><i class="fa fa-check"></i><b>8.6.2</b> Prediction intervals</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="univariate-stationary-processes.html"><a href="univariate-stationary-processes.html"><i class="fa fa-check"></i><b>9</b> Univariate stationary processes</a><ul>
+<li class="chapter" data-level="9.1" data-path="stationarity.html"><a href="stationarity.html"><i class="fa fa-check"></i><b>9.1</b> Stationarity</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="stationarity.html"><a href="stationarity.html#ch9-white-noise"><i class="fa fa-check"></i><b>9.1.1</b> White noise</a></li>
+<li class="chapter" data-level="9.1.2" data-path="stationarity.html"><a href="stationarity.html#tests-for-autocorrelation-and-normality"><i class="fa fa-check"></i><b>9.1.2</b> Tests for autocorrelation and normality</a></li>
+<li class="chapter" data-level="9.1.3" data-path="stationarity.html"><a href="stationarity.html#the-wold-decomposition"><i class="fa fa-check"></i><b>9.1.3</b> The Wold Decomposition</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="backshift-notation.html"><a href="backshift-notation.html"><i class="fa fa-check"></i><b>9.2</b> Backshift notation</a></li>
+<li class="chapter" data-level="9.3" data-path="autoregressive-models.html"><a href="autoregressive-models.html"><i class="fa fa-check"></i><b>9.3</b> Autoregressive models</a><ul>
+<li class="chapter" data-level="9.3.1" data-path="autoregressive-models.html"><a href="autoregressive-models.html#stimulating-an-arp-process"><i class="fa fa-check"></i><b>9.3.1</b> Stimulating an AR(p) process</a></li>
+<li class="chapter" data-level="9.3.2" data-path="autoregressive-models.html"><a href="autoregressive-models.html#decision-of-order-p"><i class="fa fa-check"></i><b>9.3.2</b> Decision of order p</a></li>
+<li class="chapter" data-level="9.3.3" data-path="autoregressive-models.html"><a href="autoregressive-models.html#random-walk"><i class="fa fa-check"></i><b>9.3.3</b> Random walk</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="moving-average-models.html"><a href="moving-average-models.html"><i class="fa fa-check"></i><b>9.4</b> Moving average models</a><ul>
+<li class="chapter" data-level="9.4.1" data-path="moving-average-models.html"><a href="moving-average-models.html#simulating-an-maq-process"><i class="fa fa-check"></i><b>9.4.1</b> Simulating an MA(q) process</a></li>
+<li class="chapter" data-level="9.4.2" data-path="moving-average-models.html"><a href="moving-average-models.html#decision-of-order-q"><i class="fa fa-check"></i><b>9.4.2</b> Decision of order q</a></li>
+<li class="chapter" data-level="9.4.3" data-path="moving-average-models.html"><a href="moving-average-models.html#koyck-transformation-and-invertibility"><i class="fa fa-check"></i><b>9.4.3</b> Koyck transformation and Invertibility</a></li>
+</ul></li>
+<li class="chapter" data-level="9.5" data-path="arma-models.html"><a href="arma-models.html"><i class="fa fa-check"></i><b>9.5</b> ARMA models</a><ul>
+<li class="chapter" data-level="9.5.1" data-path="arma-models.html"><a href="arma-models.html#three-representations-of-an-arma-model"><i class="fa fa-check"></i><b>9.5.1</b> Three representations of an ARMA model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="arima-models.html"><a href="arima-models.html"><i class="fa fa-check"></i><b>10</b> ARIMA models</a><ul>
+<li class="chapter" data-level="10.1" data-path="differencing.html"><a href="differencing.html"><i class="fa fa-check"></i><b>10.1</b> Differencing</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="differencing.html"><a href="differencing.html#second-order-differencing"><i class="fa fa-check"></i><b>10.1.1</b> Second-order differencing</a></li>
+<li class="chapter" data-level="10.1.2" data-path="differencing.html"><a href="differencing.html#seasonal-differencing"><i class="fa fa-check"></i><b>10.1.2</b> Seasonal differencing</a></li>
+<li class="chapter" data-level="10.1.3" data-path="differencing.html"><a href="differencing.html#unit-root-tests"><i class="fa fa-check"></i><b>10.1.3</b> Unit root tests</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="non-seasonal-arima-models.html"><a href="non-seasonal-arima-models.html"><i class="fa fa-check"></i><b>10.2</b> Non-seasonal ARIMA models</a><ul>
+<li class="chapter" data-level="10.2.1" data-path="non-seasonal-arima-models.html"><a href="non-seasonal-arima-models.html#understanding-arima-models"><i class="fa fa-check"></i><b>10.2.1</b> Understanding ARIMA models</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="estimation-and-order-selection.html"><a href="estimation-and-order-selection.html"><i class="fa fa-check"></i><b>10.3</b> Estimation and order selection</a><ul>
+<li class="chapter" data-level="10.3.1" data-path="estimation-and-order-selection.html"><a href="estimation-and-order-selection.html#mle"><i class="fa fa-check"></i><b>10.3.1</b> MLE</a></li>
+<li class="chapter" data-level="10.3.2" data-path="estimation-and-order-selection.html"><a href="estimation-and-order-selection.html#information-criteria"><i class="fa fa-check"></i><b>10.3.2</b> Information Criteria</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="the-arima-function.html"><a href="the-arima-function.html"><i class="fa fa-check"></i><b>10.4</b> The <code>ARIMA()</code> function</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="the-arima-function.html"><a href="the-arima-function.html#algorithm"><i class="fa fa-check"></i><b>10.4.1</b> Algorithm</a></li>
+<li class="chapter" data-level="10.4.2" data-path="the-arima-function.html"><a href="the-arima-function.html#modelling-procedure"><i class="fa fa-check"></i><b>10.4.2</b> Modelling procedure</a></li>
+<li class="chapter" data-level="10.4.3" data-path="the-arima-function.html"><a href="the-arima-function.html#example-seasonally-adjusted-electrical-equipment-orders"><i class="fa fa-check"></i><b>10.4.3</b> Example: Seasonally adjusted electrical equipment orders</a></li>
+<li class="chapter" data-level="10.4.4" data-path="the-arima-function.html"><a href="the-arima-function.html#plotting-the-characteristic-roots"><i class="fa fa-check"></i><b>10.4.4</b> Plotting the characteristic roots</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="forecasting-with-arima-models.html"><a href="forecasting-with-arima-models.html"><i class="fa fa-check"></i><b>10.5</b> Forecasting with ARIMA models</a><ul>
+<li class="chapter" data-level="10.5.1" data-path="forecasting-with-arima-models.html"><a href="forecasting-with-arima-models.html#point-forecasts"><i class="fa fa-check"></i><b>10.5.1</b> Point forecasts</a></li>
+<li class="chapter" data-level="10.5.2" data-path="forecasting-with-arima-models.html"><a href="forecasting-with-arima-models.html#prediction-intervals-2"><i class="fa fa-check"></i><b>10.5.2</b> Prediction intervals</a></li>
+</ul></li>
+<li class="chapter" data-level="10.6" data-path="seasonal-arima-models.html"><a href="seasonal-arima-models.html"><i class="fa fa-check"></i><b>10.6</b> Seasonal ARIMA models</a><ul>
+<li class="chapter" data-level="10.6.1" data-path="seasonal-arima-models.html"><a href="seasonal-arima-models.html#acf-and-pacf"><i class="fa fa-check"></i><b>10.6.1</b> ACF and PACF</a></li>
+<li class="chapter" data-level="10.6.2" data-path="seasonal-arima-models.html"><a href="seasonal-arima-models.html#example-european-quarterly-retail-trade"><i class="fa fa-check"></i><b>10.6.2</b> Example: European quarterly retail trade</a></li>
+<li class="chapter" data-level="10.6.3" data-path="seasonal-arima-models.html"><a href="seasonal-arima-models.html#example-corticosteroid-drug-sales-in-australia"><i class="fa fa-check"></i><b>10.6.3</b> Example: Corticosteroid drug sales in Australia</a></li>
+</ul></li>
+<li class="chapter" data-level="10.7" data-path="ets-and-arima.html"><a href="ets-and-arima.html"><i class="fa fa-check"></i><b>10.7</b> ETS and ARIMA</a><ul>
+<li class="chapter" data-level="10.7.1" data-path="ets-and-arima.html"><a href="ets-and-arima.html#example-comparing-arima-and-ets-on-non-seasonal-data"><i class="fa fa-check"></i><b>10.7.1</b> Example: Comparing <code>ARIMA()</code> and <code>ETS()</code> on non-seasonal data</a></li>
+<li class="chapter" data-level="10.7.2" data-path="ets-and-arima.html"><a href="ets-and-arima.html#example-comparing-arima-and-ets-on-seasonal-data"><i class="fa fa-check"></i><b>10.7.2</b> Example: Comparing <code>ARIMA()</code> and <code>ETS()</code> on seasonal data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="dynamic-regression-models.html"><a href="dynamic-regression-models.html"><i class="fa fa-check"></i><b>11</b> Dynamic regression models</a><ul>
+<li class="chapter" data-level="11.1" data-path="estimation-1.html"><a href="estimation-1.html"><i class="fa fa-check"></i><b>11.1</b> Estimation</a></li>
+<li class="chapter" data-level="11.2" data-path="regression-with-arima-errors.html"><a href="regression-with-arima-errors.html"><i class="fa fa-check"></i><b>11.2</b> Regression with ARIMA errors</a><ul>
+<li class="chapter" data-level="11.2.1" data-path="regression-with-arima-errors.html"><a href="regression-with-arima-errors.html#example-us-personal-consumption-and-income"><i class="fa fa-check"></i><b>11.2.1</b> Example: US Personal Consumption and Income</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="forecasting.html"><a href="forecasting.html"><i class="fa fa-check"></i><b>11.3</b> Forecasting</a><ul>
+<li class="chapter" data-level="11.3.1" data-path="forecasting.html"><a href="forecasting.html#example-forecasting-electricity-demand"><i class="fa fa-check"></i><b>11.3.1</b> Example: Forecasting electricity demand</a></li>
+</ul></li>
+<li class="chapter" data-level="11.4" data-path="deterministic-and-stochastic-trends.html"><a href="deterministic-and-stochastic-trends.html"><i class="fa fa-check"></i><b>11.4</b> Deterministic and stochastic trends</a><ul>
+<li class="chapter" data-level="11.4.1" data-path="deterministic-and-stochastic-trends.html"><a href="deterministic-and-stochastic-trends.html#example-international-visitors-to-australia"><i class="fa fa-check"></i><b>11.4.1</b> Example: International visitors to Australia</a></li>
+</ul></li>
+<li class="chapter" data-level="11.5" data-path="dynamic-harmonic-regression.html"><a href="dynamic-harmonic-regression.html"><i class="fa fa-check"></i><b>11.5</b> Dynamic harmonic regression</a><ul>
+<li class="chapter" data-level="11.5.1" data-path="dynamic-harmonic-regression.html"><a href="dynamic-harmonic-regression.html#example-australian-eating-out-expenditure"><i class="fa fa-check"></i><b>11.5.1</b> Example: Australian eating out expenditure</a></li>
+</ul></li>
+<li class="chapter" data-level="11.6" data-path="lagged-predictors.html"><a href="lagged-predictors.html"><i class="fa fa-check"></i><b>11.6</b> Lagged predictors</a><ul>
+<li class="chapter" data-level="11.6.1" data-path="lagged-predictors.html"><a href="lagged-predictors.html#example-tv-advertising-and-insurance-quotations"><i class="fa fa-check"></i><b>11.6.1</b> Example: TV advertising and insurance quotations</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">written with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Notes for “Forecasting: Principles and Practice, 3rd edition”</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="moving-average-models" class="section level2">
+<h2><span class="header-section-number">9.4</span> Moving average models</h2>
+<p>Rather than using past values of the forecast variable in a regression, a moving average model uses past forecast errors in a regression-like model.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
+<p><span class="math display">\[
+y_t = c + \theta_1\varepsilon_{t-1} + \theta_2\varepsilon_{t-2} + \dots + \theta_q\varepsilon_{t-q} + \varepsilon_{t}
+\]</span></p>
+<p>where <span class="math inline">\(\varepsilon_t\)</span> is white noise. We refer to this as a MA(q) model, a moving average model of order <span class="math inline">\(q\)</span>. Of course, we do not observe the values of <span class="math inline">\(\varepsilon_t\)</span>, so it is not really a regression in the usual sense.</p>
+<p>Notice that each value of <span class="math inline">\(y_t\)</span> can be thought of as a weighted moving average of the past few forecast errors. However, moving average models should not be confused with the moving average smoothing we discussed in Section <a href="moving-averages.html#moving-averages">3.2</a>. A moving average model is used for forecasting future values, while moving average smoothing is used for estimating the trend-cycle of past values.</p>
+<p>It is easy to show <strong>MA(q) process is always stationary</strong>. A MA(1) process has the following properties</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{Mean stationarity}: \text{E}(y_t) &amp;= c \\
+\text{Variance stationarity}:\text{Var}(y_t) &amp;= (1 + \theta_1^2)\sigma^2 \\
+\text{Covariance stationarity}:\text{ACF} = \gamma(k) &amp;= 
+\begin{cases}
+\frac{\theta_1}{1 + \theta_1^2} &amp; k = 1\\  
+0 &amp; \text{otherwise}
+\end{cases}
+\end{aligned}
+\]</span></p>
+<p>Proof for ACF :
+<span class="math display">\[
+\begin{split}
+\frac{\gamma(1)}{\gamma(0)} &amp;= \frac{\text{Covariance for lag} 1}{\text{variance for lag}1} \\
+           &amp;= \frac{E[(y_t - E(y_t))(y_{t-1} - E(y_{t-1}))]}{(1 + \theta_1^2)\sigma^2} \\ 
+           &amp;= \frac{E[(\varepsilon_{t} + \theta_1\varepsilon_{t-1})(\varepsilon_{t-1} + \theta_1\varepsilon_{t-2})]}{(1 + \theta_1^2)\sigma^2} \\
+           &amp;= \frac{E(\varepsilon_t \varepsilon_{t-1} + \theta_1\varepsilon_t\varepsilon_{t-2} + \theta_1 \varepsilon_{t-1}^2 + \theta_1^2\varepsilon_{t-1}\varepsilon_{t-2})}{(1 + \theta_1^2)\sigma^2} \\
+           &amp;= \frac{\theta_1E(\varepsilon_{t-1}^2)}{(1 + \theta_1^2)\sigma^2} \\
+           &amp;= \frac{\theta_1\sigma^2}{(1 + \theta_1^2)\sigma^2} \\
+           &amp;= \frac{\theta_1}{1 + \theta_1^2}
+\end{split}
+\]</span>
+For <span class="math inline">\(\text{lag} &gt; 1\)</span>, there will be no square term like <span class="math inline">\(\varepsilon_{t-k}^2\)</span>, but only cross terms like <span class="math inline">\(\varepsilon_t\varepsilon_{t-k}\)</span>，whose expectation would be zero by defination, so that ACF will be zero, which leads to covariance stationarity.</p>
+<div id="simulating-an-maq-process" class="section level3">
+<h3><span class="header-section-number">9.4.1</span> Simulating an MA(q) process</h3>
+<p>We can simulate MA(q) processes just as we did for AR(p) processes using <code>arima.sim()</code>. Here are 3 different ones with contrasting <span class="math inline">\(\theta\)</span>:</p>
+<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb177-1" title="1"><span class="kw">set.seed</span>(<span class="dv">2020</span>)</a>
+<a class="sourceLine" id="cb177-2" title="2"><span class="co">## list description for MA(1) model with small coef</span></a>
+<a class="sourceLine" id="cb177-3" title="3">MA_sm_spec &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">order =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">ma =</span> <span class="fl">0.2</span>, <span class="dt">sd =</span> <span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb177-4" title="4"><span class="co">## list description for MA(1) model with large coef</span></a>
+<a class="sourceLine" id="cb177-5" title="5">MA_lg_spec &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">order =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">ma =</span> <span class="fl">0.8</span>, <span class="dt">sd =</span> <span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb177-6" title="6"><span class="co">## list description for MA(1) model with large coef</span></a>
+<a class="sourceLine" id="cb177-7" title="7">MA_neg_spec &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">order =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">ma =</span> <span class="fl">-0.5</span>, <span class="dt">sd =</span> <span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb177-8" title="8"><span class="co">## simulate MA(1)</span></a>
+<a class="sourceLine" id="cb177-9" title="9">MA1_sm &lt;-<span class="st"> </span><span class="kw">arima.sim</span>(<span class="dt">n =</span> <span class="dv">50</span>, <span class="dt">model =</span> MA_sm_spec) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_tsibble</span>()</a>
+<a class="sourceLine" id="cb177-10" title="10">MA1_lg &lt;-<span class="st"> </span><span class="kw">arima.sim</span>(<span class="dt">n =</span> <span class="dv">50</span>, <span class="dt">model =</span> MA_lg_spec) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_tsibble</span>()</a>
+<a class="sourceLine" id="cb177-11" title="11">MA1_neg &lt;-<span class="st"> </span><span class="kw">arima.sim</span>(<span class="dt">n =</span> <span class="dv">50</span>, <span class="dt">model =</span> MA_neg_spec) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_tsibble</span>()</a>
+<a class="sourceLine" id="cb177-12" title="12"></a>
+<a class="sourceLine" id="cb177-13" title="13"><span class="kw">wrap_plots</span>(</a>
+<a class="sourceLine" id="cb177-14" title="14">  <span class="kw">autoplot</span>(MA1_sm) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="kw">expression</span>(<span class="kw">paste</span>(theta, <span class="st">&quot; = 0.2&quot;</span>))),</a>
+<a class="sourceLine" id="cb177-15" title="15">  <span class="kw">autoplot</span>(MA1_lg) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="kw">expression</span>(<span class="kw">paste</span>(theta, <span class="st">&quot; = 0.8&quot;</span>))),</a>
+<a class="sourceLine" id="cb177-16" title="16">  <span class="kw">autoplot</span>(MA1_neg) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="kw">expression</span>(<span class="kw">paste</span>(theta, <span class="st">&quot; = -0.5&quot;</span>)))</a>
+<a class="sourceLine" id="cb177-17" title="17">)</a></code></pre></div>
+<p><img src="stationary_files/figure-html/unnamed-chunk-13-1.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="decision-of-order-q" class="section level3">
+<h3><span class="header-section-number">9.4.2</span> Decision of order q</h3>
+<p>The derivation of the ACF function has shed light on how we would decide the order <span class="math inline">\(q\)</span>. For a MA(2) process, ACF would be 0 for <span class="math inline">\(k = 3, 4, \dots\)</span>. In general, for a MA(q) process, ACF will be nonzero for <span class="math inline">\(k = 1, 2, \dots,q\)</span> and zero after <span class="math inline">\(q\)</span>.</p>
+<p>Let’s prove this, a MA(q) model can be written as:
+<span class="math display">\[
+y_{t-k} = c + \theta_1\varepsilon_{t-k -1} + \theta_2\varepsilon_{t- k - 2} + \dots + \theta_q\varepsilon_{t-k -q} + \varepsilon_{t-q}
+\]</span>
+To see at which point ACF will be zero, consider the covariance (if covariance between <span class="math inline">\(y_t\)</span> and <span class="math inline">\(y_{t-k}\)</span> is zero, then <span class="math inline">\(r_k\)</span> is zero)
+<span class="math display">\[
+\text{Cov}(y_t, y_{t-k}) = \text{E}(y_ty_{t-k}) - \text{E}(y_t)\text{E}(y_{t-k})
+\]</span></p>
+<p>We know that <span class="math inline">\(\text{E}(y_t)\text{E}(y_{t-k}) = c^2\)</span>. So the problem is, what is included in <span class="math inline">\(E(y_ty_{t-k})\)</span>, and when will it be <span class="math inline">\(c^2\)</span>, so that the covariance would be zero?</p>
+<p>Follow MA(q), <span class="math inline">\(y_t\)</span> includes <span class="math inline">\((c, \varepsilon_t, \varepsilon_{t-1}, \varepsilon_{t-2}, \dots, \varepsilon_{t-q})\)</span>, and <span class="math inline">\(y_{t-k}\)</span> includes <span class="math inline">\((c, \varepsilon_{t-k}, \varepsilon_{t-k -1}, \varepsilon_{t-k -2}, \dots, \varepsilon_{t - k -q})\)</span>. When they are multiplied together, there will be</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{constant} &amp;: c^2 \rightarrow E(c^2) = c^2 \\
+\text{cross terms} &amp;: \varepsilon_i\varepsilon_j, i \not= j \rightarrow E(\varepsilon_i\varepsilon_j) = 0 \\
+\text{square terms} &amp;: \varepsilon_i^2 \rightarrow E(\varepsilon_i^2) = \text{Var}(\varepsilon_i) + \text{E}(\varepsilon_i)^2 = \sigma^2 &gt; 0
+\end{aligned}
+\]</span>
+Now everything is clear, ACF will be zero, if and only if there is no <strong>square term</strong>. That is to say, there is no same error term when we decompose <span class="math inline">\(y_t\)</span> and <span class="math inline">\(y_{t-k}\)</span>. This means the earliest error in <span class="math inline">\((\varepsilon_t, \varepsilon_{t-1}, \varepsilon_{t-2}, \dots, \varepsilon_{t-q})\)</span> is still earlier than the latest error term in of <span class="math inline">\((\varepsilon_{t-k}, \varepsilon_{t-k -1}, \varepsilon_{t-k -2}, \dots, \varepsilon_{t - k -q})\)</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+t - q &amp;&gt; t - k \\
+k &amp;&gt; q
+\end{aligned}
+\]</span></p>
+<p>Now that we have proved that when <span class="math inline">\(k &gt; q\)</span>, ACF would be zero and otherwise non-zero. So, a sample ACF with significant autocorrelations at lag 1 to lag q, but non-significant autocorrelations for after q indicates a possible MA(q) model(i.e., an ACF plot that cuts off at lag q).</p>
+<p>Another characteristic of a MA(q) process is that their PACF tails off toward zero very slowly, in contrast to AR(p) whose ACF plot has a long tail.</p>
+<p><img src="images/MA_decision.png" width="90%" style="display: block; margin: auto;" /></p>
+<p><img src="images/AR_MA_decision.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="koyck-transformation-and-invertibility" class="section level3">
+<h3><span class="header-section-number">9.4.3</span> Koyck transformation and Invertibility</h3>
+<p><em>Koyck transformation</em> is one that converts a AR(p) model to MA(<span class="math inline">\(\infty\)</span>) model . Take an AR(1) model for example, which can be written as</p>
+<p><span class="math display">\[
+\begin{aligned}
+(1 - \phi_1B)y_t &amp;= \varepsilon_t + c \\
+y_t &amp;= \frac{\varepsilon_t + c}{1 - \phi_1B} 
+\end{aligned}
+\]</span></p>
+<p>Recall that the infinite sum of a geometric series is</p>
+<p><span class="math display">\[
+\begin{aligned}
+s &amp;= a + ar + ar^2 + \cdots \\
+  &amp;= \frac{a}{1 - r} \quad (|r| &lt; 1)
+\end{aligned}
+\]</span></p>
+<p>It follows that we can rewritten our formula as (backshift operator on a constant is still that constant, so <span class="math inline">\(|\phi_1| &lt; 1\)</span> ):</p>
+<p><span class="math display">\[
+\begin{aligned}
+y_t &amp;= (\varepsilon_t + c) + (\varepsilon_t + c)\phi_1B + (\varepsilon_t + c)(\phi_1B)^2 + \cdots \\
+    &amp;= \varepsilon_t + (c + \phi_1c + \phi_1^2c + \dots) + (\phi_1\varepsilon_{t-1} + \phi_1^2\varepsilon_{t-2} + \cdots) 
+\end{aligned}
+\]</span></p>
+<p>For a AR(1) model, we have <span class="math inline">\(|\phi_1| &lt; 1\)</span>. so that <span class="math inline">\((c + \phi_1c + \phi_1^2c + c\dots)\)</span> will converge to a constant. And what we derived is exactly a MA(<span class="math inline">\(\infty\)</span>) model.</p>
+<p>This transformation is also a special case of the Wold Decomposition. Since when AR(1) when <span class="math inline">\(|\phi_1| &lt; 1\)</span> is covariance stationary, and <span class="math inline">\(\text{E}(y_t) = c + \phi_1c + \phi_1^2c + \dots\)</span>. If we substract the mean from the RHS then the equation is Equation <a href="stationarity.html#eq:wold-decomposition">(9.1)</a></p>
+<p><em>Invertibility</em> is like the opposite of Koyck transformation. It describes the fact that it is possible to write any stationary MA(<span class="math inline">\(\infty\)</span>) model as a AR(p) model. Again, we demonstrate this with an MA(1) model (here I put a negative sign on <span class="math inline">\(\theta_1\)</span> just for convenience):</p>
+<p><span class="math display">\[
+\begin{aligned}
+y_t &amp;= c -  \theta_1\varepsilon_{t-1} + \varepsilon_t \\
+y_t &amp;= (1 - \theta_1B)\varepsilon_t + c\\
+\varepsilon_t &amp;= \frac{y_t - c}{1 - \theta_1B}
+\end{aligned}
+\]</span>
+The rest is the same, <span class="math inline">\(\frac{y_t - c}{1 - \theta_1B}\)</span> can be considered as the infinite sum of a geometric series, when <span class="math inline">\(|\theta_1| &lt; 1\)</span>. And the final equation is</p>
+<p><span class="math display">\[
+y_t = (c + \theta_1c + \theta_1^2c + \cdots) + (\theta_1y_{t-1} + \theta_1^2y_{t-2} + \cdots) + \varepsilon_t
+\]</span>
+With <span class="math inline">\(|\theta_1| &lt; 1\)</span>, <span class="math inline">\((c + \theta_1c + \theta_1^2c + \cdots)\)</span> will converge to a constant and the equation qualifies for a AR(<span class="math inline">\(\infty\)</span>) model. Thus, when <span class="math inline">\(|\theta_1| &lt; 1\)</span> the MA model is <strong>invertible</strong>. (From another perspective, if <span class="math inline">\(|\theta_1| &gt; 1\)</span> <span class="math inline">\(\phi_1, ... ,\phi_p\)</span> in MA(<span class="math inline">\(\infty\)</span>) model will not met stationary conditions).</p>
+<p>Although we no longer need to place constraints on MA models like we did on AR models since it is always stationary, we do hope that MA models are invertible, because only when an MA(q) process is invertible can it be <strong>uniquely identified</strong>. Consider, for example, the following case in which we know that for a MA(1) model <span class="math inline">\(\gamma(1) = r_1\)</span>, and the way we would compute <span class="math inline">\(\theta_1\)</span>:</p>
+<p><span class="math display">\[
+\frac{\theta}{1 + \theta^2} = r_1 \\
+(1 + \theta^2)r_1 - \theta = 0 \\
+\theta^2 + \frac{1}{r_1}\theta + 1 = 0
+\]</span></p>
+<p>The equation has the following two roots:</p>
+<p><span class="math display">\[
+\theta_{1,2} = -\frac{1}{2r}(1 \pm \sqrt{1 - 4r_1^2}) 
+\]</span></p>
+<p>Because <span class="math inline">\(|r_1| = |\frac{\theta_1}{1 + \theta_1^2}| &lt; 1/2\)</span> the quadratic equation always results in real roots. They also have the property that <span class="math inline">\(\theta_1\theta_2 = 1\)</span> (Vieta theorem). This gives us the possibility to model the same autocorrelation structure with two different parameters, where one is the inverse of the other.</p>
+<p>n order to get a unique parameterisation, we require a further property
+of the MA(1) process. We ask under which conditions the MA(1) process can have an autoregressive representation. And we already know that this is true when <span class="math inline">\(|\theta| &lt; 1\)</span>, and this condition also helps us to choose between <span class="math inline">\(\theta_1\)</span> and <span class="math inline">\(\theta_2\)</span>, so that unique model is identified.</p>
+<p>For higher order models, given <span class="math inline">\(\gamma(1), \gamma(2), \dots, \gamma(q)\)</span> (we already proved that when k &gt; q <span class="math inline">\(\gamma(k) = 0\)</span>), we would still have multiple solution set <span class="math inline">\(\theta_1, \theta_2, \dots, \theta_q\)</span>. To get a unique parameterisation, the invertibility condition is again required, i.e. it must be possible to represent the MA(q) process as a stationary AR(p) process. The condition for order q, similar to AR(p), is that all roots of</p>
+<p><span class="math display">\[
+1 + \theta_1B + \theta_2B^2 + \dots + \theta_qB^q = 0 
+\]</span></p>
+<p>are larger than one in absolute value.</p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="2">
+<li id="fn2"><p>Many textbooks and software programs define the model with negative signs before the <span class="math inline">\(\theta\)</span> terms (R uses positive signs). This doesn’t change the general theoretical properties of the model, although it does flip the algebraic signs of estimated coefficient values and (unsquared) <span class="math inline">\(\theta\)</span> terms in formulas for ACFs and variances<a href="moving-average-models.html#fnref2" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="autoregressive-models.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="arma-models.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "serif",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/enixam/fpp/edit/master/stationary.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
