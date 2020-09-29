@@ -271,7 +271,7 @@ The `us_change` data may follow an ARIMA(0, d, q) model if the ACF and PACF plot
 - there is a significant spike at lag q in the ACF, but none beyond lag q.  
 
 ```{r, fig.align = 'default', fig.show = "hold", out.width = "50%"}
-us_change <- read_csv(pin("https://otexts.com/fpp3/extrafiles/us_change.csv")) %>% 
+us_change <- read_csv("https://otexts.com/fpp3/extrafiles/us_change.csv") %>% 
   mutate(time = yearquarter(Time)) %>% 
   as_tsibble(index = time)  
 
@@ -682,7 +682,7 @@ h02 %>%
   facet_wrap(~ measure, scales = "free_y", nrow = 2)
 ```
 
-The data are strongly seasonal and obviously non-stationary, so seasonal differencing will be used. It is unclear that whether another difference should be used at this point, though we decide not to. The last few observations appear to be different (more variable) from the earlier data. This may be due to the fact that data are sometimes revised when earlier sales are reported late.
+The data are strongly seasonal and obviously non-stationary, so seasonal differencing will be used. It is unclear that whether another difference should be used at this point, and we decide not to. The last few observations appear to be different (more variable) from the earlier data. This may be due to the fact that data are sometimes revised when earlier sales are reported late.
 
 ```{r}
 h02 %>% 

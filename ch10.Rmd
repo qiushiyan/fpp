@@ -12,7 +12,6 @@ library(tsibbledata)
 library(fable)
 library(feasts)
 library(lubridate)
-library(pins)
 ```
 
 The time series models in the previous two chapters allow for the inclusion of information from past observations of a series, but **not** for the inclusion of other information (external variables) that may also be relevant.  On the other hand, the regression models in Chapter \@ref(time-series-regression-models) allow for the inclusion of a lot of relevant information from predictor variables, but do not allow for the subtle time series dynamics that can be handled with ARIMA models. In this chapter, we consider how to extend ARIMA models in order to allow other information to be included in the models.
@@ -110,7 +109,7 @@ The AICc is calculated for the final model, and this value can be used to determ
 ### Example: US Personal Consumption and Income  
 
 ```{r}
-us_change <- readr::read_csv(pin("https://otexts.com/fpp3/extrafiles/us_change.csv")) %>%
+us_change <- readr::read_csv("https://otexts.com/fpp3/extrafiles/us_change.csv") %>%
   mutate(Time = yearquarter(Time)) %>%
   as_tsibble(index = Time)
 
@@ -145,6 +144,7 @@ us_change_dynamic <- us_change %>%
   model(ARIMA(Consumption ~ Income))
 
 us_change_dynamic %>% report()
+
 ```
 
 The data are clearly already stationary (as we are considering percentage changes rather than raw expenditure and income), so there is no need for any differencing. The fitted model is 
@@ -155,31 +155,26 @@ y_t = 0.6 + 0.2 \text{Income} + \eta_t \\
 \eta_t = 0.69\eta_{t-1} - 0.58\varepsilon_{t-1} + 0.2\varepsilon_{t-2} + \varepsilon_t \\
 \varepsilon_t \sim NID(0, 0.32)
 $$
-We can recover estimates of both the ηt and εt series using the `residuals()` function.
+
+We can recover estimates of both the $\eta_t$ and $\varepsilon_t$ series using the `residuals()` function (`augment` returns arima errors). It is the ARIMA errors that should resemble a white noise series.  
+
 
 ```{r}
 # regression errors
-residuals(us_change_dynamic, type = "regression")
+res1 <- residuals(us_change_dynamic, type = "regression") %>% 
+  as_tibble() %>% 
+  mutate(type = "regression")
 # arima errors
-residuals(us_change_dynamic, type = "innovation")
-# augment returns arima errors
-augment(us_change_dynamic)
+res2 <- residuals(us_change_dynamic, type = "innovation") %>% 
+  as_tibble() %>% 
+  mutate(type = "arima")
+
+bind_rows(res1, res2) %>%
+  ggplot(aes(Time, .resid, color = type)) + 
+  geom_line()
 ```
 
 
-
-```{r}
-bind_rows(
-  `Regression Errors` = residuals(us_change_dynamic, type="regression"),
-  `ARIMA Errors` = residuals(us_change_dynamic, type="innovation"),
-  .id = "type"
-) %>%
-  ggplot(aes(x = Time, y = .resid)) +
-  geom_line() +
-  facet_wrap(~ type, scales = "free_y", nrow = 2) +
-  labs(x = "year", y = NULL)
-```
-It is the ARIMA errors that should resemble a white noise series.  
 
 ```{r}
 us_change_dynamic %>% gg_tsresiduals()

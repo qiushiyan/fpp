@@ -32,7 +32,7 @@ algeria_economy %>%
   labs(y = "Exports (% of GDP)", x = "Year")
 ```
 
-<img src="ch8_files/figure-html/unnamed-chunk-3-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch8_files/figure-html/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" />
 
 While the naïve method and average method can be considered as two extremes: all weight given to the last observation and equal weight given to all of the observations, we often want something in between. This is the idea behind the exponential smoothing method. Forecasts are calculated using weighted averages, where the weights decrease exponentially as observations come from further in the past — the smallest weights are associated with the oldest observations:
 
@@ -143,7 +143,7 @@ algeria_fit %>%
   scale_color_discrete(name = "")
 ```
 
-<img src="ch8_files/figure-html/unnamed-chunk-5-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch8_files/figure-html/unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 ```r
@@ -154,16 +154,16 @@ algeria_fit %>% report()
 #> Series: Exports 
 #> Model: ETS(A,N,N) 
 #>   Smoothing parameters:
-#>     alpha = 0.84 
+#>     alpha = 0.839812 
 #> 
 #>   Initial states:
-#>     l
-#>  39.5
+#>         l
+#>  39.54013
 #> 
-#>   sigma^2:  35.6
+#>   sigma^2:  35.6301
 #> 
-#>  AIC AICc  BIC 
-#>  447  447  453
+#>      AIC     AICc      BIC 
+#> 446.7154 447.1599 452.8968
 ```
 
 
@@ -171,7 +171,7 @@ This gives parameter estimates $\alpha = 0.84$ and $\ell_0 = 39.5$, obtained by 
 
 The large value of $\alpha$ in this example is reflected in the large adjustment that takes place in the estimated level $\ell_t$ at each time. A smaller value of α would lead to smaller changes over time, and so the series of fitted values would be smoother.    
 
-<img src="images/algeria_economy.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/algeria_economy.png" width="100%" style="display: block; margin: auto;" />
 
 
 
@@ -183,7 +183,7 @@ algeria_fit %>%
   scale_color_discrete(name = "")
 ```
 
-<img src="ch8_files/figure-html/unnamed-chunk-8-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch8_files/figure-html/unnamed-chunk-8-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 
@@ -234,17 +234,17 @@ pop_fit %>% report()
 #> Series: Pop 
 #> Model: ETS(A,A,N) 
 #>   Smoothing parameters:
-#>     alpha = 1 
-#>     beta  = 0.327 
+#>     alpha = 0.9998998 
+#>     beta  = 0.3267372 
 #> 
 #>   Initial states:
-#>     l     b
-#>  10.1 0.223
+#>         l         b
+#>  10.05413 0.2225002
 #> 
 #>   sigma^2:  0.0041
 #> 
-#>   AIC  AICc   BIC 
-#> -77.0 -75.8 -66.7
+#>       AIC      AICc       BIC 
+#> -76.98568 -75.83184 -66.68347
 ```
 
 
@@ -259,7 +259,7 @@ pop_fit %>%
   scale_color_discrete(name = "")
 ```
 
-<img src="ch8_files/figure-html/unnamed-chunk-10-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch8_files/figure-html/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;" />
 
 ### Damped trend methods
 
@@ -293,7 +293,7 @@ aus_economy %>%
   guides(colour = guide_legend(title = "Forecast"))
 ```
 
-<img src="ch8_files/figure-html/unnamed-chunk-11-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch8_files/figure-html/unnamed-chunk-11-1.png" width="100%" style="display: block; margin: auto;" />
 
 We have set the damping parameter to a relatively low number ($\phi = 0.90$) to exaggerate the effect of damping for comparison. Usually, we would estimate $\phi$ (simply `trend("Ad")`) along with the other parameters. We have also used a rather large forecast horizon ($h = 15$) to highlight the difference between a damped trend and a linear trend.  
 
@@ -308,7 +308,7 @@ www_usage %>% autoplot(value) +
   xlab("Minute") + ylab("Number of users")
 ```
 
-<img src="ch8_files/figure-html/unnamed-chunk-12-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch8_files/figure-html/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 We will use time series cross-validation to compare the one-step forecast accuracy of the three methods. 
@@ -355,18 +355,18 @@ usage_fit %>% report()
 #> Series: value 
 #> Model: ETS(A,Ad,N) 
 #>   Smoothing parameters:
-#>     alpha = 1 
-#>     beta  = 0.997 
-#>     phi   = 0.815 
+#>     alpha = 0.9999 
+#>     beta  = 0.9966439 
+#>     phi   = 0.814958 
 #> 
 #>   Initial states:
-#>     l       b
-#>  90.4 -0.0173
+#>         l           b
+#>  90.35177 -0.01728234
 #> 
-#>   sigma^2:  12.2
+#>   sigma^2:  12.2244
 #> 
-#>  AIC AICc  BIC 
-#>  718  719  733
+#>      AIC     AICc      BIC 
+#> 717.7310 718.6342 733.3620
 ```
 
 The smoothing parameter for the slope is estimated to be almost one, indicating that the trend changes to mostly reflect the slope between the last two minutes of internet usage. The decline in the last few years is captured by large $\beta^*$, so that $b_{T+1}, b_{T+2}, \dots, b_{T+10}$ is all negative. $\alpha$ is very close to one, showing that the level reacts strongly to each new observation.
@@ -377,7 +377,7 @@ usage_fit %>%
   autoplot(www_usage)
 ```
 
-<img src="ch8_files/figure-html/unnamed-chunk-15-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch8_files/figure-html/unnamed-chunk-15-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 ### Holt-Winters’ additive method    
@@ -452,17 +452,17 @@ holidays_fit <- aus_holidays %>%
 
 holidays_fit %>% glance()
 #> # A tibble: 2 x 9
-#>   .model          sigma2 log_ik   AIC  AICc   BIC     MSE    AMSE   MAE
-#>   <chr>            <dbl>  <dbl> <dbl> <dbl> <dbl>   <dbl>   <dbl> <dbl>
-#> 1 additive       189416.  -657. 1332. 1335. 1354. 170475. 180856.  315.
-#> 2 multiplicative 187599.  -657. 1331. 1334. 1353. 168839. 179731.  307.
+#>   .model          sigma2 log_lik   AIC  AICc   BIC     MSE    AMSE   MAE
+#>   <chr>            <dbl>   <dbl> <dbl> <dbl> <dbl>   <dbl>   <dbl> <dbl>
+#> 1 additive       189416.   -657. 1332. 1335. 1354. 170475. 180856.  315.
+#> 2 multiplicative 187599.   -657. 1331. 1334. 1353. 168839. 179731.  307.
   
 holidays_fit %>% 
   forecast(h = "3 years") %>% 
   autoplot(aus_holidays, level = NULL)
 ```
 
-<img src="ch8_files/figure-html/unnamed-chunk-16-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch8_files/figure-html/unnamed-chunk-16-1.png" width="100%" style="display: block; margin: auto;" />
 
 Because both methods have exactly the same number of parameters to estimate, we can compare the training RMSE from both models. In this case, the method with multiplicative seasonality fits the data best. This was to be expected, as the time plot shows that the **seasonal variation in the data increases as the level of the series increases**. This is also reflected in the two sets of forecasts; the forecasts generated by the method with the multiplicative seasonality display larger and increasing seasonal variation as the level of the forecasts increases compared to the forecasts generated by the method with additive seasonality.  
 
@@ -499,19 +499,21 @@ pedestrian_fit %>% report()
 #> Series: Count 
 #> Model: ETS(A,Ad,M) 
 #>   Smoothing parameters:
-#>     alpha = 0.19 
-#>     beta  = 0.00218 
-#>     gamma = 0.000901 
-#>     phi   = 0.973 
+#>     alpha = 0.1901066 
+#>     beta  = 0.002178528 
+#>     gamma = 0.0009006456 
+#>     phi   = 0.9729213 
 #> 
 #>   Initial states:
-#>      l    b   s1   s2   s3   s4    s5    s6   s7
-#>  12372 94.7 1.35 1.32 1.32 1.31 0.144 0.208 1.34
+#>        l        b      s1       s2       s3       s4       s5        s6
+#>  12372.2 94.66631 1.34518 1.322323 1.320987 1.314923 0.144459 0.2077794
+#>        s7
+#>  1.344349
 #> 
 #>   sigma^2:  184620
 #> 
-#>  AIC AICc  BIC 
-#>  493  515  512
+#>      AIC     AICc      BIC 
+#> 493.1853 514.5971 511.8271
 ```
 
 Here we estimate 9 inital values, 1 for level, 1 for slope, and 7 for seasonal index.  
@@ -523,14 +525,14 @@ pedestrian_fit %>%
   autoplot(pedestrian_per_day)
 ```
 
-<img src="ch8_files/figure-html/unnamed-chunk-18-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch8_files/figure-html/unnamed-chunk-18-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 ## A taxonomy of exponential smoothing methods  
 
 By considering variations in the combinations of the trend($N$, $A$ and $A_d$) and seasonal components($N$, $A$, and $M$), nine exponential smoothing methods are possible, listed in below 
 
-<img src="images/ets_methods.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/ets_methods.png" width="100%" style="display: block; margin: auto;" />
 
 
 
@@ -539,7 +541,7 @@ Multiplicative trend methods are not included as they tend to produce poor forec
 
 The following table gives the recursive formulas for applying the nine exponential smoothing methods. Each cell includes the forecast equation for generating h-step-ahead forecasts, and the smoothing equations for applying the method.
 
-<img src="images/ets_formula.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/ets_formula.png" width="100%" style="display: block; margin: auto;" />
 
 
 
@@ -555,7 +557,7 @@ For each method there exist two models: one with additive errors and one with mu
 
 
 Notations :  
-<img src="images/ets_models.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/ets_models.png" width="100%" style="display: block; margin: auto;" />
 
 
 ### ETS(A,N,N): simple exponential smoothing with additive errors  
@@ -701,7 +703,7 @@ $$
 
 In a similar fashion, we can write an innovations state space model for each of the exponential smoothing methods in the following table   
 
-<img src="images/taxonomy.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/taxonomy.png" width="100%" style="display: block; margin: auto;" />
 
 
 
@@ -773,17 +775,17 @@ holidays_fit %>% report()
 #> Series: Trips 
 #> Model: ETS(M,N,M) 
 #>   Smoothing parameters:
-#>     alpha = 0.358 
-#>     gamma = 0.000969 
+#>     alpha = 0.3578226 
+#>     gamma = 0.0009685565 
 #> 
 #>   Initial states:
-#>     l    s1    s2    s3   s4
-#>  9667 0.943 0.927 0.968 1.16
+#>         l        s1        s2       s3       s4
+#>  9666.501 0.9430367 0.9268433 0.968352 1.161768
 #> 
 #>   sigma^2:  0.0022
 #> 
-#>  AIC AICc  BIC 
-#> 1331 1333 1348
+#>      AIC     AICc      BIC 
+#> 1331.372 1332.928 1348.046
 ```
 
 The model selected is ETS(M, N, M) (`Trips` are strictly positive): 
@@ -804,7 +806,7 @@ holidays_fit %>%
   autoplot()
 ```
 
-<img src="ch8_files/figure-html/unnamed-chunk-24-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch8_files/figure-html/unnamed-chunk-24-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 Because this model has multiplicative errors, the residuals are not equivalent to the one-step training errors. The residuals are given by $\hat{\varepsilon}_t$, while the one-step training errors are defined as $y_t − \hat{y}_{t|t−1}$.
@@ -846,7 +848,7 @@ holidays_fit %>%
   autoplot(aus_holidays, level = 95)
 ```
 
-<img src="ch8_files/figure-html/unnamed-chunk-26-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch8_files/figure-html/unnamed-chunk-26-1.png" width="100%" style="display: block; margin: auto;" />
 
 ### Example: Australia gas production  
 
@@ -859,18 +861,18 @@ gas_fit %>% report()
 #> Series: Gas 
 #> Model: ETS(M,A,M) 
 #>   Smoothing parameters:
-#>     alpha = 0.653 
-#>     beta  = 0.144 
-#>     gamma = 0.0978 
+#>     alpha = 0.6528545 
+#>     beta  = 0.1441675 
+#>     gamma = 0.09784922 
 #> 
 #>   Initial states:
-#>     l      b    s1   s2   s3    s4
-#>  5.95 0.0706 0.931 1.18 1.07 0.816
+#>         l          b        s1       s2       s3        s4
+#>  5.945592 0.07062881 0.9309236 1.177883 1.074851 0.8163427
 #> 
 #>   sigma^2:  0.0032
 #> 
-#>  AIC AICc  BIC 
-#> 1681 1682 1711
+#>      AIC     AICc      BIC 
+#> 1680.929 1681.794 1711.389
 ```
 
 Why is multiplicative seasonality necessary here?
@@ -884,7 +886,7 @@ gas_fit %>%
   autoplot(aus_production, level = 95)
 ```
 
-<img src="ch8_files/figure-html/unnamed-chunk-28-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch8_files/figure-html/unnamed-chunk-28-1.png" width="100%" style="display: block; margin: auto;" />
 
 Experiment with making the trend damped, not improving $\text{AIC}_c$
 
@@ -897,19 +899,19 @@ gas_fit_damped %>% report()
 #> Series: Gas 
 #> Model: ETS(M,Ad,M) 
 #>   Smoothing parameters:
-#>     alpha = 0.649 
-#>     beta  = 0.155 
-#>     gamma = 0.0937 
+#>     alpha = 0.6489044 
+#>     beta  = 0.1551275 
+#>     gamma = 0.09369372 
 #>     phi   = 0.98 
 #> 
 #>   Initial states:
-#>     l      b    s1   s2   s3    s4
-#>  5.86 0.0994 0.928 1.18 1.08 0.817
+#>         l          b        s1       s2      s3        s4
+#>  5.858941 0.09944006 0.9281912 1.177903 1.07678 0.8171255
 #> 
 #>   sigma^2:  0.0033
 #> 
-#>  AIC AICc  BIC 
-#> 1684 1685 1718
+#>      AIC     AICc      BIC 
+#> 1684.028 1685.091 1717.873
 ```
 
 
@@ -931,7 +933,7 @@ $$
 where $c$ depends on the coverage probability. For ETS models, formulas for $\sigma_h$ can be complicated; the details are given in Chapter 6 of https://robjhyndman.com/expsmooth/. In the following table we give the formulas for the additive ETS models, which are the simplest.
 
 
-<img src="images/ets_forecast_variance.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/ets_forecast_variance.png" width="100%" style="display: block; margin: auto;" />
 
 <center>
 Forecast variance expressions for each additive state space model, where $\sigma_h^2$ is the residual variance of a h-step forecast, $m$ is the seasonal period, and $k$ is the integer part of $(h−1)/m$ (i.e., the number of complete years in the forecast period prior to time $T+h$)

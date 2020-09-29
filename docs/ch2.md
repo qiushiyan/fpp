@@ -41,19 +41,19 @@ olympic_running
 #> # A tsibble: 312 x 4 [4Y]
 #> # Key:       Length, Sex [14]
 #>    Year Length Sex    Time
-#>   <dbl> <fct>  <chr> <dbl>
-#> 1  1896 100m   men    12  
-#> 2  1900 100m   men    11  
-#> 3  1904 100m   men    11  
-#> 4  1908 100m   men    10.8
-#> 5  1912 100m   men    10.8
-#> 6  1916 100m   men    NA  
+#>   <int>  <int> <chr> <dbl>
+#> 1  1896    100 men    12  
+#> 2  1900    100 men    11  
+#> 3  1904    100 men    11  
+#> 4  1908    100 men    10.8
+#> 5  1912    100 men    10.8
+#> 6  1916    100 men    NA  
 #> # ... with 306 more rows
 ```
 
 `key` must be specified in one of the following form:  
 
-<img src="images/tsibble_index.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/tsibble_index.png" width="100%" style="display: block; margin: auto;" />
 
 
 ### manipulation  
@@ -65,28 +65,28 @@ tidyverse-based manipulation
 PBS
 #> # A tsibble: 65,219 x 9 [1M]
 #> # Key:       Concession, Type, ATC1, ATC2 [336]
-#>        Month Concession  Type   ATC1  ATC1_desc   ATC2  ATC2_desc  Scripts  Cost
-#>        <mth> <chr>       <chr>  <chr> <chr>       <chr> <chr>        <dbl> <dbl>
-#> 1   1991 7月 Concession~ Co-pa~ A     Alimentary~ A01   STOMATOLO~   18228 67877
-#> 2   1991 8月 Concession~ Co-pa~ A     Alimentary~ A01   STOMATOLO~   15327 57011
-#> 3   1991 9月 Concession~ Co-pa~ A     Alimentary~ A01   STOMATOLO~   14775 55020
-#> 4  1991 10月 Concession~ Co-pa~ A     Alimentary~ A01   STOMATOLO~   15380 57222
-#> 5  1991 11月 Concession~ Co-pa~ A     Alimentary~ A01   STOMATOLO~   14371 52120
-#> 6  1991 12月 Concession~ Co-pa~ A     Alimentary~ A01   STOMATOLO~   15028 54299
-#> # ... with 6.521e+04 more rows
+#>      Month Concession  Type   ATC1  ATC1_desc    ATC2  ATC2_desc   Scripts  Cost
+#>      <mth> <chr>       <chr>  <chr> <chr>        <chr> <chr>         <dbl> <dbl>
+#> 1 1991 Jul Concession~ Co-pa~ A     Alimentary ~ A01   STOMATOLOG~   18228 67877
+#> 2 1991 Aug Concession~ Co-pa~ A     Alimentary ~ A01   STOMATOLOG~   15327 57011
+#> 3 1991 Sep Concession~ Co-pa~ A     Alimentary ~ A01   STOMATOLOG~   14775 55020
+#> 4 1991 Oct Concession~ Co-pa~ A     Alimentary ~ A01   STOMATOLOG~   15380 57222
+#> 5 1991 Nov Concession~ Co-pa~ A     Alimentary ~ A01   STOMATOLOG~   14371 52120
+#> 6 1991 Dec Concession~ Co-pa~ A     Alimentary ~ A01   STOMATOLOG~   15028 54299
+#> # ... with 65,213 more rows
 
 PBS %>%
   filter(ATC2 == "A10")
 #> # A tsibble: 816 x 9 [1M]
 #> # Key:       Concession, Type, ATC1, ATC2 [4]
-#>        Month Concession  Type  ATC1  ATC1_desc   ATC2  ATC2_desc  Scripts   Cost
-#>        <mth> <chr>       <chr> <chr> <chr>       <chr> <chr>        <dbl>  <dbl>
-#> 1   1991 7月 Concession~ Co-p~ A     Alimentary~ A10   ANTIDIABE~   89733 2.09e6
-#> 2   1991 8月 Concession~ Co-p~ A     Alimentary~ A10   ANTIDIABE~   77101 1.80e6
-#> 3   1991 9月 Concession~ Co-p~ A     Alimentary~ A10   ANTIDIABE~   76255 1.78e6
-#> 4  1991 10月 Concession~ Co-p~ A     Alimentary~ A10   ANTIDIABE~   78681 1.85e6
-#> 5  1991 11月 Concession~ Co-p~ A     Alimentary~ A10   ANTIDIABE~   70554 1.69e6
-#> 6  1991 12月 Concession~ Co-p~ A     Alimentary~ A10   ANTIDIABE~   75814 1.84e6
+#>      Month Concession  Type   ATC1  ATC1_desc    ATC2  ATC2_desc  Scripts   Cost
+#>      <mth> <chr>       <chr>  <chr> <chr>        <chr> <chr>        <dbl>  <dbl>
+#> 1 1991 Jul Concession~ Co-pa~ A     Alimentary ~ A10   ANTIDIABE~   89733 2.09e6
+#> 2 1991 Aug Concession~ Co-pa~ A     Alimentary ~ A10   ANTIDIABE~   77101 1.80e6
+#> 3 1991 Sep Concession~ Co-pa~ A     Alimentary ~ A10   ANTIDIABE~   76255 1.78e6
+#> 4 1991 Oct Concession~ Co-pa~ A     Alimentary ~ A10   ANTIDIABE~   78681 1.85e6
+#> 5 1991 Nov Concession~ Co-pa~ A     Alimentary ~ A10   ANTIDIABE~   70554 1.69e6
+#> 6 1991 Dec Concession~ Co-pa~ A     Alimentary ~ A10   ANTIDIABE~   75814 1.84e6
 #> # ... with 810 more rows
 
 # index column is automatically selected
@@ -95,14 +95,14 @@ PBS %>%
   select(Concession, Type, ATC1)
 #> # A tsibble: 816 x 4 [1M]
 #> # Key:       Concession, Type, ATC1 [4]
-#>   Concession   Type        ATC1      Month
-#>   <chr>        <chr>       <chr>     <mth>
-#> 1 Concessional Co-payments A      1991 7月
-#> 2 Concessional Co-payments A      1991 8月
-#> 3 Concessional Co-payments A      1991 9月
-#> 4 Concessional Co-payments A     1991 10月
-#> 5 Concessional Co-payments A     1991 11月
-#> 6 Concessional Co-payments A     1991 12月
+#>   Concession   Type        ATC1     Month
+#>   <chr>        <chr>       <chr>    <mth>
+#> 1 Concessional Co-payments A     1991 Jul
+#> 2 Concessional Co-payments A     1991 Aug
+#> 3 Concessional Co-payments A     1991 Sep
+#> 4 Concessional Co-payments A     1991 Oct
+#> 5 Concessional Co-payments A     1991 Nov
+#> 6 Concessional Co-payments A     1991 Dec
 #> # ... with 810 more rows
 ```
 
@@ -132,14 +132,14 @@ PBS %>%
   select(Month, Concession, Type, Cost) %>%
   summarise(total_cost = sum(Cost))
 #> # A tsibble: 204 x 2 [1M]
-#>       Month total_cost
-#>       <mth>      <dbl>
-#> 1  1991 7月    3526591
-#> 2  1991 8月    3180891
-#> 3  1991 9月    3252221
-#> 4 1991 10月    3611003
-#> 5 1991 11月    3565869
-#> 6 1991 12月    4306371
+#>      Month total_cost
+#>      <mth>      <dbl>
+#> 1 1991 Jul    3526591
+#> 2 1991 Aug    3180891
+#> 3 1991 Sep    3252221
+#> 4 1991 Oct    3611003
+#> 5 1991 Nov    3565869
+#> 6 1991 Dec    4306371
 #> # ... with 198 more rows
 ```
 
@@ -154,14 +154,14 @@ PBS %>%
 
 a10
 #> # A tsibble: 204 x 3 [1M]
-#>       Month total_cost  cost
-#>       <mth>      <dbl> <dbl>
-#> 1  1991 7月    3526591  3.53
-#> 2  1991 8月    3180891  3.18
-#> 3  1991 9月    3252221  3.25
-#> 4 1991 10月    3611003  3.61
-#> 5 1991 11月    3565869  3.57
-#> 6 1991 12月    4306371  4.31
+#>      Month total_cost  cost
+#>      <mth>      <dbl> <dbl>
+#> 1 1991 Jul    3526591  3.53
+#> 2 1991 Aug    3180891  3.18
+#> 3 1991 Sep    3252221  3.25
+#> 4 1991 Oct    3611003  3.61
+#> 5 1991 Nov    3565869  3.57
+#> 6 1991 Dec    4306371  4.31
 #> # ... with 198 more rows
 ```
 
@@ -172,14 +172,14 @@ a10
 prison <- vroom::vroom("https://OTexts.com/fpp3/extrafiles/prison_population.csv")
 
 prison <-  prison %>%
-  mutate(quarter = yearquarter(date)) %>%
-  select(-date) %>%
-  as_tsibble(key = c(state, gender, legal, indigenous), index = quarter)
+  mutate(quarter = yearquarter(Date)) %>%
+  select(-Date) %>%
+  as_tsibble(key = c(State, Gender, Legal, Indigenous), index = quarter)
 
 prison
 #> # A tsibble: 3,072 x 6 [1Q]
-#> # Key:       state, gender, legal, indigenous [64]
-#>   state gender legal    indigenous count quarter
+#> # Key:       State, Gender, Legal, Indigenous [64]
+#>   State Gender Legal    Indigenous Count quarter
 #>   <chr> <chr>  <chr>    <chr>      <dbl>   <qtr>
 #> 1 ACT   Female Remanded ATSI           0 2005 Q1
 #> 2 ACT   Female Remanded ATSI           1 2005 Q2
@@ -210,11 +210,10 @@ prison
 
 melsyd_economy %>%
   autoplot(Passengers) +
-  labs(title = "Ansett economy class passengers", subtitle = "Melbourne-Sydney") +
-  xlab("Year")
+  labs(title = "Ansett economy class passengers", subtitle = "Melbourne-Sydney", x = "Year") 
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-11-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-11-1.png" width="100%" style="display: block; margin: auto;" />
 
 `autoplot()` automatically produces an appropriate plot of whatever you pass to it in the first argument.  
 When there are multiple time series in a `tsibble()`, they are plotted separately:  
@@ -224,7 +223,7 @@ When there are multiple time series in a `tsibble()`, they are plotted separatel
 olympic_running %>% autoplot(.vars = Time)
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-12-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 ## Patterns of time series: trend, seasonal and cyclic
@@ -247,7 +246,7 @@ It's crucial to first identify the time series patterns in the data, and then ch
 
 An example of combined patterns: 
 
-<img src="images/patterns.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/patterns.png" width="100%" style="display: block; margin: auto;" />
 
 
 * topleft: storng seasonality, cyclic period in 6 - 10 years, no trend  
@@ -267,7 +266,7 @@ a10 %>% gg_season(y = cost, labels = "both") +
   ggtitle("Seasonal plot: antidiabetic drug sales") 
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-14-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-14-1.png" width="100%" style="display: block; margin: auto;" />
 
 Here `labels = "both"` means labels of years are displayed on both sides of the plot.  
 
@@ -288,7 +287,7 @@ a10 %>%
   geom_line(aes(month, cost, color = year, group = year))
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-15-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-15-1.png" width="100%" style="display: block; margin: auto;" />
 
 ### Multiple seasonal periods: `period` in `gg_season()`  
 
@@ -300,7 +299,7 @@ daily:
 vic_elec %>% gg_season(period = "day")
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-16-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-16-1.png" width="100%" style="display: block; margin: auto;" />
 
 weekly: 
 
@@ -309,7 +308,7 @@ weekly:
 vic_elec %>% gg_season(period = "week")
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-17-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-17-1.png" width="100%" style="display: block; margin: auto;" />
 
 yearly: 
 
@@ -320,7 +319,7 @@ vic_elec %>%
   theme(legend.position = "top")
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-18-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-18-1.png" width="100%" style="display: block; margin: auto;" />
 
 Different from `autoplot()`, when `gg_season()` and the `gg_subseries()` (later introduced) encounter multiple time series, they are displayed in facets. 
 
@@ -339,7 +338,7 @@ a10 %>%
     ggtitle("Seasonal subseries plot: antidiabetic drug sales")
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-19-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-19-1.png" width="100%" style="display: block; margin: auto;" />
 
 **The blue horizontal lines indicate the means for each month**. This form of plot enables the underlying seasonal pattern to be seen clearly, and also shows the changes in seasonality over time. It is especially useful in identifying changes within particular seasons. In this example, the plot is not particularly revealing; but in some cases, this is the most useful way of viewing seasonal changes over time.  
 
@@ -372,17 +371,18 @@ Then we can get total visitors by states(i.e., ignoring regions), and then plot 
 
 ```r
 holidays <- holiday_tourism %>%
-  group_by(State) %>% # no nedd to specify group_by(Quarter, Region)
-  count(wt = Trips, name = "trips") %>%
+  group_by(State) %>% # no need for group_by(Quarter, Region)
+  summarize(trips = sum(Trips)) %>%
   ungroup()
 
 holidays %>%  
   autoplot() +
-  ylab("thousands of trips") + xlab("Year") +
-  ggtitle("Australian domestic holiday nights")
+  labs(x = "Year", y = NULL,
+       title = "Australian domestic holiday nights",
+       subtitle = "y: Thousands of trips")
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-21-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-21-1.png" width="100%" style="display: block; margin: auto;" />
 
 Time plots of each series shows that there is strong seasonality for most states, but that the seasonal peaks do not coincide.   
 
@@ -392,11 +392,11 @@ To see the timing of the seasonal peaks in each state, we can use a season plot.
 ```r
 holidays %>% 
   gg_season(trips) +
-  ylab("thousands of trips") +
-  ggtitle("Australian domestic holiday nights")
+  labs(y = NULL, title = "Australian domestic holiday nights",
+       subtitle = "y: Thousands of trips")
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-22-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-22-1.png" width="100%" style="display: block; margin: auto;" />
 
 Here it is clear that the southern states of Australia (Tasmania, Victoria and South Australia) have strongest tourism in Q1 (their summer), while the northern states (Queensland and the Northern Territory) have the strongest tourism in Q3 (their dry season).  
 
@@ -406,11 +406,11 @@ The corresponding subseries plots are shown below:
 ```r
 holidays %>%
   gg_subseries(trips) + 
-  ylab("thousands of trips") +
-  ggtitle("Australian domestic holiday nights")
+  labs(y = NULL, title = "Australian domestic holiday nights",
+       subtitle = "y: Thousands of trips")
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-23-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-23-1.png" width="100%" style="display: block; margin: auto;" />
 
 This figure makes it evident that Western Australian tourism has jumped markedly in recent years, while Victorian tourism has increased in Q1 and Q4 but not in the middle of the year.
 
@@ -429,7 +429,7 @@ vic_elec %>%
   scale_color_viridis_c()
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-24-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-24-1.png" width="100%" style="display: block; margin: auto;" />
 
 ### scatterplot matrices  
 
@@ -439,15 +439,16 @@ When there are several potential predictor variables, it is useful to plot each 
 ```r
 visitors <- tourism %>%
   group_by(State) %>%
-  summarise(trips = sum(Trips))
+  summarize(trips = sum(Trips))
+
 visitors %>%
   ggplot(aes(x = Quarter, y = trips)) +
     geom_line() +
     facet_grid(vars(State), scales = "free_y") +
-    ylab("Number of visitor nights each quarter (millions)")
+    labs(title = "Number of visitor nights each quarter (millions)")
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-25-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-25-1.png" width="100%" style="display: block; margin: auto;" />
 To better illustrate how number of visitors in different states are related, we could draw a scatterplot matrix by `GGally；:ggpairs()`
 
 
@@ -458,7 +459,7 @@ visitors %>%
   ggpairs(columns = 2:9)
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-26-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-26-1.png" width="100%" style="display: block; margin: auto;" />
 
 ## Lag plots  
 
@@ -475,7 +476,7 @@ recent_production %>%
   gg_lag(y = Beer, lags = 1:9, geom = "point")
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-27-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-27-1.png" width="100%" style="display: block; margin: auto;" />
 
 It's no surprise that strong relationship is detected for $k = 4$ and $k = 8$, since in these 2 panels data points are collected from the same quarter, and from this pattern strong seasonality of beer production can be found.    
 
@@ -487,10 +488,10 @@ Just as correlation measures the extent of a linear relationship between two var
 
 There are several autocorrelation coefficients, corresponding to each panel in the lag plot. For example, $r_1$ measures the relationship between $y_t$ and $y_{t−1}$, $r_2$ measures the relationship between $y_t$ and $y_{t−2}$ and so on.  
 
-As correlation coefficient (pearson) is defined as: 
+The sample correlation coefficient (pearson) is defined as: 
 
 $$
-r_{x, y} = \frac{\sum{(x_t - \bar{x})(y_t - \bar{y})}}{\sqrt{\sum{(x_t - \bar{x}})^2} \times {\sqrt{\sum{(y_t - \bar{y}})^2}}}
+r_{x, y} = \frac{\sum{(x_t - \bar{x})(y_t - \bar{y})}}{\sqrt{\sum{(x_t - \bar{x}})^2}  {\sqrt{\sum{(y_t - \bar{y}})^2}}}
 $$
 
 given $x_t = y_t$ and $y_t = y_{t-k}$ we get the autocorrelation coefficient: 
@@ -528,7 +529,7 @@ recent_production %>%
   autoplot()
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-29-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-29-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 In this graph:
@@ -559,7 +560,7 @@ When data are both trended and seasonal, you see a combination of these effects,
 a10 %>% ACF(cost, lag_max = 48) %>% autoplot()
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-31-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-31-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 
@@ -568,7 +569,7 @@ a10 %>% ACF(cost, lag_max = 48) %>% autoplot()
 a10 %>% autoplot()
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-32-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-32-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 
@@ -651,7 +652,7 @@ p1 <- center_calendar %>%
 p1
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-37-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-37-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 `prettify()` can be used to make the former plot more informative. It takes a `ggplot` object and gives sensible breaks and labels. It can be noted that the calendar-based graphic depicts time of day, day of week, and other calendar effects like public holiday in a clear manner.  
@@ -661,7 +662,7 @@ p1
 prettify(p1)
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-38-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-38-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 It’s not necessarily working with lines but other geoms too. And `y` can take multiple variable names in combination with `vars()`. The rectangular glyphs arranged on a “weekly” calendar are plotted to illustrate the usage of the multiple ys and the differences between sensors. 
@@ -698,6 +699,6 @@ p2 <- two_sensors_wide %>%
 prettify(p2)
 ```
 
-<img src="ch2_files/figure-html/unnamed-chunk-39-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch2_files/figure-html/unnamed-chunk-39-1.png" width="100%" style="display: block; margin: auto;" />
 
 More information in [Package vignette](https://pkg.earo.me/sugrrants/articles/frame-calendar.html)

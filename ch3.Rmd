@@ -257,10 +257,10 @@ classical_dcmp %>% autoplot()
 
 ## X11 decomposition 
 
-Only monthly and quarterly.  
 
 
-`feasts:::X11(Employed, type = "additive")` makes specifications about a X11 additive model, and `model()` were called to estimate it, and `components()` gives $\hat{T}_t$, $\hat{S}_t$ and $\hat{R}_t$ for each observation.  
+
+`feasts:::X11(Employed, type = "additive")` makes specifications about a X11 additive model, and `model()` were called to estimate it, and `components()` gives $\hat{T}_t$, $\hat{S}_t$ and $\hat{R}_t$ for each observation. **This is only applicable to monthly or quarterly data**. 
 
 ```{r, cache = TRUE}
 x11_dcmp <- us_retail_employment %>%

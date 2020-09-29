@@ -164,14 +164,15 @@ AR1_aug %>% features(.resid, ljung_box, lag = 10, dof = 0)
 # Breusch Godfrey test: lmtest::bgtest()
 # durbin watson test 
 AR1_aug %>% pull(.resid) %>% car::durbinWatsonTest(max.lag = 10)
-#>  [1] 1.89 1.99 1.95 1.77 2.04 1.86 1.83 1.45 1.11 1.59
+#>  [1] 1.892617 1.987601 1.948205 1.773167 2.037944 1.857135 1.832362 1.445376
+#>  [9] 1.114101 1.588983
 # jb test (normality)
 AR1_aug %>% pull(.resid) %>% normtest::jb.norm.test()
 #> 
 #> 	Jarque-Bera test for normality
 #> 
 #> data:  .
-#> JB = 7, p-value = 0.03
+#> JB = 6.5604, p-value = 0.028
 ```
 
 
@@ -348,7 +349,7 @@ wrap_plots(
 )
 ```
 
-<img src="stationary_files/figure-html/unnamed-chunk-5-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="stationary_files/figure-html/unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;" />
 
 It looks like the time series with the smaller AR coefficient is more “choppy” and seems to stay closer to 0 whereas the time series with the larger AR coefficient appears to wander around more. Remember that as the coefficient in an AR(1) model goes to 0, the model approaches a WN sequence, which is stationary in both the mean and variance. As the coefficient goes to 1, however, the model approaches a random walk (\@ref(random-walk)), which is not stationary in either the mean or covariance.  
 
@@ -373,7 +374,7 @@ wrap_plots(
 )
 ```
 
-<img src="stationary_files/figure-html/unnamed-chunk-6-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="stationary_files/figure-html/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 Now it appears like both time series vary around the mean by about the same amount, but the model with the negative coefficient produces a much more “sawtooth” time series. It turns out that any AR(1) model with $−1 < \phi_1 < 0$ will exhibit the 2-point oscillation we see here.
@@ -406,7 +407,7 @@ fpp3::aus_airpassengers %>%
   autoplot()
 ```
 
-<img src="stationary_files/figure-html/unnamed-chunk-8-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="stationary_files/figure-html/unnamed-chunk-8-1.png" width="100%" style="display: block; margin: auto;" />
 
 This tells us only PAC at $\text{lag} = 1$ is significantly different than 0. As such only among $y_{t-1}, y_{t-2}, \dots, y_{t-10}$, only $y_{t-1}$ has a significant **direct** effect on the response, so a AR(1) model may be appropriate. We can compare this to the ACF plot 
 
@@ -417,7 +418,7 @@ fpp3::aus_airpassengers %>%
   autoplot()
 ```
 
-<img src="stationary_files/figure-html/unnamed-chunk-9-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="stationary_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" />
 
 Another characteristic of AR(p) is that ACF plots tails slowly.  
 
@@ -431,11 +432,11 @@ wrap_plots(
 )
 ```
 
-<img src="stationary_files/figure-html/unnamed-chunk-10-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="stationary_files/figure-html/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;" />
 
 Further illustration: the ACF for an AR(p) process tails off toward zero very slowly, but the PACF goes to zero for lags > $p$.
 
-<img src="images/AR_decision.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/AR_decision.png" width="100%" style="display: block; margin: auto;" />
 
 
 
@@ -501,13 +502,13 @@ rw <- RW(500, 0, 1, 1) %>%
 rw %>% autoplot() + geom_abline(slope = 1, intercept = 0, color = "red")
 ```
 
-<img src="stationary_files/figure-html/unnamed-chunk-12-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="stationary_files/figure-html/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;" />
 
 ```r
 rw %>% ACF() %>% autoplot()
 ```
 
-<img src="stationary_files/figure-html/unnamed-chunk-12-2.png" width="90%" style="display: block; margin: auto;" />
+<img src="stationary_files/figure-html/unnamed-chunk-12-2.png" width="100%" style="display: block; margin: auto;" />
 
 
 
@@ -583,7 +584,7 @@ wrap_plots(
 )
 ```
 
-<img src="stationary_files/figure-html/unnamed-chunk-13-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="stationary_files/figure-html/unnamed-chunk-13-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 ### Decision of order q 
@@ -624,9 +625,9 @@ Now that we have proved that when $k > q$, ACF would be zero and otherwise non-z
 
 Another characteristic of a MA(q) process is that their PACF tails off toward zero very slowly, in contrast to AR(p) whose ACF plot has a long tail.  
 
-<img src="images/MA_decision.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/MA_decision.png" width="100%" style="display: block; margin: auto;" />
 
-<img src="images/AR_MA_decision.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/AR_MA_decision.png" width="100%" style="display: block; margin: auto;" />
 
 
 ### Koyck transformation and Invertibility 
@@ -816,7 +817,7 @@ condition $r_1$ is negative.
 - $\phi_1 < 0$ and  $\phi_1 > \theta_1$: The autocorrelation function oscillates; the initial
 condition $r_1$ is positive.  
 
-<img src="images/arma11.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/arma11.png" width="100%" style="display: block; margin: auto;" />
 
 ### Three representations of an ARMA model
 

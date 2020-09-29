@@ -89,9 +89,9 @@ a10
 prison <- vroom::vroom("https://OTexts.com/fpp3/extrafiles/prison_population.csv")
 
 prison <-  prison %>%
-  mutate(quarter = yearquarter(date)) %>%
-  select(-date) %>%
-  as_tsibble(key = c(state, gender, legal, indigenous), index = quarter)
+  mutate(quarter = yearquarter(Date)) %>%
+  select(-Date) %>%
+  as_tsibble(key = c(State, Gender, Legal, Indigenous), index = quarter)
 
 prison
 ```
@@ -104,8 +104,7 @@ prison
 
 melsyd_economy %>%
   autoplot(Passengers) +
-  labs(title = "Ansett economy class passengers", subtitle = "Melbourne-Sydney") +
-  xlab("Year")
+  labs(title = "Ansett economy class passengers", subtitle = "Melbourne-Sydney", x = "Year") 
 ```
 
 `autoplot()` automatically produces an appropriate plot of whatever you pass to it in the first argument.  
@@ -232,14 +231,15 @@ Then we can get total visitors by states(i.e., ignoring regions), and then plot 
 
 ```{r}
 holidays <- holiday_tourism %>%
-  group_by(State) %>% # no nedd to specify group_by(Quarter, Region)
-  count(wt = Trips, name = "trips") %>%
+  group_by(State) %>% # no need for group_by(Quarter, Region)
+  summarize(trips = sum(Trips)) %>%
   ungroup()
 
 holidays %>%  
   autoplot() +
-  ylab("thousands of trips") + xlab("Year") +
-  ggtitle("Australian domestic holiday nights")
+  labs(x = "Year", y = NULL,
+       title = "Australian domestic holiday nights",
+       subtitle = "y: Thousands of trips")
 ```
 
 Time plots of each series shows that there is strong seasonality for most states, but that the seasonal peaks do not coincide.   
@@ -249,8 +249,8 @@ To see the timing of the seasonal peaks in each state, we can use a season plot.
 ```{r, cache = TRUE, fig.height = 10, fig.width = 7.5}
 holidays %>% 
   gg_season(trips) +
-  ylab("thousands of trips") +
-  ggtitle("Australian domestic holiday nights")
+  labs(y = NULL, title = "Australian domestic holiday nights",
+       subtitle = "y: Thousands of trips")
 ```
 
 Here it is clear that the southern states of Australia (Tasmania, Victoria and South Australia) have strongest tourism in Q1 (their summer), while the northern states (Queensland and the Northern Territory) have the strongest tourism in Q3 (their dry season).  
@@ -260,8 +260,8 @@ The corresponding subseries plots are shown below:
 ```{r, fig.height = 8, fig.width = 8, cache = TRUE}
 holidays %>%
   gg_subseries(trips) + 
-  ylab("thousands of trips") +
-  ggtitle("Australian domestic holiday nights")
+  labs(y = NULL, title = "Australian domestic holiday nights",
+       subtitle = "y: Thousands of trips")
 ```
 
 This figure makes it evident that Western Australian tourism has jumped markedly in recent years, while Victorian tourism has increased in Q1 and Q4 but not in the middle of the year.
@@ -287,12 +287,13 @@ When there are several potential predictor variables, it is useful to plot each 
 ```{r, fig.height = 7.5, fig.width = 8, cache = TRUE}
 visitors <- tourism %>%
   group_by(State) %>%
-  summarise(trips = sum(Trips))
+  summarize(trips = sum(Trips))
+
 visitors %>%
   ggplot(aes(x = Quarter, y = trips)) +
     geom_line() +
     facet_grid(vars(State), scales = "free_y") +
-    ylab("Number of visitor nights each quarter (millions)")
+    labs(title = "Number of visitor nights each quarter (millions)")
 ```
 To better illustrate how number of visitors in different states are related, we could draw a scatterplot matrix by `GGally；:ggpairs()`
 
@@ -327,10 +328,10 @@ Just as correlation measures the extent of a linear relationship between two var
 
 There are several autocorrelation coefficients, corresponding to each panel in the lag plot. For example, $r_1$ measures the relationship between $y_t$ and $y_{t−1}$, $r_2$ measures the relationship between $y_t$ and $y_{t−2}$ and so on.  
 
-As correlation coefficient (pearson) is defined as: 
+The sample correlation coefficient (pearson) is defined as: 
 
 $$
-r_{x, y} = \frac{\sum{(x_t - \bar{x})(y_t - \bar{y})}}{\sqrt{\sum{(x_t - \bar{x}})^2} \times {\sqrt{\sum{(y_t - \bar{y}})^2}}}
+r_{x, y} = \frac{\sum{(x_t - \bar{x})(y_t - \bar{y})}}{\sqrt{\sum{(x_t - \bar{x}})^2}  {\sqrt{\sum{(y_t - \bar{y}})^2}}}
 $$
 
 given $x_t = y_t$ and $y_t = y_{t-k}$ we get the autocorrelation coefficient: 

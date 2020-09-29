@@ -30,7 +30,7 @@ The features can be computed using the `features()` function. For example, letâ€
 tourism %>% 
   features(Trips, mean)
 #> # A tibble: 304 x 4
-#>   Region         State           Purpose      V1
+#>   Region         State           Purpose    ...1
 #>   <chr>          <chr>           <chr>     <dbl>
 #> 1 Adelaide       South Australia Business 156.  
 #> 2 Adelaide       South Australia Holiday  157.  
@@ -178,7 +178,7 @@ tourism %>%
   geom_point(aes(trend_strength, seasonal_strength_year, color = Purpose))
 ```
 
-<img src="ch4_files/figure-html/unnamed-chunk-8-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch4_files/figure-html/unnamed-chunk-8-1.png" width="100%" style="display: block; margin: auto;" />
 
 The most seasonal series can also be easily identified and plotted.  
 
@@ -194,7 +194,7 @@ tourism %>%
   facet_grid(vars(State, Region, Purpose))
 ```
 
-<img src="ch4_files/figure-html/unnamed-chunk-9-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch4_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" />
 
 ## Other features  
 
@@ -250,7 +250,7 @@ tourism_tsl %>%
   GGally::ggpairs(aes(color = Purpose))
 ```
 
-<img src="ch4_files/figure-html/unnamed-chunk-13-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch4_files/figure-html/unnamed-chunk-13-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 

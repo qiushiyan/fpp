@@ -1,7 +1,7 @@
 --- 
 title: 'Notes for "Forecasting: Principles and Practice, 3rd edition"'
 author: "Qiushi Yan"
-date: "2020-05-11"
+date: "2020-09-29"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [references.bib, packages.bib]

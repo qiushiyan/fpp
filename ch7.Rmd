@@ -666,7 +666,7 @@ In this setting, the forecaster assumes possible scenarios for the predictor var
 We should note that prediction intervals for scenario based forecasts **do not include the uncertainty associated with the future values of the predictor variables**. They assume that the values of the predictors are known in advance, (i.e, ex-post forecasts).
 
 ```{r}
-# new_data(data, n) appends n following observations of each series to a tsibble 
+# new_data(data, n) creates n rows of time index of each series to
 new_data(us_change, 4)
 
 # define a function producing values based on increase / decrease rate 
@@ -708,8 +708,7 @@ Then we could produce forecast for each of the two scenarios :
 
 ```{r}
 up_future_fc <- forecast(us_change_mfit, new_data = up_future) %>%
-  mutate(Scenario = "Increase") %>% 
-  as_tibble()
+  mutate(Scenario = "Increase") 
 
 down_future_fc <- forecast(us_change_mfit, new_data = down_future) %>%
   mutate(Scenario = "Decrease") %>% 
@@ -718,7 +717,8 @@ down_future_fc <- forecast(us_change_mfit, new_data = down_future) %>%
 us_change %>% 
   ggplot(aes(Quarter, Consumption)) + 
   geom_line() + 
-  geom_line(aes(color = Scenario), data = rbind(up_future_fc, down_future_fc)) + 
+  geom_line(aes(y = .mean), data = up_future_fc, color = "red") + 
+  geom_line(aes(y = .mean), data = down_future_fc, color = "blue") + 
   coord_cartesian(xlim = c(ymd("2015-01-01", NA)),
                   ylim = c(0, 1.2))
 ```

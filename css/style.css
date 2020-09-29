@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Merriweather+Sans:400,400i,700,700i|Merriweather:400,400i,700,700i|Roboto+Mono:400,400i,500,500i');
 
 h1, h2, h3, h4, h5, h6, .book-summary {
-  font-family: 'Merriweather Sans', sans-serif;
+  font-family: 'Merriweather', sans-serif;
   letter-spacing: -0.02em !important;
 }
 
@@ -10,11 +10,11 @@ h1.title {
 }
 
 .book.font-family-0 {
-  font-family: 'Merriweather', serif !important;
+  font-family: 'Arial', serif !important;
 }
 
 .book.font-family-1 {
-  font-family: 'Merriweather Sans', sans-serif !important;
+  font-family: 'Arial', sans-serif !important;
 }
 
 #header .title {
@@ -54,6 +54,43 @@ pre code {
 p.flushright {
   text-align: right;
 }
+
+/* Proof formating --------------------------------------------*/
+
+
+.proof {
+  display: block;
+  font-size: 1.1em;
+  text-align: center;
+  font-weight: bold;
+  font-style: italic;
+  background-color: #DEE9F6;
+  border-top: solid 5px #EEF4FA;
+  padding: 0.5em;
+  margin: 1em 0;
+}
+
+/* Algorithm formating --------------------------------------------*/
+
+.algorithm {
+  padding: 1em;
+  margin: 1em 0;
+  min-height: 120px;
+  color: #1a162dcc;
+  background-color: #91CBD738;
+  border-top: 7pt solid #a19ea936;
+  max-width: 100%;
+  line-height: 1.75em;
+  font-size: 0.85em;
+  letter-spacing: 1pt;
+  margin-bottom: 1.5em;
+}
+
+div.algorithm code, {
+  background-color: #91CBD765 !important;
+  font-size: 1em;
+}
+
 
 /* Sidebar formating --------------------------------------------*/
 
@@ -160,7 +197,7 @@ blockquote p {
 }
 
 blockquote > p:last-child {
-  font-size: 16px !important;
+  font-size: 14px !important;
   margin-top: -1em !important;
 }
 

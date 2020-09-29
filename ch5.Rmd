@@ -309,7 +309,7 @@ $$
 
 
 ```{r, fig.show = "hold", out.width = "50%", fig.align = "default"}
-# stimulate Guassian and other white nosie
+# simulate Gaussian and other white noise
 set.seed(2020)
 y <- tsibble(sample = 1:50, wn = rnorm(50), index = sample)
 z <- tsibble(sample = 1:50, 
@@ -326,7 +326,7 @@ z %>%
   ggtitle("Other white noise")
 ```
 
-Let's check the autocorrelation of a white noise:  
+The check for autocorrelation
 
 ```{r, fig.height = 8, fig.width = 7.5}
 wrap_plots(
@@ -339,11 +339,11 @@ wrap_plots(
 
 Since white noise are uncoorelated, we expect each autocorrelation coefficient of any order to be close to zero. Of course, they will not be exactly equal to zero as there is some random variation. For a white noise series, we expect $95%$ of the spikes in the `ACF` plot to lie within $±2/\sqrt{T}$ where $T$  is the length of the time series. It is common to plot these bounds on a graph of the `ACF` (the blue dashed lines above). If one or more large spikes are outside these bounds, or if substantially more than $5\%$ of spikes are outside these bounds, then the series is probably not white noise.
 
-In this example, $T = 50$ and so the bounds are at $±2/\sqrt{50} = \pm 0.28$. All of the autocorrelation coefficients lie within these limits, confirming that the data are white noise.    
+In this example, $T = 50$ and the bounds are at $±2/\sqrt{50} = \pm 0.28$. All of the autocorrelation coefficients lie within these limits, confirming that the data are white noise.    
 
-Why white noise matters? Researchers generally assume that white noise is not predictable, and contains no information related to the respose of interest. It follows that we would expect that residuals computed according to a specific model to be white noise. This means the valuable part of model extract information from the data to such an extent that we do not care what's left.   
+Why white noise matters? Researchers generally assume that white noise is not predictable, and contains no information related to the response of interest. It follows that we would expect that residuals computed according to a specific model to be white noise. This means the valuable part of model extract information from the data to such an extent that we do not care what's left.   
 
-If residuals $\varepsilon_1, \varepsilon_2, \dots, \varepsilon_t$ violates any of the rules of white noise, then there is still valuable information buried under the resiuals, which we will imporve our models to capture. We have not a 'best' model at hand until residuals become unpredictable, in other words, white noise.  
+If residuals $\varepsilon_1, \varepsilon_2, \dots, \varepsilon_t$ violates any of the rules of white noise, then there is still valuable information buried under the residuals, which we will improve our models to capture. We have not a 'best' model at hand until residuals become unpredictable, in other words, white noise.  
 
 ### Example: Forecasting the Google daily closing stock price  
 
@@ -507,12 +507,11 @@ Prediction intervals can easily be computed for you when using the fable package
 google_2015 %>%
   model(NAIVE(Close)) %>%
   forecast(h = 10) %>%
-  hilo(level = 95) %>% 
-  unnest(`95%`)
+  hilo(level = 95) 
 ```
 
 
-The `hilo()` function converts the forecast distributions into intervals. By default, 80% and 95% prediction intervals are returned, here I aks only for a 95% interval via the `level` argument.  
+The `hilo()` function converts the forecast distributions into intervals. By default, 80% and 95% prediction intervals are returned, here I ask only for a 95% interval via the `level` argument.  
 
 ### Prediction intervals from bootstrapped residuals  
 
@@ -871,17 +870,18 @@ eggs_fc <- eggs_fit %>%
   forecast(h = 50) 
 
 eggs_fc_biased <- eggs_fit %>% 
-  forecast(h = 50, bias_adjust = FALSE) 
+  forecast(h = 50) 
 
-eggs %>% autoplot(value) +
-  autolayer(eggs_fc_biased, level = 80) +
-  autolayer(eggs_fc, colour = "red", level = NULL)
+eggs %>% 
+  autoplot(value) +
+  autolayer(eggs_fc, color = "red", level = NULL) +   
+  autolayer(eggs_fc_biased, level = NULL, point_forecast = list(.median = median)) 
 ```
 
 
 The blue line in shows the forecast medians while the red line shows the forecast means. Notice how the skewed forecast distribution pulls up the point forecast when we use the bias adjustment.  
 
-**Bias adjustments will be applied by default in the `fable` package**. To produce point forecasts that are not bias adjusted (giving forecast medians rather than means), use the argument `bias_adjust = FALSE` in `forecast()`.  
+**Bias adjustments will be applied by default in the `fable` package**. To produce point forecasts that are not bias adjusted (giving forecast medians rather than means), check the argument `point_forecast` in `forecast()`.  
 
 ## Forecasting with decomposition
 

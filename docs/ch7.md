@@ -44,7 +44,7 @@ us_change %>%
        color = "Series")
 ```
 
-<img src="ch7_files/figure-html/unnamed-chunk-4-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch7_files/figure-html/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" />
 
 And then make a scatter plot:  
 
@@ -58,7 +58,7 @@ us_change %>%
     geom_smooth(method="lm", se=FALSE)
 ```
 
-<img src="ch7_files/figure-html/unnamed-chunk-5-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch7_files/figure-html/unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;" />
 
 Fit a formal model:  
 
@@ -66,17 +66,17 @@ Fit a formal model:
 ```r
 us_change_fit <- lm(Consumption ~ Income, data = us_change)
 us_change_fit %>% glance()
-#> # A tibble: 1 x 11
+#> # A tibble: 1 x 12
 #>   r.squared adj.r.squared sigma statistic p.value    df logLik   AIC   BIC
-#>       <dbl>         <dbl> <dbl>     <dbl>   <dbl> <int>  <dbl> <dbl> <dbl>
-#> 1     0.147         0.143 0.591      33.8 2.40e-8     2  -176.  357.  367.
-#> # ... with 2 more variables: deviance <dbl>, df.residual <int>
+#>       <dbl>         <dbl> <dbl>     <dbl>   <dbl> <dbl>  <dbl> <dbl> <dbl>
+#> 1     0.147         0.143 0.591      33.8 2.40e-8     1  -176.  357.  367.
+#> # ... with 3 more variables: deviance <dbl>, df.residual <int>, nobs <int>
 ```
 
 The simple linear model can be written as 
 
 $$
-\text{Consumption} = 0.54 + 0.27(\text{Income}) + \epsilon
+\operatorname{Consumption} = 0.54 + 0.27(\operatorname{Income}) + \epsilon
 $$
 
 `TSLM()` (time series regression model) is more compatible with the modelling workflow in `fable`, compared to the general method `lm()`  
@@ -90,19 +90,19 @@ us_change %>%
 #> Model: TSLM 
 #> 
 #> Residuals:
-#>    Min     1Q Median     3Q    Max 
-#> -2.582 -0.278  0.019  0.323  1.422 
+#>      Min       1Q   Median       3Q      Max 
+#> -2.58236 -0.27777  0.01862  0.32330  1.42229 
 #> 
 #> Coefficients:
 #>             Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept)   0.5445     0.0540   10.08  < 2e-16 ***
-#> Income        0.2718     0.0467    5.82  2.4e-08 ***
+#> (Intercept)  0.54454    0.05403  10.079  < 2e-16 ***
+#> Income       0.27183    0.04673   5.817  2.4e-08 ***
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
-#> Residual standard error: 0.591 on 196 degrees of freedom
-#> Multiple R-squared: 0.147,	Adjusted R-squared: 0.143
-#> F-statistic: 33.8 on 1 and 196 DF, p-value: 2e-08
+#> Residual standard error: 0.5905 on 196 degrees of freedom
+#> Multiple R-squared: 0.1472,	Adjusted R-squared: 0.1429
+#> F-statistic: 33.84 on 1 and 196 DF, p-value: 2.4022e-08
 ```
 
 `report()` displays a object in a suitable format for reporting, here its result is identical to `summary.lm()`. `TSLM()` 
@@ -128,7 +128,7 @@ us_change %>%
   scale_color_discrete(guide = FALSE)
 ```
 
-<img src="ch7_files/figure-html/unnamed-chunk-9-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch7_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 Below is a scatterplot matrix of five variables. The first column shows the relationships between the forecast variable (`consumption`) and each of the predictors. The scatterplots show positive relationships with income and industrial production, and negative relationships with savings and unemployment. 
@@ -139,7 +139,7 @@ GGally::ggpairs(us_change[, 2:6])
 ```
 
 <div class="figure" style="text-align: center">
-<img src="ch7_files/figure-html/pairs-1.png" alt="A scatterplot matrix of all 5 variables" width="90%" />
+<img src="ch7_files/figure-html/pairs-1.png" alt="A scatterplot matrix of all 5 variables" width="100%" />
 <p class="caption">(\#fig:pairs)A scatterplot matrix of all 5 variables</p>
 </div>
 
@@ -151,7 +151,7 @@ lm(Consumption ~ Income + Production + Savings + Unemployment,
    data = us_change) %>% 
    car::vif()
 #>       Income   Production      Savings Unemployment 
-#>         2.67         2.54         2.51         2.52
+#>     2.670685     2.537494     2.506434     2.519616
 ```
 
 Fit a multiple linear model:  
@@ -166,27 +166,27 @@ us_change_mfit %>% report()
 #> Model: TSLM 
 #> 
 #> Residuals:
-#>    Min     1Q Median     3Q    Max 
-#> -0.906 -0.158 -0.036  0.136  1.155 
+#>      Min       1Q   Median       3Q      Max 
+#> -0.90555 -0.15821 -0.03608  0.13618  1.15471 
 #> 
 #> Coefficients:
-#>              Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept)   0.25311    0.03447    7.34  5.7e-12 ***
-#> Income        0.74058    0.04012   18.46  < 2e-16 ***
-#> Production    0.04717    0.02314    2.04    0.043 *  
-#> Savings      -0.05289    0.00292  -18.09  < 2e-16 ***
-#> Unemployment -0.17469    0.09551   -1.83    0.069 .  
+#>               Estimate Std. Error t value Pr(>|t|)    
+#> (Intercept)   0.253105   0.034470   7.343 5.71e-12 ***
+#> Income        0.740583   0.040115  18.461  < 2e-16 ***
+#> Production    0.047173   0.023142   2.038   0.0429 *  
+#> Savings      -0.052890   0.002924 -18.088  < 2e-16 ***
+#> Unemployment -0.174685   0.095511  -1.829   0.0689 .  
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
-#> Residual standard error: 0.31 on 193 degrees of freedom
-#> Multiple R-squared: 0.768,	Adjusted R-squared: 0.763
-#> F-statistic:  160 on 4 and 193 DF, p-value: <2e-16
+#> Residual standard error: 0.3102 on 193 degrees of freedom
+#> Multiple R-squared: 0.7683,	Adjusted R-squared: 0.7635
+#> F-statistic:   160 on 4 and 193 DF, p-value: < 2.22e-16
 ```
 
 
 $$
-\text{Consumption} = 0.25 + 0.74(\text{Income}) + 0.05(\text{Production}) - 0.05(\text{Savings}) - 0.17(\text{Unemployment}) + \epsilon
+\operatorname{Consumption} = 0.25 + 0.74(\operatorname{Income}) + 0.05(\operatorname{Production}) - 0.05(\operatorname{Savings}) - 0.17(\operatorname{Unemployment}) + \epsilon
 $$
 
 
@@ -253,7 +253,7 @@ us_change_mfit %>%
        title = "Percent change in US consumption expenditure")
 ```
 
-<img src="ch7_files/figure-html/unnamed-chunk-13-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch7_files/figure-html/unnamed-chunk-13-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 ```r
@@ -267,7 +267,7 @@ us_change_mfit %>%
        x = "Data (actual values)")
 ```
 
-<img src="ch7_files/figure-html/unnamed-chunk-14-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch7_files/figure-html/unnamed-chunk-14-1.png" width="100%" style="display: block; margin: auto;" />
 
 ### Goodness of fit 
  
@@ -298,7 +298,7 @@ The standard error is related to the size of the average error that the model pr
 us_change_mfit %>% gg_tsresiduals()
 ```
 
-<img src="ch7_files/figure-html/unnamed-chunk-15-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch7_files/figure-html/unnamed-chunk-15-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 
@@ -348,7 +348,7 @@ p4 <- ggplot(df, aes(Unemployment, .resid)) +
 p1 + p2 + p3 + p4 + plot_layout(nrow = 2)
 ```
 
-<img src="ch7_files/figure-html/unnamed-chunk-17-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch7_files/figure-html/unnamed-chunk-17-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 ### Residual plots against fitted values  
@@ -367,7 +367,7 @@ augment(us_change_mfit) %>%
   labs(x = "Fitted", y = "Residuals")
 ```
 
-<img src="ch7_files/figure-html/unnamed-chunk-18-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch7_files/figure-html/unnamed-chunk-18-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 ### Outliers and influential observations    
@@ -400,7 +400,7 @@ us_change_lm <- lm(Consumption ~ Income + Production + Savings + Unemployment,
 us_change_lm %>% car::influenceIndexPlot()
 ```
 
-<img src="ch7_files/figure-html/unnamed-chunk-20-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch7_files/figure-html/unnamed-chunk-20-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 ### The `performance` package  
@@ -413,7 +413,7 @@ library(performance)
 check_model(us_change_lm)
 ```
 
-<img src="ch7_files/figure-html/unnamed-chunk-21-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch7_files/figure-html/unnamed-chunk-21-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 
@@ -440,7 +440,7 @@ p3 <- guinea_rice %>%
 (p1 / p2) | p3 
 ```
 
-<img src="ch7_files/figure-html/unnamed-chunk-22-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch7_files/figure-html/unnamed-chunk-22-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 Regressing non-stationary time series can lead to spurious regressions. **High $R^2$ and high residual autocorrelation can be signs of spurious regression**. Notice these features in the output below. We discuss the issues surrounding non-stationary data and spurious regressions in more details in Chapter \@ref(dynamic-regression-models).
@@ -455,11 +455,11 @@ spurious_fit <- guinea_rice %>%
 
 # high r^2 and sigma
 glance(spurious_fit)
-#> # A tibble: 1 x 11
+#> # A tibble: 1 x 12
 #>   r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC
-#>       <dbl>         <dbl> <dbl>     <dbl>    <dbl> <int>  <dbl> <dbl> <dbl>
-#> 1     0.958         0.957  3.24      908. 4.08e-29     2  -108.  222.  227.
-#> # ... with 2 more variables: deviance <dbl>, df.residual <int>
+#>       <dbl>         <dbl> <dbl>     <dbl>    <dbl> <dbl>  <dbl> <dbl> <dbl>
+#> 1     0.958         0.957  3.24      908. 4.08e-29     1  -108.  222.  227.
+#> # ... with 3 more variables: deviance <dbl>, df.residual <int>, nobs <int>
 ```
 
 Section \@ref(tests-for-autocorrelation-and-normality) introduces the BG test, which is designed to detect autocorrelation among residuals of a regression model, small p-value suggests that residuals are highly correlated  
@@ -471,7 +471,7 @@ spurious_fit %>% lmtest::bgtest()
 #> 	Breusch-Godfrey test for serial correlation of order up to 1
 #> 
 #> data:  .
-#> LM test = 23, df = 1, p-value = 0.000001
+#> LM test = 23.309, df = 1, p-value = 0.00000138
 ```
 
 
@@ -510,7 +510,7 @@ recent_production <- aus_production %>%
 recent_production %>% gg_tsdisplay(Beer)
 ```
 
-<img src="ch7_files/figure-html/unnamed-chunk-25-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch7_files/figure-html/unnamed-chunk-25-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 We want to forecast the value of future beer production. We can model this data using a regression model with a linear trend and quarterly dummy variables, 
@@ -530,22 +530,22 @@ beer_fit %>% report()
 #> Model: TSLM 
 #> 
 #> Residuals:
-#>    Min     1Q Median     3Q    Max 
-#>  -42.9   -7.6   -0.5    8.0   21.8 
+#>      Min       1Q   Median       3Q      Max 
+#> -42.9029  -7.5995  -0.4594   7.9908  21.7895 
 #> 
 #> Coefficients:
-#>               Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept)   441.8004     3.7335  118.33  < 2e-16 ***
-#> trend()        -0.3403     0.0666   -5.11  2.7e-06 ***
-#> season()year2 -34.6597     3.9683   -8.73  9.1e-13 ***
-#> season()year3 -17.8216     4.0225   -4.43  3.4e-05 ***
-#> season()year4  72.7964     4.0230   18.09  < 2e-16 ***
+#>                Estimate Std. Error t value             Pr(>|t|)    
+#> (Intercept)   441.80044    3.73353 118.333 < 0.0000000000000002 ***
+#> trend()        -0.34027    0.06657  -5.111     0.00000272965382 ***
+#> season()year2 -34.65973    3.96832  -8.734     0.00000000000091 ***
+#> season()year3 -17.82164    4.02249  -4.430     0.00003449674545 ***
+#> season()year4  72.79641    4.02305  18.095 < 0.0000000000000002 ***
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
-#> Residual standard error: 12.2 on 69 degrees of freedom
-#> Multiple R-squared: 0.924,	Adjusted R-squared: 0.92
-#> F-statistic:  211 on 4 and 69 DF, p-value: <2e-16
+#> Residual standard error: 12.23 on 69 degrees of freedom
+#> Multiple R-squared: 0.9243,	Adjusted R-squared: 0.9199
+#> F-statistic: 210.7 on 4 and 69 DF, p-value: < 0.000000000000000222
 ```
 
 
@@ -563,7 +563,7 @@ augment(beer_fit) %>%
        title = "Quarterly Beer Production")
 ```
 
-<img src="ch7_files/figure-html/unnamed-chunk-27-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch7_files/figure-html/unnamed-chunk-27-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 ```r
@@ -577,7 +577,7 @@ augment(beer_fit) %>%
          title = "Quarterly beer production")
 ```
 
-<img src="ch7_files/figure-html/unnamed-chunk-28-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch7_files/figure-html/unnamed-chunk-28-1.png" width="100%" style="display: block; margin: auto;" />
 
 ### Intervention variables  
 
@@ -660,22 +660,22 @@ fourier_beer %>% report()
 #> Model: TSLM 
 #> 
 #> Residuals:
-#>    Min     1Q Median     3Q    Max 
-#>  -42.9   -7.6   -0.5    8.0   21.8 
+#>      Min       1Q   Median       3Q      Max 
+#> -42.9029  -7.5995  -0.4594   7.9908  21.7895 
 #> 
 #> Coefficients:
-#>                    Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept)        446.8792     2.8732  155.53  < 2e-16 ***
-#> trend()             -0.3403     0.0666   -5.11  2.7e-06 ***
-#> fourier(K = 2)C1_4   8.9108     2.0112    4.43  3.4e-05 ***
-#> fourier(K = 2)S1_4 -53.7281     2.0112  -26.71  < 2e-16 ***
-#> fourier(K = 2)C2_4 -13.9896     1.4226   -9.83  9.3e-15 ***
+#>                     Estimate Std. Error t value             Pr(>|t|)    
+#> (Intercept)        446.87920    2.87321 155.533 < 0.0000000000000002 ***
+#> trend()             -0.34027    0.06657  -5.111  0.00000272965382379 ***
+#> fourier(K = 2)C1_4   8.91082    2.01125   4.430  0.00003449674544834 ***
+#> fourier(K = 2)S1_4 -53.72807    2.01125 -26.714 < 0.0000000000000002 ***
+#> fourier(K = 2)C2_4 -13.98958    1.42256  -9.834  0.00000000000000926 ***
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
-#> Residual standard error: 12.2 on 69 degrees of freedom
-#> Multiple R-squared: 0.924,	Adjusted R-squared: 0.92
-#> F-statistic:  211 on 4 and 69 DF, p-value: <2e-16
+#> Residual standard error: 12.23 on 69 degrees of freedom
+#> Multiple R-squared: 0.9243,	Adjusted R-squared: 0.9199
+#> F-statistic: 210.7 on 4 and 69 DF, p-value: < 0.000000000000000222
 ```
 
 The maximum allowed is $K = m / 2$ where $m$ is the seasonal period. Because we have used the maximum here, the results are identical to those obtained when using seasonal dummy variables.
@@ -766,22 +766,22 @@ Consequently, **we recommend that one of the $\text{AIC}_c$, $\text{AIC}$, or $\
 
 In `us_change_mfit` 4 predictors are specified, so there are $2^4 = 16$ possible models   
 
-<img src="images/all_subsets.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/all_subsets.png" width="100%" style="display: block; margin: auto;" />
 
 The best model contains all four predictors according to $\text{AIC}_c$. The results from a backward selection using AIC follow suit:   
 
 
 ```r
 MASS::stepAIC(us_change_lm, direction = "backward")
-#> Start:  AIC=-459
+#> Start:  AIC=-458.58
 #> Consumption ~ Income + Production + Savings + Unemployment
 #> 
-#>                Df Sum of Sq  RSS  AIC
-#> <none>                      18.6 -459
-#> - Unemployment  1       0.3 18.9 -457
-#> - Production    1       0.4 19.0 -456
-#> - Savings       1      31.5 50.1 -264
-#> - Income        1      32.8 51.4 -259
+#>                Df Sum of Sq    RSS     AIC
+#> <none>                      18.573 -458.58
+#> - Unemployment  1     0.322 18.895 -457.18
+#> - Production    1     0.400 18.973 -456.36
+#> - Savings       1    31.483 50.056 -264.27
+#> - Income        1    32.799 51.371 -259.14
 #> 
 #> Call:
 #> lm(formula = Consumption ~ Income + Production + Savings + Unemployment, 
@@ -789,7 +789,7 @@ MASS::stepAIC(us_change_lm, direction = "backward")
 #> 
 #> Coefficients:
 #>  (Intercept)        Income    Production       Savings  Unemployment  
-#>       0.2531        0.7406        0.0472       -0.0529       -0.1747
+#>      0.25311       0.74058       0.04717      -0.05289      -0.17469
 ```
 
 The best model contains all four predictors. However, a closer look at the results reveals some interesting features. There is clear separation between the models in the first four rows and the ones below. This indicates that `Income` and `Savings` are both more important variables than `Production` and `Unemployment`. Also, the first three rows have almost identical values of $\text{CV}$, $\text{AIC}$ and $\text{AIC}_c$. So we could possibly drop either the `Production` variable, or the `Unemployment` variable, and get similar forecasts. Note that Production and Unemployment are highly (negatively) correlated ($\hat{r} = -0.768$, see figure \@ref(fig:pairs))
@@ -830,7 +830,7 @@ beer_fit %>%
        title = "Forecasts of beer production using regression")
 ```
 
-<img src="ch7_files/figure-html/unnamed-chunk-33-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch7_files/figure-html/unnamed-chunk-33-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 
@@ -842,7 +842,7 @@ We should note that prediction intervals for scenario based forecasts **do not i
 
 
 ```r
-# new_data(data, n) appends n following observations of each series to a tsibble 
+# new_data(data, n) creates n rows of time index of each series to
 new_data(us_change, 4)
 #> # A tsibble: 4 x 1 [1Q]
 #>   Quarter
@@ -906,8 +906,7 @@ Then we could produce forecast for each of the two scenarios :
 
 ```r
 up_future_fc <- forecast(us_change_mfit, new_data = up_future) %>%
-  mutate(Scenario = "Increase") %>% 
-  as_tibble()
+  mutate(Scenario = "Increase") 
 
 down_future_fc <- forecast(us_change_mfit, new_data = down_future) %>%
   mutate(Scenario = "Decrease") %>% 
@@ -916,12 +915,13 @@ down_future_fc <- forecast(us_change_mfit, new_data = down_future) %>%
 us_change %>% 
   ggplot(aes(Quarter, Consumption)) + 
   geom_line() + 
-  geom_line(aes(color = Scenario), data = rbind(up_future_fc, down_future_fc)) + 
+  geom_line(aes(y = .mean), data = up_future_fc, color = "red") + 
+  geom_line(aes(y = .mean), data = down_future_fc, color = "blue") + 
   coord_cartesian(xlim = c(ymd("2015-01-01", NA)),
                   ylim = c(0, 1.2))
 ```
 
-<img src="ch7_files/figure-html/unnamed-chunk-35-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch7_files/figure-html/unnamed-chunk-35-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 ### Prediction intervals  
@@ -1097,7 +1097,7 @@ boston_lm %>%
   labs(title = "Residual across trend")
 ```
 
-<img src="ch7_files/figure-html/unnamed-chunk-36-1.png" width="90%" style="display: block; margin: auto;" /><img src="ch7_files/figure-html/unnamed-chunk-36-2.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch7_files/figure-html/unnamed-chunk-36-1.png" width="100%" style="display: block; margin: auto;" /><img src="ch7_files/figure-html/unnamed-chunk-36-2.png" width="100%" style="display: block; margin: auto;" />
 
 
 ```r
@@ -1142,7 +1142,7 @@ boston_piece_fc %>%
        color = "Model")
 ```
 
-<img src="ch7_files/figure-html/unnamed-chunk-38-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch7_files/figure-html/unnamed-chunk-38-1.png" width="100%" style="display: block; margin: auto;" />
 
 ## Correlation, causation and forecasting  
 

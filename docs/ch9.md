@@ -110,7 +110,7 @@ PBS %>%
   labs(title = "Corticosteroid drug sales", x = "Year", y = NULL)
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-3-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 ### Unit root tests
@@ -211,7 +211,7 @@ aus_total_retail %>%
   autoplot(log_turnover)
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-9-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 
@@ -239,7 +239,7 @@ The same stationarity and invertibility conditions that are used for autoregress
 
 Many of the models we have already discussed are special cases of the ARIMA model
 
-<img src="images/arima_special.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/arima_special.png" width="100%" style="display: block; margin: auto;" />
 Once we start combining components in this way to form more complicated models, it is much easier to work with the backshift notation. For example, Equation \@ref(eq:arima) can be written in backshift notation as 
 
 $$
@@ -280,7 +280,7 @@ $$
 
 
 Recall how ACF and PACF plot would help us pick an appropriate AR(p) or MA(q) model. 
-<img src="images/AR_MA_decision.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/AR_MA_decision.png" width="100%" style="display: block; margin: auto;" />
 
 However, for ARIMA models, **ACF and PACF plots are only helpful when one of $p$ and $q$ is zero**. If $p$ and $q$ are both positive, then the plots do not help in finding suitable values of $p$ and $q$. (Think of an ARMA(p, q) process, neither its autocorrelation nor its partial autocorrelation function breaks off)
 
@@ -298,7 +298,7 @@ The `us_change` data may follow an ARIMA(0, d, q) model if the ACF and PACF plot
 
 
 ```r
-us_change <- read_csv(pin("https://otexts.com/fpp3/extrafiles/us_change.csv")) %>% 
+us_change <- read_csv("https://otexts.com/fpp3/extrafiles/us_change.csv") %>% 
   mutate(time = yearquarter(Time)) %>% 
   as_tsibble(index = time)  
 
@@ -324,8 +324,8 @@ us_change_fit2 %>% report()
 #>       0.2274  0.1604  0.2027    0.3050
 #> s.e.  0.0713  0.0723  0.0712    0.0421
 #> 
-#> sigma^2 estimated as 0.3494:  log likelihood=-165
-#> AIC=340   AICc=341   BIC=356
+#> sigma^2 estimated as 0.3494:  log likelihood=-165.17
+#> AIC=340.34   AICc=340.67   BIC=356.5
 ```
 
 This model is actually slightly better than the model identified by `ARIMA()` (with an AICc value of 340.67 compared to 342.08). The `ARIMA()` function did not find this model because it does not consider all possible models in its search. Use `stepwise = FALSE` and `approximation = FALSE` to expand search region 
@@ -346,8 +346,8 @@ report(us_change_fit3)
 #>       0.2274  0.1604  0.2027    0.3050
 #> s.e.  0.0713  0.0723  0.0712    0.0421
 #> 
-#> sigma^2 estimated as 0.3494:  log likelihood=-165
-#> AIC=340   AICc=341   BIC=356
+#> sigma^2 estimated as 0.3494:  log likelihood=-165.17
+#> AIC=340.34   AICc=340.67   BIC=356.5
 ```
 
 
@@ -428,7 +428,7 @@ A general strategy is recommended when fitting non-seasonanl arima models
 
 The `ARIMA()` function takes care of step 3 - 5, so there are still possible needs to transform the data, to diagnose residuals and to give forecasts.  
 
-<img src="images/arima_process.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/arima_process.png" width="100%" style="display: block; margin: auto;" />
 
 
 
@@ -444,7 +444,7 @@ elec_equip <- as_tsibble(fpp2::elecequip)
 elec_equip %>% autoplot()
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-16-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-16-1.png" width="100%" style="display: block; margin: auto;" />
 
 ```r
 
@@ -453,7 +453,7 @@ elec_equip %>%
   autoplot()
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-16-2.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-16-2.png" width="100%" style="display: block; margin: auto;" />
 
 ```r
 
@@ -491,7 +491,7 @@ Plot the data for detection of outliers and anomalies
 elec_adjusted %>% autoplot()
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-18-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-18-1.png" width="100%" style="display: block; margin: auto;" />
 
 Is there a need for transformation ?  
 
@@ -518,12 +518,12 @@ elec_fit %>% report()
 #> Model: ARIMA(1,1,5) 
 #> 
 #> Coefficients:
-#>         ar1     ma1    ma2     ma3      ma4     ma5
-#>       0.567  -0.954  0.322  0.2300  -0.2863  0.2745
-#> s.e.  0.149   0.149  0.106  0.0924   0.0913  0.0774
+#>          ar1      ma1     ma2     ma3      ma4     ma5
+#>       0.5672  -0.9543  0.3220  0.2300  -0.2863  0.2745
+#> s.e.  0.1490   0.1493  0.1064  0.0924   0.0913  0.0774
 #> 
-#> sigma^2 estimated as 8.348:  log likelihood=-478
-#> AIC=971   AICc=972   BIC=994
+#> sigma^2 estimated as 8.348:  log likelihood=-478.48
+#> AIC=970.97   AICc=971.57   BIC=993.84
 ```
 
 
@@ -535,7 +535,7 @@ elec_fit %>%
   gg_tsresiduals()
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-21-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-21-1.png" width="100%" style="display: block; margin: auto;" />
 
 ```r
 
@@ -558,7 +558,7 @@ elec_fit %>%
   autoplot(elec_adjusted)
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-22-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-22-1.png" width="100%" style="display: block; margin: auto;" />
 
 Note that Section \@ref(understanding-arima-models), we mentioned that the long term forecast of an ARIMA model with no constant and $d = 1$ will go to a constant.  
 
@@ -573,7 +573,7 @@ It is easier to plot the **inverse** roots instead, as they should all lie withi
 gg_arma(elec_fit)
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-23-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-23-1.png" width="100%" style="display: block; margin: auto;" />
 **The `ARIMA()` function will never return a model with inverse roots outside the unit circle**. Models automatically selected by the ARIMA() function will not select a model with roots close to the unit circle.
 
 ## Forecasting with ARIMA models  
@@ -616,7 +616,7 @@ So far, we have restricted our attention to non-seasonal data and non-seasonal A
 
 A seasonal ARIMA model includes additional seasonal terms, written as follows  
 
-<img src="images/seasonal_arima.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/seasonal_arima.png" width="100%" style="display: block; margin: auto;" />
 where $m$ is number of observations per year.   
 
 The seasonal part of the model consists of terms that are similar to the non-seasonal components of the model, but involve backshifts of the seasonal period. For example, an $\text{ARIMA}(1, 1, 1)(1, 1, 1)_4$ model (without a constant) is for quarterly data (m = 4), and can be written as (Not that a seasonal difference is **not** a m order difference) 
@@ -697,7 +697,7 @@ eu_retail <- as_tsibble(fpp2::euretail)
 eu_retail %>% autoplot(value)
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-25-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-25-1.png" width="100%" style="display: block; margin: auto;" />
 
 The data is non-stationary, with a degree of seasonality 
 
@@ -722,7 +722,7 @@ eu_retail %>%
   gg_tsdisplay(difference(value, 4), plot_type='partial')
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-27-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-27-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 ```r
@@ -731,7 +731,7 @@ eu_retail %>%
   plot_type='partial')
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-28-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-28-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 Our aim now is to find an appropriate ARIMA model based on the ACF and PACF plots. The significant spike at lag 1 in the ACF suggests a non-seasonal MA(1) component, and the significant spike at lag 4 in the ACF suggests a seasonal MA(1) component. Consequently, we begin with an $\text{ARIMA}(0, 1, 1)(0, 1, 1)_4$ model, indicating a first and seasonal difference, and non-seasonal and seasonal MA(1) components. By analogous logic applied to the PACF, we could also have started with an $\text{ARIMA}(1,1,0)(1,1,0)_4$ model. (Not that only either $p$ and $q$ is zero can ACF and PACF plots be used to decide orders. \@ref(arma-models))   
@@ -747,12 +747,12 @@ eu_retail_fit %>% report()
 #> Model: ARIMA(0,1,1)(0,1,1)[4] 
 #> 
 #> Coefficients:
-#>         ma1    sma1
-#>       0.290  -0.691
-#> s.e.  0.112   0.119
+#>          ma1     sma1
+#>       0.2903  -0.6913
+#> s.e.  0.1118   0.1193
 #> 
-#> sigma^2 estimated as 0.188:  log likelihood=-34.6
-#> AIC=75.3   AICc=75.7   BIC=81.5
+#> sigma^2 estimated as 0.188:  log likelihood=-34.64
+#> AIC=75.28   AICc=75.72   BIC=81.51
 ```
 
 Check residuals 
@@ -784,12 +784,12 @@ eu_retail_fit2 %>% report()
 #> Model: ARIMA(0,1,3)(0,1,1)[4] 
 #> 
 #> Coefficients:
-#>         ma1    ma2    ma3    sma1
-#>       0.263  0.369  0.420  -0.664
-#> s.e.  0.124  0.126  0.129   0.154
+#>          ma1     ma2     ma3     sma1
+#>       0.2630  0.3694  0.4200  -0.6636
+#> s.e.  0.1237  0.1255  0.1294   0.1545
 #> 
-#> sigma^2 estimated as 0.156:  log likelihood=-28.6
-#> AIC=67.3   AICc=68.4   BIC=77.7
+#> sigma^2 estimated as 0.156:  log likelihood=-28.63
+#> AIC=67.26   AICc=68.39   BIC=77.65
 ```
 
 The automatic picked model is $\text{ARIMA}(0, 1, 3)(0, 1, 1)_4$, and has lower $\text{AIC}_c$, 68.39 compared to 75.72. This in some sense explains why previous residuals show some non-seaonal correlation pattern and how it is fixed. 
@@ -800,7 +800,7 @@ eu_retail_fit2 %>%
   gg_tsresiduals()
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-32-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-32-1.png" width="100%" style="display: block; margin: auto;" />
 
 ```r
 
@@ -821,7 +821,7 @@ eu_retail_fit2 %>%
   autoplot(eu_retail)
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-33-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-33-1.png" width="100%" style="display: block; margin: auto;" />
 
 The forecasts follow the recent trend in the data, because of the double differencing. The large and rapidly increasing prediction intervals show that the retail trade index could start increasing or decreasing at any time — while the point forecasts trend downwards, the prediction intervals allow for the data to trend upwards during the forecast period.
 
@@ -843,9 +843,9 @@ h02 %>%
   facet_wrap(~ measure, scales = "free_y", nrow = 2)
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-34-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-34-1.png" width="100%" style="display: block; margin: auto;" />
 
-The data are strongly seasonal and obviously non-stationary, so seasonal differencing will be used. It is unclear that whether another difference should be used at this point, though we decide not to. The last few observations appear to be different (more variable) from the earlier data. This may be due to the fact that data are sometimes revised when earlier sales are reported late.
+The data are strongly seasonal and obviously non-stationary, so seasonal differencing will be used. It is unclear that whether another difference should be used at this point, and we decide not to. The last few observations appear to be different (more variable) from the earlier data. This may be due to the fact that data are sometimes revised when earlier sales are reported late.
 
 
 ```r
@@ -855,12 +855,12 @@ h02 %>%
                lag_max = 24) 
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-35-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-35-1.png" width="100%" style="display: block; margin: auto;" />
 In the plots of the seasonally differenced data, there are spikes in the PACF at lags 12 and 24, but nothing at seasonal lags in the ACF. This may be suggestive of a seasonal AR(2) term. In the non-seasonal lags, there are three significant spikes in the PACF, suggesting a possible AR(3) term. The pattern in the ACF is not indicative of any simple model.
 
 Consequently, this initial analysis suggests that a possible model for these data is an $\text{ARIMA}(3, 0, 0)(2, 1, 0)_12$. The $\text{AIC}_c$ of such model and some variations are shown: 
 
-<img src="images/seasonal_arima_2.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/seasonal_arima_2.png" width="100%" style="display: block; margin: auto;" />
 
 
 Of these models, the best is the $ARIMA(3, 0, 1)(0, 1, 2)_12$ model  
@@ -876,12 +876,12 @@ h02_fit %>% report()
 #> Transformation: log(.x) 
 #> 
 #> Coefficients:
-#>          ar1     ar2     ar3    ma1     sma1     sma2
-#>       -0.160  0.5481  0.5678  0.383  -0.5222  -0.1768
-#> s.e.   0.164  0.0878  0.0942  0.190   0.0861   0.0872
+#>           ar1     ar2     ar3     ma1     sma1     sma2
+#>       -0.1603  0.5481  0.5678  0.3827  -0.5222  -0.1768
+#> s.e.   0.1636  0.0878  0.0942  0.1895   0.0861   0.0872
 #> 
-#> sigma^2 estimated as 0.004278:  log likelihood=250
-#> AIC=-486   AICc=-485   BIC=-463
+#> sigma^2 estimated as 0.004278:  log likelihood=250.04
+#> AIC=-486.08   AICc=-485.48   BIC=-463.28
 ```
 
 
@@ -919,7 +919,7 @@ h02_fit %>%
   autoplot(h02)
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-40-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-40-1.png" width="100%" style="display: block; margin: auto;" />
 
 
 
@@ -929,7 +929,7 @@ While linear exponential smoothing models are all special cases of ARIMA models,
 
 The ETS models with seasonality or non-damped trend or both have two unit roots (i.e., they need two levels of differencing to make them stationary). All other ETS models have one unit root (they need one level of differencing to make them stationary).  
 
-<img src="images/ets_arima.png" width="90%" style="display: block; margin: auto;" />
+<img src="images/ets_arima.png" width="100%" style="display: block; margin: auto;" />
 
 The AICc is useful for selecting between models in the same class. For example, we can use it to select an ARIMA model between candidate ARIMA models or an ETS model between candidate ETS models. **However, it cannot be used to compare between ETS and ARIMA models because they are in different model classes**, and the likelihood is computed in different ways. The examples below demonstrate selecting between these classes of models.    
 
@@ -969,7 +969,7 @@ aus_economy %>%
   autoplot(aus_economy)
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-43-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-43-1.png" width="100%" style="display: block; margin: auto;" />
 
 ### Example: Comparing `ARIMA()` and `ETS()` on seasonal data
 
@@ -997,12 +997,12 @@ report(cement_fit_arima)
 #> Model: ARIMA(1,0,1)(2,1,1)[4] w/ drift 
 #> 
 #> Coefficients:
-#>          ar1     ma1   sar1    sar2    sma1  constant
-#>       0.8886  -0.237  0.081  -0.234  -0.898      5.39
-#> s.e.  0.0842   0.133  0.157   0.139   0.178      1.48
+#>          ar1      ma1   sar1     sar2     sma1  constant
+#>       0.8886  -0.2366  0.081  -0.2345  -0.8979    5.3884
+#> s.e.  0.0842   0.1334  0.157   0.1392   0.1780    1.4844
 #> 
-#> sigma^2 estimated as 11456:  log likelihood=-464
-#> AIC=941   AICc=943   BIC=957
+#> sigma^2 estimated as 11456:  log likelihood=-463.52
+#> AIC=941.03   AICc=942.68   BIC=957.35
 ```
 
 Residuals from the ARIMA model appear to be white noise.
@@ -1011,7 +1011,7 @@ Residuals from the ARIMA model appear to be white noise.
 cement_fit_arima %>% gg_tsresiduals()
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-46-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-46-1.png" width="100%" style="display: block; margin: auto;" />
 
 ```r
 
@@ -1033,22 +1033,22 @@ report(cement_fit_ets)
 #> Series: Cement 
 #> Model: ETS(M,N,M) 
 #>   Smoothing parameters:
-#>     alpha = 0.753 
-#>     gamma = 0.0001 
+#>     alpha = 0.7533714 
+#>     gamma = 0.0001000093 
 #> 
 #>   Initial states:
-#>     l   s1   s2   s3    s4
-#>  1695 1.03 1.05 1.01 0.912
+#>         l       s1       s2       s3        s4
+#>  1694.712 1.031179 1.045209 1.011424 0.9121874
 #> 
 #>   sigma^2:  0.0034
 #> 
-#>  AIC AICc  BIC 
-#> 1104 1106 1121
+#>      AIC     AICc      BIC 
+#> 1104.095 1105.650 1120.769
 
 cement_fit_ets %>% gg_tsresiduals()
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-47-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-47-1.png" width="100%" style="display: block; margin: auto;" />
 
 ```r
 
@@ -1057,7 +1057,7 @@ augment(cement_fit_ets) %>%
 #> # A tibble: 1 x 3
 #>   .model      lb_stat lb_pvalue
 #>   <chr>         <dbl>     <dbl>
-#> 1 ETS(Cement)    5.49    0.0642
+#> 1 ETS(Cement)    5.89    0.0525
 ```
 
 
@@ -1094,5 +1094,5 @@ cement %>%
   autoplot(cement)
 ```
 
-<img src="ch9_files/figure-html/unnamed-chunk-49-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="ch9_files/figure-html/unnamed-chunk-49-1.png" width="100%" style="display: block; margin: auto;" />
 

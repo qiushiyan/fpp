@@ -181,7 +181,7 @@ The forecasting methodology applied is an iterative process. First, model-based 
 
 
 <div class="figure" style="text-align: center">
-<img src="images/tfc.png" alt="Long run annual forecasts for domestic visitor nights for Australia, comparing regression models, ETS(Exponetial Smoothing) and judgmental adjustsments by TFC." width="90%" />
+<img src="images/tfc.png" alt="Long run annual forecasts for domestic visitor nights for Australia, comparing regression models, ETS(Exponetial Smoothing) and judgmental adjustsments by TFC." width="100%" />
 <p class="caption">(\#fig:unnamed-chunk-1)Long run annual forecasts for domestic visitor nights for Australia, comparing regression models, ETS(Exponetial Smoothing) and judgmental adjustsments by TFC.</p>
 </div>
 

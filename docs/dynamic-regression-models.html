@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 11 Dynamic regression models | Notes for “Forecasting: Principles and Practice, 3rd edition”</title>
   <meta name="description" content="“Reproducing”Forecasting: Principles and Practice, 3rd edition"" />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 11 Dynamic regression models | Notes for “Forecasting: Principles and Practice, 3rd edition”" />
   <meta property="og:type" content="book" />
@@ -24,15 +24,15 @@
 <meta name="author" content="Qiushi Yan" />
 
 
-<meta name="date" content="2020-05-11" />
+<meta name="date" content="2020-09-29" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ets-and-arima.html"/>
-<link rel="next" href="estimation-1.html"/>
+<link rel="prev" href="arima-models.html"/>
+<link rel="next" href="references.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,12 +50,13 @@
 
 
 
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
 pre.sourceCode { margin: 0; }
@@ -64,14 +65,16 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -80,9 +83,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -134,282 +137,282 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
 <li class="chapter" data-level="1" data-path="getting-started.html"><a href="getting-started.html"><i class="fa fa-check"></i><b>1</b> Getting started</a></li>
 <li class="chapter" data-level="2" data-path="time-series-graphics.html"><a href="time-series-graphics.html"><i class="fa fa-check"></i><b>2</b> Time series graphics</a><ul>
-<li class="chapter" data-level="2.1" data-path="tsibble-objects.html"><a href="tsibble-objects.html"><i class="fa fa-check"></i><b>2.1</b> <code>tsibble</code> objects</a><ul>
-<li class="chapter" data-level="2.1.1" data-path="tsibble-objects.html"><a href="tsibble-objects.html#manipulation"><i class="fa fa-check"></i><b>2.1.1</b> manipulation</a></li>
-<li class="chapter" data-level="2.1.2" data-path="tsibble-objects.html"><a href="tsibble-objects.html#importing"><i class="fa fa-check"></i><b>2.1.2</b> importing</a></li>
+<li class="chapter" data-level="2.1" data-path="time-series-graphics.html"><a href="time-series-graphics.html#tsibble-objects"><i class="fa fa-check"></i><b>2.1</b> <code>tsibble</code> objects</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="time-series-graphics.html"><a href="time-series-graphics.html#manipulation"><i class="fa fa-check"></i><b>2.1.1</b> manipulation</a></li>
+<li class="chapter" data-level="2.1.2" data-path="time-series-graphics.html"><a href="time-series-graphics.html#importing"><i class="fa fa-check"></i><b>2.1.2</b> importing</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2" data-path="time-plots.html"><a href="time-plots.html"><i class="fa fa-check"></i><b>2.2</b> Time plots</a></li>
-<li class="chapter" data-level="2.3" data-path="patterns-of-time-series-trend-seasonal-and-cyclic.html"><a href="patterns-of-time-series-trend-seasonal-and-cyclic.html"><i class="fa fa-check"></i><b>2.3</b> Patterns of time series: trend, seasonal and cyclic</a></li>
-<li class="chapter" data-level="2.4" data-path="seasonal-plots.html"><a href="seasonal-plots.html"><i class="fa fa-check"></i><b>2.4</b> Seasonal plots</a><ul>
-<li class="chapter" data-level="2.4.1" data-path="seasonal-plots.html"><a href="seasonal-plots.html#multiple-seasonal-periods-period-in-gg_season"><i class="fa fa-check"></i><b>2.4.1</b> Multiple seasonal periods: <code>period</code> in <code>gg_season()</code></a></li>
+<li class="chapter" data-level="2.2" data-path="time-series-graphics.html"><a href="time-series-graphics.html#time-plots"><i class="fa fa-check"></i><b>2.2</b> Time plots</a></li>
+<li class="chapter" data-level="2.3" data-path="time-series-graphics.html"><a href="time-series-graphics.html#patterns-of-time-series-trend-seasonal-and-cyclic"><i class="fa fa-check"></i><b>2.3</b> Patterns of time series: trend, seasonal and cyclic</a></li>
+<li class="chapter" data-level="2.4" data-path="time-series-graphics.html"><a href="time-series-graphics.html#seasonal-plots"><i class="fa fa-check"></i><b>2.4</b> Seasonal plots</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="time-series-graphics.html"><a href="time-series-graphics.html#multiple-seasonal-periods-period-in-gg_season"><i class="fa fa-check"></i><b>2.4.1</b> Multiple seasonal periods: <code>period</code> in <code>gg_season()</code></a></li>
 </ul></li>
-<li class="chapter" data-level="2.5" data-path="seasonal-subseries-plots.html"><a href="seasonal-subseries-plots.html"><i class="fa fa-check"></i><b>2.5</b> Seasonal subseries plots</a><ul>
-<li class="chapter" data-level="2.5.1" data-path="seasonal-subseries-plots.html"><a href="seasonal-subseries-plots.html#example-australian-holiday-tourism"><i class="fa fa-check"></i><b>2.5.1</b> Example: Australian holiday tourism</a></li>
+<li class="chapter" data-level="2.5" data-path="time-series-graphics.html"><a href="time-series-graphics.html#seasonal-subseries-plots"><i class="fa fa-check"></i><b>2.5</b> Seasonal subseries plots</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="time-series-graphics.html"><a href="time-series-graphics.html#example-australian-holiday-tourism"><i class="fa fa-check"></i><b>2.5.1</b> Example: Australian holiday tourism</a></li>
 </ul></li>
-<li class="chapter" data-level="2.6" data-path="visualization-between-time-series.html"><a href="visualization-between-time-series.html"><i class="fa fa-check"></i><b>2.6</b> Visualization between time series</a><ul>
-<li class="chapter" data-level="2.6.1" data-path="visualization-between-time-series.html"><a href="visualization-between-time-series.html#scatterplot-matrices"><i class="fa fa-check"></i><b>2.6.1</b> scatterplot matrices</a></li>
+<li class="chapter" data-level="2.6" data-path="time-series-graphics.html"><a href="time-series-graphics.html#visualization-between-time-series"><i class="fa fa-check"></i><b>2.6</b> Visualization between time series</a><ul>
+<li class="chapter" data-level="2.6.1" data-path="time-series-graphics.html"><a href="time-series-graphics.html#scatterplot-matrices"><i class="fa fa-check"></i><b>2.6.1</b> scatterplot matrices</a></li>
 </ul></li>
-<li class="chapter" data-level="2.7" data-path="lag-plots.html"><a href="lag-plots.html"><i class="fa fa-check"></i><b>2.7</b> Lag plots</a><ul>
-<li class="chapter" data-level="2.7.1" data-path="lag-plots.html"><a href="lag-plots.html#autocorrelation"><i class="fa fa-check"></i><b>2.7.1</b> Autocorrelation</a></li>
-<li class="chapter" data-level="2.7.2" data-path="lag-plots.html"><a href="lag-plots.html#trend-and-seasonality-in-acf-plots"><i class="fa fa-check"></i><b>2.7.2</b> Trend and seasonality in ACF plots</a></li>
+<li class="chapter" data-level="2.7" data-path="time-series-graphics.html"><a href="time-series-graphics.html#lag-plots"><i class="fa fa-check"></i><b>2.7</b> Lag plots</a><ul>
+<li class="chapter" data-level="2.7.1" data-path="time-series-graphics.html"><a href="time-series-graphics.html#autocorrelation"><i class="fa fa-check"></i><b>2.7.1</b> Autocorrelation</a></li>
+<li class="chapter" data-level="2.7.2" data-path="time-series-graphics.html"><a href="time-series-graphics.html#trend-and-seasonality-in-acf-plots"><i class="fa fa-check"></i><b>2.7.2</b> Trend and seasonality in ACF plots</a></li>
 </ul></li>
-<li class="chapter" data-level="2.8" data-path="calendar-plots.html"><a href="calendar-plots.html"><i class="fa fa-check"></i><b>2.8</b> Calendar plots</a></li>
+<li class="chapter" data-level="2.8" data-path="time-series-graphics.html"><a href="time-series-graphics.html#calendar-plots"><i class="fa fa-check"></i><b>2.8</b> Calendar plots</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="time-series-decomposition.html"><a href="time-series-decomposition.html"><i class="fa fa-check"></i><b>3</b> Time series decomposition</a><ul>
-<li class="chapter" data-level="3.1" data-path="transformation-and-adjustments.html"><a href="transformation-and-adjustments.html"><i class="fa fa-check"></i><b>3.1</b> Transformation and adjustments</a><ul>
-<li class="chapter" data-level="3.1.1" data-path="transformation-and-adjustments.html"><a href="transformation-and-adjustments.html#calendar-adjustments"><i class="fa fa-check"></i><b>3.1.1</b> Calendar adjustments</a></li>
-<li class="chapter" data-level="3.1.2" data-path="transformation-and-adjustments.html"><a href="transformation-and-adjustments.html#population-adjustments"><i class="fa fa-check"></i><b>3.1.2</b> Population adjustments</a></li>
-<li class="chapter" data-level="3.1.3" data-path="transformation-and-adjustments.html"><a href="transformation-and-adjustments.html#inflation-adjustments"><i class="fa fa-check"></i><b>3.1.3</b> Inflation adjustments</a></li>
-<li class="chapter" data-level="3.1.4" data-path="transformation-and-adjustments.html"><a href="transformation-and-adjustments.html#box-cox"><i class="fa fa-check"></i><b>3.1.4</b> Mathematical transformation (Box-Cox)</a></li>
+<li class="chapter" data-level="3.1" data-path="time-series-decomposition.html"><a href="time-series-decomposition.html#transformation-and-adjustments"><i class="fa fa-check"></i><b>3.1</b> Transformation and adjustments</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="time-series-decomposition.html"><a href="time-series-decomposition.html#calendar-adjustments"><i class="fa fa-check"></i><b>3.1.1</b> Calendar adjustments</a></li>
+<li class="chapter" data-level="3.1.2" data-path="time-series-decomposition.html"><a href="time-series-decomposition.html#population-adjustments"><i class="fa fa-check"></i><b>3.1.2</b> Population adjustments</a></li>
+<li class="chapter" data-level="3.1.3" data-path="time-series-decomposition.html"><a href="time-series-decomposition.html#inflation-adjustments"><i class="fa fa-check"></i><b>3.1.3</b> Inflation adjustments</a></li>
+<li class="chapter" data-level="3.1.4" data-path="time-series-decomposition.html"><a href="time-series-decomposition.html#box-cox"><i class="fa fa-check"></i><b>3.1.4</b> Mathematical transformation (Box-Cox)</a></li>
 </ul></li>
-<li class="chapter" data-level="3.2" data-path="moving-averages.html"><a href="moving-averages.html"><i class="fa fa-check"></i><b>3.2</b> Moving averages</a><ul>
-<li class="chapter" data-level="3.2.1" data-path="moving-averages.html"><a href="moving-averages.html#moving-averages-of-moving-averages"><i class="fa fa-check"></i><b>3.2.1</b> Moving averages of moving averages</a></li>
-<li class="chapter" data-level="3.2.2" data-path="moving-averages.html"><a href="moving-averages.html#estimating-the-trend-cycle-component-with-seasonal-data"><i class="fa fa-check"></i><b>3.2.2</b> Estimating the trend-cycle component with seasonal data</a></li>
-<li class="chapter" data-level="3.2.3" data-path="moving-averages.html"><a href="moving-averages.html#weighted-moving-averages"><i class="fa fa-check"></i><b>3.2.3</b> Weighted moving averages</a></li>
+<li class="chapter" data-level="3.2" data-path="time-series-decomposition.html"><a href="time-series-decomposition.html#moving-averages"><i class="fa fa-check"></i><b>3.2</b> Moving averages</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="time-series-decomposition.html"><a href="time-series-decomposition.html#moving-averages-of-moving-averages"><i class="fa fa-check"></i><b>3.2.1</b> Moving averages of moving averages</a></li>
+<li class="chapter" data-level="3.2.2" data-path="time-series-decomposition.html"><a href="time-series-decomposition.html#estimating-the-trend-cycle-component-with-seasonal-data"><i class="fa fa-check"></i><b>3.2.2</b> Estimating the trend-cycle component with seasonal data</a></li>
+<li class="chapter" data-level="3.2.3" data-path="time-series-decomposition.html"><a href="time-series-decomposition.html#weighted-moving-averages"><i class="fa fa-check"></i><b>3.2.3</b> Weighted moving averages</a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="classical-decomposition.html"><a href="classical-decomposition.html"><i class="fa fa-check"></i><b>3.3</b> Classical decomposition</a></li>
-<li class="chapter" data-level="3.4" data-path="x11-decomposition.html"><a href="x11-decomposition.html"><i class="fa fa-check"></i><b>3.4</b> X11 decomposition</a></li>
-<li class="chapter" data-level="3.5" data-path="seats-decomposition.html"><a href="seats-decomposition.html"><i class="fa fa-check"></i><b>3.5</b> SEATS decomposition</a></li>
-<li class="chapter" data-level="3.6" data-path="stl-decomposition.html"><a href="stl-decomposition.html"><i class="fa fa-check"></i><b>3.6</b> STL decomposition</a></li>
+<li class="chapter" data-level="3.3" data-path="time-series-decomposition.html"><a href="time-series-decomposition.html#classical-decomposition"><i class="fa fa-check"></i><b>3.3</b> Classical decomposition</a></li>
+<li class="chapter" data-level="3.4" data-path="time-series-decomposition.html"><a href="time-series-decomposition.html#x11-decomposition"><i class="fa fa-check"></i><b>3.4</b> X11 decomposition</a></li>
+<li class="chapter" data-level="3.5" data-path="time-series-decomposition.html"><a href="time-series-decomposition.html#seats-decomposition"><i class="fa fa-check"></i><b>3.5</b> SEATS decomposition</a></li>
+<li class="chapter" data-level="3.6" data-path="time-series-decomposition.html"><a href="time-series-decomposition.html#stl-decomposition"><i class="fa fa-check"></i><b>3.6</b> STL decomposition</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="time-series-features.html"><a href="time-series-features.html"><i class="fa fa-check"></i><b>4</b> Time series features</a><ul>
-<li class="chapter" data-level="4.1" data-path="simple-statistics.html"><a href="simple-statistics.html"><i class="fa fa-check"></i><b>4.1</b> Simple statistics</a></li>
-<li class="chapter" data-level="4.2" data-path="acf-features.html"><a href="acf-features.html"><i class="fa fa-check"></i><b>4.2</b> ACF features</a></li>
-<li class="chapter" data-level="4.3" data-path="stl-features.html"><a href="stl-features.html"><i class="fa fa-check"></i><b>4.3</b> STL features</a></li>
-<li class="chapter" data-level="4.4" data-path="other-features.html"><a href="other-features.html"><i class="fa fa-check"></i><b>4.4</b> Other features</a></li>
-<li class="chapter" data-level="4.5" data-path="exporing-australian-tourism-data.html"><a href="exporing-australian-tourism-data.html"><i class="fa fa-check"></i><b>4.5</b> Exporing Australian tourism data</a></li>
+<li class="chapter" data-level="4.1" data-path="time-series-features.html"><a href="time-series-features.html#simple-statistics"><i class="fa fa-check"></i><b>4.1</b> Simple statistics</a></li>
+<li class="chapter" data-level="4.2" data-path="time-series-features.html"><a href="time-series-features.html#acf-features"><i class="fa fa-check"></i><b>4.2</b> ACF features</a></li>
+<li class="chapter" data-level="4.3" data-path="time-series-features.html"><a href="time-series-features.html#stl-features"><i class="fa fa-check"></i><b>4.3</b> STL features</a></li>
+<li class="chapter" data-level="4.4" data-path="time-series-features.html"><a href="time-series-features.html#other-features"><i class="fa fa-check"></i><b>4.4</b> Other features</a></li>
+<li class="chapter" data-level="4.5" data-path="time-series-features.html"><a href="time-series-features.html#exporing-australian-tourism-data"><i class="fa fa-check"></i><b>4.5</b> Exporing Australian tourism data</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html"><i class="fa fa-check"></i><b>5</b> The forecaster’s toolbox</a><ul>
-<li class="chapter" data-level="5.1" data-path="a-tidy-forecasting-workflow.html"><a href="a-tidy-forecasting-workflow.html"><i class="fa fa-check"></i><b>5.1</b> A tidy forecasting workflow</a><ul>
-<li class="chapter" data-level="5.1.1" data-path="a-tidy-forecasting-workflow.html"><a href="a-tidy-forecasting-workflow.html#data-preparation-tidy"><i class="fa fa-check"></i><b>5.1.1</b> Data preparation (tidy)</a></li>
-<li class="chapter" data-level="5.1.2" data-path="a-tidy-forecasting-workflow.html"><a href="a-tidy-forecasting-workflow.html#visualize"><i class="fa fa-check"></i><b>5.1.2</b> Visualize</a></li>
-<li class="chapter" data-level="5.1.3" data-path="a-tidy-forecasting-workflow.html"><a href="a-tidy-forecasting-workflow.html#define-a-model-specify"><i class="fa fa-check"></i><b>5.1.3</b> Define a model (specify)</a></li>
-<li class="chapter" data-level="5.1.4" data-path="a-tidy-forecasting-workflow.html"><a href="a-tidy-forecasting-workflow.html#train-the-model-estimate"><i class="fa fa-check"></i><b>5.1.4</b> Train the model (estimate)</a></li>
-<li class="chapter" data-level="5.1.5" data-path="a-tidy-forecasting-workflow.html"><a href="a-tidy-forecasting-workflow.html#check-model-performance-evaluate"><i class="fa fa-check"></i><b>5.1.5</b> Check model performance (evaluate)</a></li>
-<li class="chapter" data-level="5.1.6" data-path="a-tidy-forecasting-workflow.html"><a href="a-tidy-forecasting-workflow.html#produce-forecasts-forecast"><i class="fa fa-check"></i><b>5.1.6</b> Produce forecasts (forecast)</a></li>
+<li class="chapter" data-level="5.1" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#a-tidy-forecasting-workflow"><i class="fa fa-check"></i><b>5.1</b> A tidy forecasting workflow</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#data-preparation-tidy"><i class="fa fa-check"></i><b>5.1.1</b> Data preparation (tidy)</a></li>
+<li class="chapter" data-level="5.1.2" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#visualize"><i class="fa fa-check"></i><b>5.1.2</b> Visualize</a></li>
+<li class="chapter" data-level="5.1.3" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#define-a-model-specify"><i class="fa fa-check"></i><b>5.1.3</b> Define a model (specify)</a></li>
+<li class="chapter" data-level="5.1.4" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#train-the-model-estimate"><i class="fa fa-check"></i><b>5.1.4</b> Train the model (estimate)</a></li>
+<li class="chapter" data-level="5.1.5" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#check-model-performance-evaluate"><i class="fa fa-check"></i><b>5.1.5</b> Check model performance (evaluate)</a></li>
+<li class="chapter" data-level="5.1.6" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#produce-forecasts-forecast"><i class="fa fa-check"></i><b>5.1.6</b> Produce forecasts (forecast)</a></li>
 </ul></li>
-<li class="chapter" data-level="5.2" data-path="some-simple-forecasting-methods.html"><a href="some-simple-forecasting-methods.html"><i class="fa fa-check"></i><b>5.2</b> Some simple forecasting methods</a><ul>
-<li class="chapter" data-level="5.2.1" data-path="some-simple-forecasting-methods.html"><a href="some-simple-forecasting-methods.html#mean-method"><i class="fa fa-check"></i><b>5.2.1</b> Mean method</a></li>
-<li class="chapter" data-level="5.2.2" data-path="some-simple-forecasting-methods.html"><a href="some-simple-forecasting-methods.html#naive-method"><i class="fa fa-check"></i><b>5.2.2</b> Naive method</a></li>
-<li class="chapter" data-level="5.2.3" data-path="some-simple-forecasting-methods.html"><a href="some-simple-forecasting-methods.html#seasonal-naive-method"><i class="fa fa-check"></i><b>5.2.3</b> Seasonal naive method</a></li>
-<li class="chapter" data-level="5.2.4" data-path="some-simple-forecasting-methods.html"><a href="some-simple-forecasting-methods.html#drift-method"><i class="fa fa-check"></i><b>5.2.4</b> Drift method</a></li>
-<li class="chapter" data-level="5.2.5" data-path="some-simple-forecasting-methods.html"><a href="some-simple-forecasting-methods.html#australian-quarterly-beer-production"><i class="fa fa-check"></i><b>5.2.5</b> Australian quarterly beer production</a></li>
-<li class="chapter" data-level="5.2.6" data-path="some-simple-forecasting-methods.html"><a href="some-simple-forecasting-methods.html#example-googles-daily-closing-stock-price"><i class="fa fa-check"></i><b>5.2.6</b> Example: Google’s daily closing stock price</a></li>
+<li class="chapter" data-level="5.2" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#some-simple-forecasting-methods"><i class="fa fa-check"></i><b>5.2</b> Some simple forecasting methods</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#mean-method"><i class="fa fa-check"></i><b>5.2.1</b> Mean method</a></li>
+<li class="chapter" data-level="5.2.2" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#naive-method"><i class="fa fa-check"></i><b>5.2.2</b> Naive method</a></li>
+<li class="chapter" data-level="5.2.3" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#seasonal-naive-method"><i class="fa fa-check"></i><b>5.2.3</b> Seasonal naive method</a></li>
+<li class="chapter" data-level="5.2.4" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#drift-method"><i class="fa fa-check"></i><b>5.2.4</b> Drift method</a></li>
+<li class="chapter" data-level="5.2.5" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#australian-quarterly-beer-production"><i class="fa fa-check"></i><b>5.2.5</b> Australian quarterly beer production</a></li>
+<li class="chapter" data-level="5.2.6" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#example-googles-daily-closing-stock-price"><i class="fa fa-check"></i><b>5.2.6</b> Example: Google’s daily closing stock price</a></li>
 </ul></li>
-<li class="chapter" data-level="5.3" data-path="fitted-values-and-residuals.html"><a href="fitted-values-and-residuals.html"><i class="fa fa-check"></i><b>5.3</b> Fitted values and residuals</a><ul>
-<li class="chapter" data-level="5.3.1" data-path="fitted-values-and-residuals.html"><a href="fitted-values-and-residuals.html#residuals"><i class="fa fa-check"></i><b>5.3.1</b> Residuals</a></li>
+<li class="chapter" data-level="5.3" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#fitted-values-and-residuals"><i class="fa fa-check"></i><b>5.3</b> Fitted values and residuals</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#residuals"><i class="fa fa-check"></i><b>5.3.1</b> Residuals</a></li>
 </ul></li>
-<li class="chapter" data-level="5.4" data-path="residual-diagnostics.html"><a href="residual-diagnostics.html"><i class="fa fa-check"></i><b>5.4</b> Residual diagnostics</a><ul>
-<li class="chapter" data-level="5.4.1" data-path="residual-diagnostics.html"><a href="residual-diagnostics.html#white-noise"><i class="fa fa-check"></i><b>5.4.1</b> White noise</a></li>
-<li class="chapter" data-level="5.4.2" data-path="residual-diagnostics.html"><a href="residual-diagnostics.html#example-forecasting-the-google-daily-closing-stock-price"><i class="fa fa-check"></i><b>5.4.2</b> Example: Forecasting the Google daily closing stock price</a></li>
-<li class="chapter" data-level="5.4.3" data-path="residual-diagnostics.html"><a href="residual-diagnostics.html#portmanteau-tests-for-autocorrelation"><i class="fa fa-check"></i><b>5.4.3</b> Portmanteau tests for autocorrelation</a></li>
+<li class="chapter" data-level="5.4" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#residual-diagnostics"><i class="fa fa-check"></i><b>5.4</b> Residual diagnostics</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#white-noise"><i class="fa fa-check"></i><b>5.4.1</b> White noise</a></li>
+<li class="chapter" data-level="5.4.2" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#example-forecasting-the-google-daily-closing-stock-price"><i class="fa fa-check"></i><b>5.4.2</b> Example: Forecasting the Google daily closing stock price</a></li>
+<li class="chapter" data-level="5.4.3" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#portmanteau-tests-for-autocorrelation"><i class="fa fa-check"></i><b>5.4.3</b> Portmanteau tests for autocorrelation</a></li>
 </ul></li>
-<li class="chapter" data-level="5.5" data-path="predict-interval.html"><a href="predict-interval.html"><i class="fa fa-check"></i><b>5.5</b> Prediction intervals</a><ul>
-<li class="chapter" data-level="5.5.1" data-path="predict-interval.html"><a href="predict-interval.html#one-step-prediction-intervals"><i class="fa fa-check"></i><b>5.5.1</b> One-step prediction intervals</a></li>
-<li class="chapter" data-level="5.5.2" data-path="predict-interval.html"><a href="predict-interval.html#multi-step-prediction-intervals"><i class="fa fa-check"></i><b>5.5.2</b> Multi-step prediction intervals</a></li>
-<li class="chapter" data-level="5.5.3" data-path="predict-interval.html"><a href="predict-interval.html#prediction-intervals-from-bootstrapped-residuals"><i class="fa fa-check"></i><b>5.5.3</b> Prediction intervals from bootstrapped residuals</a></li>
+<li class="chapter" data-level="5.5" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#predict-interval"><i class="fa fa-check"></i><b>5.5</b> Prediction intervals</a><ul>
+<li class="chapter" data-level="5.5.1" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#one-step-prediction-intervals"><i class="fa fa-check"></i><b>5.5.1</b> One-step prediction intervals</a></li>
+<li class="chapter" data-level="5.5.2" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#multi-step-prediction-intervals"><i class="fa fa-check"></i><b>5.5.2</b> Multi-step prediction intervals</a></li>
+<li class="chapter" data-level="5.5.3" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#prediction-intervals-from-bootstrapped-residuals"><i class="fa fa-check"></i><b>5.5.3</b> Prediction intervals from bootstrapped residuals</a></li>
 </ul></li>
-<li class="chapter" data-level="5.6" data-path="evaluating-model-accuracy.html"><a href="evaluating-model-accuracy.html"><i class="fa fa-check"></i><b>5.6</b> Evaluating model accuracy</a><ul>
-<li class="chapter" data-level="5.6.1" data-path="evaluating-model-accuracy.html"><a href="evaluating-model-accuracy.html#forecast-errors"><i class="fa fa-check"></i><b>5.6.1</b> Forecast errors</a></li>
-<li class="chapter" data-level="5.6.2" data-path="evaluating-model-accuracy.html"><a href="evaluating-model-accuracy.html#scale-dependent-errors"><i class="fa fa-check"></i><b>5.6.2</b> Scale dependent errors</a></li>
-<li class="chapter" data-level="5.6.3" data-path="evaluating-model-accuracy.html"><a href="evaluating-model-accuracy.html#percentage-errors"><i class="fa fa-check"></i><b>5.6.3</b> Percentage errors</a></li>
-<li class="chapter" data-level="5.6.4" data-path="evaluating-model-accuracy.html"><a href="evaluating-model-accuracy.html#scaled-errors"><i class="fa fa-check"></i><b>5.6.4</b> Scaled errors</a></li>
-<li class="chapter" data-level="5.6.5" data-path="evaluating-model-accuracy.html"><a href="evaluating-model-accuracy.html#examples-beer-production"><i class="fa fa-check"></i><b>5.6.5</b> Examples: beer production</a></li>
+<li class="chapter" data-level="5.6" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#evaluating-model-accuracy"><i class="fa fa-check"></i><b>5.6</b> Evaluating model accuracy</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#forecast-errors"><i class="fa fa-check"></i><b>5.6.1</b> Forecast errors</a></li>
+<li class="chapter" data-level="5.6.2" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#scale-dependent-errors"><i class="fa fa-check"></i><b>5.6.2</b> Scale dependent errors</a></li>
+<li class="chapter" data-level="5.6.3" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#percentage-errors"><i class="fa fa-check"></i><b>5.6.3</b> Percentage errors</a></li>
+<li class="chapter" data-level="5.6.4" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#scaled-errors"><i class="fa fa-check"></i><b>5.6.4</b> Scaled errors</a></li>
+<li class="chapter" data-level="5.6.5" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#examples-beer-production"><i class="fa fa-check"></i><b>5.6.5</b> Examples: beer production</a></li>
 </ul></li>
-<li class="chapter" data-level="5.7" data-path="time-series-cross-validation.html"><a href="time-series-cross-validation.html"><i class="fa fa-check"></i><b>5.7</b> Time series cross-validation</a><ul>
-<li class="chapter" data-level="5.7.1" data-path="time-series-cross-validation.html"><a href="time-series-cross-validation.html#example-forecast-horizon-accuracy-with-cross-validation"><i class="fa fa-check"></i><b>5.7.1</b> Example: Forecast horizon accuracy with cross-validation</a></li>
+<li class="chapter" data-level="5.7" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#time-series-cross-validation"><i class="fa fa-check"></i><b>5.7</b> Time series cross-validation</a><ul>
+<li class="chapter" data-level="5.7.1" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#example-forecast-horizon-accuracy-with-cross-validation"><i class="fa fa-check"></i><b>5.7.1</b> Example: Forecast horizon accuracy with cross-validation</a></li>
 </ul></li>
-<li class="chapter" data-level="5.8" data-path="forecasting-using-transformations.html"><a href="forecasting-using-transformations.html"><i class="fa fa-check"></i><b>5.8</b> Forecasting using transformations</a><ul>
-<li class="chapter" data-level="5.8.1" data-path="forecasting-using-transformations.html"><a href="forecasting-using-transformations.html#prediction-intervals-with-transformations"><i class="fa fa-check"></i><b>5.8.1</b> Prediction intervals with transformations</a></li>
-<li class="chapter" data-level="5.8.2" data-path="forecasting-using-transformations.html"><a href="forecasting-using-transformations.html#forecasting-with-constraints"><i class="fa fa-check"></i><b>5.8.2</b> Forecasting with constraints</a></li>
-<li class="chapter" data-level="5.8.3" data-path="forecasting-using-transformations.html"><a href="forecasting-using-transformations.html#bias-adjustments"><i class="fa fa-check"></i><b>5.8.3</b> Bias adjustments</a></li>
+<li class="chapter" data-level="5.8" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#forecasting-using-transformations"><i class="fa fa-check"></i><b>5.8</b> Forecasting using transformations</a><ul>
+<li class="chapter" data-level="5.8.1" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#prediction-intervals-with-transformations"><i class="fa fa-check"></i><b>5.8.1</b> Prediction intervals with transformations</a></li>
+<li class="chapter" data-level="5.8.2" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#forecasting-with-constraints"><i class="fa fa-check"></i><b>5.8.2</b> Forecasting with constraints</a></li>
+<li class="chapter" data-level="5.8.3" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#bias-adjustments"><i class="fa fa-check"></i><b>5.8.3</b> Bias adjustments</a></li>
 </ul></li>
-<li class="chapter" data-level="5.9" data-path="forecasting-with-decomposition.html"><a href="forecasting-with-decomposition.html"><i class="fa fa-check"></i><b>5.9</b> Forecasting with decomposition</a><ul>
-<li class="chapter" data-level="5.9.1" data-path="forecasting-with-decomposition.html"><a href="forecasting-with-decomposition.html#example-employment-in-the-us-retail-sector"><i class="fa fa-check"></i><b>5.9.1</b> Example: Employment in the US retail sector</a></li>
+<li class="chapter" data-level="5.9" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#forecasting-with-decomposition"><i class="fa fa-check"></i><b>5.9</b> Forecasting with decomposition</a><ul>
+<li class="chapter" data-level="5.9.1" data-path="the-forecasters-toolbox.html"><a href="the-forecasters-toolbox.html#example-employment-in-the-us-retail-sector"><i class="fa fa-check"></i><b>5.9.1</b> Example: Employment in the US retail sector</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html"><i class="fa fa-check"></i><b>6</b> Judgmental forecasts</a><ul>
-<li class="chapter" data-level="6.1" data-path="beware-of-limitations.html"><a href="beware-of-limitations.html"><i class="fa fa-check"></i><b>6.1</b> Beware of limitations</a></li>
-<li class="chapter" data-level="6.2" data-path="key-principles.html"><a href="key-principles.html"><i class="fa fa-check"></i><b>6.2</b> Key principles</a></li>
-<li class="chapter" data-level="6.3" data-path="the-delphi-method.html"><a href="the-delphi-method.html"><i class="fa fa-check"></i><b>6.3</b> The Delphi method</a><ul>
-<li class="chapter" data-level="6.3.1" data-path="the-delphi-method.html"><a href="the-delphi-method.html#experts-and-anonymity"><i class="fa fa-check"></i><b>6.3.1</b> Experts and anonymity</a></li>
-<li class="chapter" data-level="6.3.2" data-path="the-delphi-method.html"><a href="the-delphi-method.html#setting-the-forecasting-task-in-a-delphi"><i class="fa fa-check"></i><b>6.3.2</b> Setting the forecasting task in a Delphi</a></li>
-<li class="chapter" data-level="6.3.3" data-path="the-delphi-method.html"><a href="the-delphi-method.html#iteration"><i class="fa fa-check"></i><b>6.3.3</b> Iteration</a></li>
-<li class="chapter" data-level="6.3.4" data-path="the-delphi-method.html"><a href="the-delphi-method.html#final-forecasts"><i class="fa fa-check"></i><b>6.3.4</b> Final forecasts</a></li>
-<li class="chapter" data-level="6.3.5" data-path="the-delphi-method.html"><a href="the-delphi-method.html#limitations-and-variations"><i class="fa fa-check"></i><b>6.3.5</b> Limitations and variations</a></li>
-<li class="chapter" data-level="6.3.6" data-path="the-delphi-method.html"><a href="the-delphi-method.html#the-facilitator"><i class="fa fa-check"></i><b>6.3.6</b> The facilitator</a></li>
+<li class="chapter" data-level="6.1" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#beware-of-limitations"><i class="fa fa-check"></i><b>6.1</b> Beware of limitations</a></li>
+<li class="chapter" data-level="6.2" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#key-principles"><i class="fa fa-check"></i><b>6.2</b> Key principles</a></li>
+<li class="chapter" data-level="6.3" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#the-delphi-method"><i class="fa fa-check"></i><b>6.3</b> The Delphi method</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#experts-and-anonymity"><i class="fa fa-check"></i><b>6.3.1</b> Experts and anonymity</a></li>
+<li class="chapter" data-level="6.3.2" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#setting-the-forecasting-task-in-a-delphi"><i class="fa fa-check"></i><b>6.3.2</b> Setting the forecasting task in a Delphi</a></li>
+<li class="chapter" data-level="6.3.3" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#iteration"><i class="fa fa-check"></i><b>6.3.3</b> Iteration</a></li>
+<li class="chapter" data-level="6.3.4" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#final-forecasts"><i class="fa fa-check"></i><b>6.3.4</b> Final forecasts</a></li>
+<li class="chapter" data-level="6.3.5" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#limitations-and-variations"><i class="fa fa-check"></i><b>6.3.5</b> Limitations and variations</a></li>
+<li class="chapter" data-level="6.3.6" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#the-facilitator"><i class="fa fa-check"></i><b>6.3.6</b> The facilitator</a></li>
 </ul></li>
-<li class="chapter" data-level="6.4" data-path="forecasting-by-analogy.html"><a href="forecasting-by-analogy.html"><i class="fa fa-check"></i><b>6.4</b> Forecasting by analogy</a></li>
-<li class="chapter" data-level="6.5" data-path="scenario-forecasting.html"><a href="scenario-forecasting.html"><i class="fa fa-check"></i><b>6.5</b> Scenario forecasting</a></li>
-<li class="chapter" data-level="6.6" data-path="new-product-forecasting.html"><a href="new-product-forecasting.html"><i class="fa fa-check"></i><b>6.6</b> New product forecasting</a><ul>
-<li class="chapter" data-level="6.6.1" data-path="new-product-forecasting.html"><a href="new-product-forecasting.html#sales-force-composite"><i class="fa fa-check"></i><b>6.6.1</b> Sales force composite</a></li>
-<li class="chapter" data-level="6.6.2" data-path="new-product-forecasting.html"><a href="new-product-forecasting.html#executive-opinion"><i class="fa fa-check"></i><b>6.6.2</b> Executive opinion</a></li>
-<li class="chapter" data-level="6.6.3" data-path="new-product-forecasting.html"><a href="new-product-forecasting.html#customer-intentions"><i class="fa fa-check"></i><b>6.6.3</b> Customer intentions</a></li>
+<li class="chapter" data-level="6.4" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#forecasting-by-analogy"><i class="fa fa-check"></i><b>6.4</b> Forecasting by analogy</a></li>
+<li class="chapter" data-level="6.5" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#scenario-forecasting"><i class="fa fa-check"></i><b>6.5</b> Scenario forecasting</a></li>
+<li class="chapter" data-level="6.6" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#new-product-forecasting"><i class="fa fa-check"></i><b>6.6</b> New product forecasting</a><ul>
+<li class="chapter" data-level="6.6.1" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#sales-force-composite"><i class="fa fa-check"></i><b>6.6.1</b> Sales force composite</a></li>
+<li class="chapter" data-level="6.6.2" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#executive-opinion"><i class="fa fa-check"></i><b>6.6.2</b> Executive opinion</a></li>
+<li class="chapter" data-level="6.6.3" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#customer-intentions"><i class="fa fa-check"></i><b>6.6.3</b> Customer intentions</a></li>
 </ul></li>
-<li class="chapter" data-level="6.7" data-path="judgmental-adjustments.html"><a href="judgmental-adjustments.html"><i class="fa fa-check"></i><b>6.7</b> Judgmental adjustments</a><ul>
-<li class="chapter" data-level="6.7.1" data-path="judgmental-adjustments.html"><a href="judgmental-adjustments.html#use-adjustments-sparingly"><i class="fa fa-check"></i><b>6.7.1</b> Use adjustments sparingly</a></li>
-<li class="chapter" data-level="6.7.2" data-path="judgmental-adjustments.html"><a href="judgmental-adjustments.html#apply-a-structured-approach"><i class="fa fa-check"></i><b>6.7.2</b> Apply a structured approach</a></li>
-<li class="chapter" data-level="6.7.3" data-path="judgmental-adjustments.html"><a href="judgmental-adjustments.html#example-tourism-forecasting-committee-tfc"><i class="fa fa-check"></i><b>6.7.3</b> Example: Tourism Forecasting Committee (TFC)</a></li>
+<li class="chapter" data-level="6.7" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#judgmental-adjustments"><i class="fa fa-check"></i><b>6.7</b> Judgmental adjustments</a><ul>
+<li class="chapter" data-level="6.7.1" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#use-adjustments-sparingly"><i class="fa fa-check"></i><b>6.7.1</b> Use adjustments sparingly</a></li>
+<li class="chapter" data-level="6.7.2" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#apply-a-structured-approach"><i class="fa fa-check"></i><b>6.7.2</b> Apply a structured approach</a></li>
+<li class="chapter" data-level="6.7.3" data-path="judgmental-forecasts.html"><a href="judgmental-forecasts.html#example-tourism-forecasting-committee-tfc"><i class="fa fa-check"></i><b>6.7.3</b> Example: Tourism Forecasting Committee (TFC)</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html"><i class="fa fa-check"></i><b>7</b> Time series regression models</a><ul>
-<li class="chapter" data-level="7.1" data-path="the-linear-model.html"><a href="the-linear-model.html"><i class="fa fa-check"></i><b>7.1</b> The linear model</a><ul>
-<li class="chapter" data-level="7.1.1" data-path="the-linear-model.html"><a href="the-linear-model.html#simple-linear-regression"><i class="fa fa-check"></i><b>7.1.1</b> Simple linear regression</a></li>
-<li class="chapter" data-level="7.1.2" data-path="the-linear-model.html"><a href="the-linear-model.html#multiple-linear-regression"><i class="fa fa-check"></i><b>7.1.2</b> Multiple linear regression</a></li>
-<li class="chapter" data-level="7.1.3" data-path="the-linear-model.html"><a href="the-linear-model.html#assumptions"><i class="fa fa-check"></i><b>7.1.3</b> Assumptions</a></li>
+<li class="chapter" data-level="7.1" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#the-linear-model"><i class="fa fa-check"></i><b>7.1</b> The linear model</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#simple-linear-regression"><i class="fa fa-check"></i><b>7.1.1</b> Simple linear regression</a></li>
+<li class="chapter" data-level="7.1.2" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#multiple-linear-regression"><i class="fa fa-check"></i><b>7.1.2</b> Multiple linear regression</a></li>
+<li class="chapter" data-level="7.1.3" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#assumptions"><i class="fa fa-check"></i><b>7.1.3</b> Assumptions</a></li>
 </ul></li>
-<li class="chapter" data-level="7.2" data-path="least-squares-estimation.html"><a href="least-squares-estimation.html"><i class="fa fa-check"></i><b>7.2</b> Least squares estimation</a><ul>
-<li class="chapter" data-level="7.2.1" data-path="least-squares-estimation.html"><a href="least-squares-estimation.html#fitted-values"><i class="fa fa-check"></i><b>7.2.1</b> Fitted values</a></li>
-<li class="chapter" data-level="7.2.2" data-path="least-squares-estimation.html"><a href="least-squares-estimation.html#goodness-of-fit"><i class="fa fa-check"></i><b>7.2.2</b> Goodness of fit</a></li>
-<li class="chapter" data-level="7.2.3" data-path="least-squares-estimation.html"><a href="least-squares-estimation.html#standard-error-of-the-regression"><i class="fa fa-check"></i><b>7.2.3</b> Standard error of the regression</a></li>
+<li class="chapter" data-level="7.2" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#least-squares-estimation"><i class="fa fa-check"></i><b>7.2</b> Least squares estimation</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#fitted-values"><i class="fa fa-check"></i><b>7.2.1</b> Fitted values</a></li>
+<li class="chapter" data-level="7.2.2" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#goodness-of-fit"><i class="fa fa-check"></i><b>7.2.2</b> Goodness of fit</a></li>
+<li class="chapter" data-level="7.2.3" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#standard-error-of-the-regression"><i class="fa fa-check"></i><b>7.2.3</b> Standard error of the regression</a></li>
 </ul></li>
-<li class="chapter" data-level="7.3" data-path="evaluating-a-regression-model.html"><a href="evaluating-a-regression-model.html"><i class="fa fa-check"></i><b>7.3</b> Evaluating a regression model</a><ul>
-<li class="chapter" data-level="7.3.1" data-path="evaluating-a-regression-model.html"><a href="evaluating-a-regression-model.html#residual-plots-against-predictors"><i class="fa fa-check"></i><b>7.3.1</b> Residual plots against predictors</a></li>
-<li class="chapter" data-level="7.3.2" data-path="evaluating-a-regression-model.html"><a href="evaluating-a-regression-model.html#residual-plots-against-fitted-values"><i class="fa fa-check"></i><b>7.3.2</b> Residual plots against fitted values</a></li>
-<li class="chapter" data-level="7.3.3" data-path="evaluating-a-regression-model.html"><a href="evaluating-a-regression-model.html#outliers-and-influential-observations"><i class="fa fa-check"></i><b>7.3.3</b> Outliers and influential observations</a></li>
-<li class="chapter" data-level="7.3.4" data-path="evaluating-a-regression-model.html"><a href="evaluating-a-regression-model.html#the-performance-package"><i class="fa fa-check"></i><b>7.3.4</b> The <code>performance</code> package</a></li>
-<li class="chapter" data-level="7.3.5" data-path="evaluating-a-regression-model.html"><a href="evaluating-a-regression-model.html#spurious-regression"><i class="fa fa-check"></i><b>7.3.5</b> Spurious regression</a></li>
+<li class="chapter" data-level="7.3" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#evaluating-a-regression-model"><i class="fa fa-check"></i><b>7.3</b> Evaluating a regression model</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#residual-plots-against-predictors"><i class="fa fa-check"></i><b>7.3.1</b> Residual plots against predictors</a></li>
+<li class="chapter" data-level="7.3.2" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#residual-plots-against-fitted-values"><i class="fa fa-check"></i><b>7.3.2</b> Residual plots against fitted values</a></li>
+<li class="chapter" data-level="7.3.3" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#outliers-and-influential-observations"><i class="fa fa-check"></i><b>7.3.3</b> Outliers and influential observations</a></li>
+<li class="chapter" data-level="7.3.4" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#the-performance-package"><i class="fa fa-check"></i><b>7.3.4</b> The <code>performance</code> package</a></li>
+<li class="chapter" data-level="7.3.5" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#spurious-regression"><i class="fa fa-check"></i><b>7.3.5</b> Spurious regression</a></li>
 </ul></li>
-<li class="chapter" data-level="7.4" data-path="some-useful-predictors.html"><a href="some-useful-predictors.html"><i class="fa fa-check"></i><b>7.4</b> Some useful predictors</a><ul>
-<li class="chapter" data-level="7.4.1" data-path="some-useful-predictors.html"><a href="some-useful-predictors.html#trend"><i class="fa fa-check"></i><b>7.4.1</b> Trend</a></li>
-<li class="chapter" data-level="7.4.2" data-path="some-useful-predictors.html"><a href="some-useful-predictors.html#seasonal-dummy-variables"><i class="fa fa-check"></i><b>7.4.2</b> Seasonal dummy variables</a></li>
-<li class="chapter" data-level="7.4.3" data-path="some-useful-predictors.html"><a href="some-useful-predictors.html#example-australian-quarterly-beer-production"><i class="fa fa-check"></i><b>7.4.3</b> Example: Australian quarterly beer production</a></li>
-<li class="chapter" data-level="7.4.4" data-path="some-useful-predictors.html"><a href="some-useful-predictors.html#intervention-variables"><i class="fa fa-check"></i><b>7.4.4</b> Intervention variables</a></li>
-<li class="chapter" data-level="7.4.5" data-path="some-useful-predictors.html"><a href="some-useful-predictors.html#trading-days"><i class="fa fa-check"></i><b>7.4.5</b> Trading days</a></li>
-<li class="chapter" data-level="7.4.6" data-path="some-useful-predictors.html"><a href="some-useful-predictors.html#distributed-lags"><i class="fa fa-check"></i><b>7.4.6</b> Distributed lags</a></li>
-<li class="chapter" data-level="7.4.7" data-path="some-useful-predictors.html"><a href="some-useful-predictors.html#easter"><i class="fa fa-check"></i><b>7.4.7</b> Easter</a></li>
-<li class="chapter" data-level="7.4.8" data-path="some-useful-predictors.html"><a href="some-useful-predictors.html#fourier-sereis"><i class="fa fa-check"></i><b>7.4.8</b> Fourier sereis</a></li>
+<li class="chapter" data-level="7.4" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#some-useful-predictors"><i class="fa fa-check"></i><b>7.4</b> Some useful predictors</a><ul>
+<li class="chapter" data-level="7.4.1" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#trend"><i class="fa fa-check"></i><b>7.4.1</b> Trend</a></li>
+<li class="chapter" data-level="7.4.2" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#seasonal-dummy-variables"><i class="fa fa-check"></i><b>7.4.2</b> Seasonal dummy variables</a></li>
+<li class="chapter" data-level="7.4.3" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#example-australian-quarterly-beer-production"><i class="fa fa-check"></i><b>7.4.3</b> Example: Australian quarterly beer production</a></li>
+<li class="chapter" data-level="7.4.4" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#intervention-variables"><i class="fa fa-check"></i><b>7.4.4</b> Intervention variables</a></li>
+<li class="chapter" data-level="7.4.5" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#trading-days"><i class="fa fa-check"></i><b>7.4.5</b> Trading days</a></li>
+<li class="chapter" data-level="7.4.6" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#distributed-lags"><i class="fa fa-check"></i><b>7.4.6</b> Distributed lags</a></li>
+<li class="chapter" data-level="7.4.7" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#easter"><i class="fa fa-check"></i><b>7.4.7</b> Easter</a></li>
+<li class="chapter" data-level="7.4.8" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#fourier-sereis"><i class="fa fa-check"></i><b>7.4.8</b> Fourier sereis</a></li>
 </ul></li>
-<li class="chapter" data-level="7.5" data-path="selecting-predictors.html"><a href="selecting-predictors.html"><i class="fa fa-check"></i><b>7.5</b> Selecting predictors</a><ul>
-<li class="chapter" data-level="7.5.1" data-path="selecting-predictors.html"><a href="selecting-predictors.html#adjusst-r-square"><i class="fa fa-check"></i><b>7.5.1</b> Adjusst R square</a></li>
-<li class="chapter" data-level="7.5.2" data-path="selecting-predictors.html"><a href="selecting-predictors.html#cross-validation"><i class="fa fa-check"></i><b>7.5.2</b> Cross validation</a></li>
-<li class="chapter" data-level="7.5.3" data-path="selecting-predictors.html"><a href="selecting-predictors.html#akaikes-information-criterion"><i class="fa fa-check"></i><b>7.5.3</b> Akaike’s Information Criterion</a></li>
-<li class="chapter" data-level="7.5.4" data-path="selecting-predictors.html"><a href="selecting-predictors.html#bayesian-information-criterion"><i class="fa fa-check"></i><b>7.5.4</b> Bayesian Information Criterion</a></li>
-<li class="chapter" data-level="7.5.5" data-path="selecting-predictors.html"><a href="selecting-predictors.html#which-measure-should-we-suse"><i class="fa fa-check"></i><b>7.5.5</b> Which measure should we suse</a></li>
-<li class="chapter" data-level="7.5.6" data-path="selecting-predictors.html"><a href="selecting-predictors.html#example-us-consumption"><i class="fa fa-check"></i><b>7.5.6</b> Example: US consumption</a></li>
+<li class="chapter" data-level="7.5" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#selecting-predictors"><i class="fa fa-check"></i><b>7.5</b> Selecting predictors</a><ul>
+<li class="chapter" data-level="7.5.1" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#adjusst-r-square"><i class="fa fa-check"></i><b>7.5.1</b> Adjusst R square</a></li>
+<li class="chapter" data-level="7.5.2" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#cross-validation"><i class="fa fa-check"></i><b>7.5.2</b> Cross validation</a></li>
+<li class="chapter" data-level="7.5.3" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#akaikes-information-criterion"><i class="fa fa-check"></i><b>7.5.3</b> Akaike’s Information Criterion</a></li>
+<li class="chapter" data-level="7.5.4" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#bayesian-information-criterion"><i class="fa fa-check"></i><b>7.5.4</b> Bayesian Information Criterion</a></li>
+<li class="chapter" data-level="7.5.5" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#which-measure-should-we-suse"><i class="fa fa-check"></i><b>7.5.5</b> Which measure should we suse</a></li>
+<li class="chapter" data-level="7.5.6" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#example-us-consumption"><i class="fa fa-check"></i><b>7.5.6</b> Example: US consumption</a></li>
 </ul></li>
-<li class="chapter" data-level="7.6" data-path="forecasting-with-regression.html"><a href="forecasting-with-regression.html"><i class="fa fa-check"></i><b>7.6</b> Forecasting with regression</a><ul>
-<li class="chapter" data-level="7.6.1" data-path="forecasting-with-regression.html"><a href="forecasting-with-regression.html#ex-ante-versus-ex-post-forecasts"><i class="fa fa-check"></i><b>7.6.1</b> Ex-ante versus ex-post forecasts</a></li>
-<li class="chapter" data-level="7.6.2" data-path="forecasting-with-regression.html"><a href="forecasting-with-regression.html#example-australian-quarterly-beer-production-1"><i class="fa fa-check"></i><b>7.6.2</b> Example: Australian quarterly beer production</a></li>
-<li class="chapter" data-level="7.6.3" data-path="forecasting-with-regression.html"><a href="forecasting-with-regression.html#scenario-based-forecasting"><i class="fa fa-check"></i><b>7.6.3</b> Scenario based forecasting</a></li>
-<li class="chapter" data-level="7.6.4" data-path="forecasting-with-regression.html"><a href="forecasting-with-regression.html#prediction-intervals"><i class="fa fa-check"></i><b>7.6.4</b> Prediction intervals</a></li>
-<li class="chapter" data-level="7.6.5" data-path="forecasting-with-regression.html"><a href="forecasting-with-regression.html#building-a-predictive-regression-model"><i class="fa fa-check"></i><b>7.6.5</b> Building a predictive regression model</a></li>
+<li class="chapter" data-level="7.6" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#forecasting-with-regression"><i class="fa fa-check"></i><b>7.6</b> Forecasting with regression</a><ul>
+<li class="chapter" data-level="7.6.1" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#ex-ante-versus-ex-post-forecasts"><i class="fa fa-check"></i><b>7.6.1</b> Ex-ante versus ex-post forecasts</a></li>
+<li class="chapter" data-level="7.6.2" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#example-australian-quarterly-beer-production-1"><i class="fa fa-check"></i><b>7.6.2</b> Example: Australian quarterly beer production</a></li>
+<li class="chapter" data-level="7.6.3" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#scenario-based-forecasting"><i class="fa fa-check"></i><b>7.6.3</b> Scenario based forecasting</a></li>
+<li class="chapter" data-level="7.6.4" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#prediction-intervals"><i class="fa fa-check"></i><b>7.6.4</b> Prediction intervals</a></li>
+<li class="chapter" data-level="7.6.5" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#building-a-predictive-regression-model"><i class="fa fa-check"></i><b>7.6.5</b> Building a predictive regression model</a></li>
 </ul></li>
-<li class="chapter" data-level="7.7" data-path="matrix-formulation.html"><a href="matrix-formulation.html"><i class="fa fa-check"></i><b>7.7</b> Matrix formulation</a></li>
-<li class="chapter" data-level="7.8" data-path="nonlinear-regression.html"><a href="nonlinear-regression.html"><i class="fa fa-check"></i><b>7.8</b> Nonlinear regression</a><ul>
-<li class="chapter" data-level="7.8.1" data-path="nonlinear-regression.html"><a href="nonlinear-regression.html#forecasting-with-a-nonlinear-trend"><i class="fa fa-check"></i><b>7.8.1</b> Forecasting with a nonlinear trend</a></li>
-<li class="chapter" data-level="7.8.2" data-path="nonlinear-regression.html"><a href="nonlinear-regression.html#example-boston-marathon-winning-times"><i class="fa fa-check"></i><b>7.8.2</b> Example: Boston marathon winning times</a></li>
+<li class="chapter" data-level="7.7" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#matrix-formulation"><i class="fa fa-check"></i><b>7.7</b> Matrix formulation</a></li>
+<li class="chapter" data-level="7.8" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#nonlinear-regression"><i class="fa fa-check"></i><b>7.8</b> Nonlinear regression</a><ul>
+<li class="chapter" data-level="7.8.1" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#forecasting-with-a-nonlinear-trend"><i class="fa fa-check"></i><b>7.8.1</b> Forecasting with a nonlinear trend</a></li>
+<li class="chapter" data-level="7.8.2" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#example-boston-marathon-winning-times"><i class="fa fa-check"></i><b>7.8.2</b> Example: Boston marathon winning times</a></li>
 </ul></li>
-<li class="chapter" data-level="7.9" data-path="correlation-causation-and-forecasting.html"><a href="correlation-causation-and-forecasting.html"><i class="fa fa-check"></i><b>7.9</b> Correlation, causation and forecasting</a></li>
+<li class="chapter" data-level="7.9" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#correlation-causation-and-forecasting"><i class="fa fa-check"></i><b>7.9</b> Correlation, causation and forecasting</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html"><i class="fa fa-check"></i><b>8</b> Exponential smoothing</a><ul>
-<li class="chapter" data-level="8.1" data-path="simple-exponential-smoothing.html"><a href="simple-exponential-smoothing.html"><i class="fa fa-check"></i><b>8.1</b> Simple exponential smoothing</a><ul>
-<li class="chapter" data-level="8.1.1" data-path="simple-exponential-smoothing.html"><a href="simple-exponential-smoothing.html#weighted-average-form"><i class="fa fa-check"></i><b>8.1.1</b> Weighted average form</a></li>
-<li class="chapter" data-level="8.1.2" data-path="simple-exponential-smoothing.html"><a href="simple-exponential-smoothing.html#component-form"><i class="fa fa-check"></i><b>8.1.2</b> Component form</a></li>
-<li class="chapter" data-level="8.1.3" data-path="simple-exponential-smoothing.html"><a href="simple-exponential-smoothing.html#flat-forecast"><i class="fa fa-check"></i><b>8.1.3</b> Flat forecast</a></li>
-<li class="chapter" data-level="8.1.4" data-path="simple-exponential-smoothing.html"><a href="simple-exponential-smoothing.html#estimation"><i class="fa fa-check"></i><b>8.1.4</b> Estimation</a></li>
-<li class="chapter" data-level="8.1.5" data-path="simple-exponential-smoothing.html"><a href="simple-exponential-smoothing.html#example-algerian-exports"><i class="fa fa-check"></i><b>8.1.5</b> Example: Algerian exports</a></li>
+<li class="chapter" data-level="8.1" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#simple-exponential-smoothing"><i class="fa fa-check"></i><b>8.1</b> Simple exponential smoothing</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#weighted-average-form"><i class="fa fa-check"></i><b>8.1.1</b> Weighted average form</a></li>
+<li class="chapter" data-level="8.1.2" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#component-form"><i class="fa fa-check"></i><b>8.1.2</b> Component form</a></li>
+<li class="chapter" data-level="8.1.3" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#flat-forecast"><i class="fa fa-check"></i><b>8.1.3</b> Flat forecast</a></li>
+<li class="chapter" data-level="8.1.4" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#estimation"><i class="fa fa-check"></i><b>8.1.4</b> Estimation</a></li>
+<li class="chapter" data-level="8.1.5" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#example-algerian-exports"><i class="fa fa-check"></i><b>8.1.5</b> Example: Algerian exports</a></li>
 </ul></li>
-<li class="chapter" data-level="8.2" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html"><i class="fa fa-check"></i><b>8.2</b> Methods with trend and seasonality</a><ul>
-<li class="chapter" data-level="8.2.1" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#holts-linear-trend-method"><i class="fa fa-check"></i><b>8.2.1</b> Holt’s linear trend method</a></li>
-<li class="chapter" data-level="8.2.2" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#example-australian-population"><i class="fa fa-check"></i><b>8.2.2</b> Example: Australian population</a></li>
-<li class="chapter" data-level="8.2.3" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#damped-trend-methods"><i class="fa fa-check"></i><b>8.2.3</b> Damped trend methods</a></li>
-<li class="chapter" data-level="8.2.4" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#example-australian-population-continued"><i class="fa fa-check"></i><b>8.2.4</b> Example: Australian Population (continued)</a></li>
-<li class="chapter" data-level="8.2.5" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#example-internet-usage"><i class="fa fa-check"></i><b>8.2.5</b> Example: Internet usage</a></li>
-<li class="chapter" data-level="8.2.6" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#holt-winters-additive-method"><i class="fa fa-check"></i><b>8.2.6</b> Holt-Winters’ additive method</a></li>
-<li class="chapter" data-level="8.2.7" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#holt-winters-multiplicative-method"><i class="fa fa-check"></i><b>8.2.7</b> Holt-Winters’ multiplicative method</a></li>
-<li class="chapter" data-level="8.2.8" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#example-domestic-overnight-trips-in-australia"><i class="fa fa-check"></i><b>8.2.8</b> Example: Domestic overnight trips in Australia</a></li>
-<li class="chapter" data-level="8.2.9" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#holt-winters-damped-method"><i class="fa fa-check"></i><b>8.2.9</b> Holt-Winters’ damped method</a></li>
-<li class="chapter" data-level="8.2.10" data-path="methods-with-trend-and-seasonality.html"><a href="methods-with-trend-and-seasonality.html#example-holt-winters-method-with-daily-data"><i class="fa fa-check"></i><b>8.2.10</b> Example: Holt-Winters method with daily data</a></li>
+<li class="chapter" data-level="8.2" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#methods-with-trend-and-seasonality"><i class="fa fa-check"></i><b>8.2</b> Methods with trend and seasonality</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#holts-linear-trend-method"><i class="fa fa-check"></i><b>8.2.1</b> Holt’s linear trend method</a></li>
+<li class="chapter" data-level="8.2.2" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#example-australian-population"><i class="fa fa-check"></i><b>8.2.2</b> Example: Australian population</a></li>
+<li class="chapter" data-level="8.2.3" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#damped-trend-methods"><i class="fa fa-check"></i><b>8.2.3</b> Damped trend methods</a></li>
+<li class="chapter" data-level="8.2.4" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#example-australian-population-continued"><i class="fa fa-check"></i><b>8.2.4</b> Example: Australian Population (continued)</a></li>
+<li class="chapter" data-level="8.2.5" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#example-internet-usage"><i class="fa fa-check"></i><b>8.2.5</b> Example: Internet usage</a></li>
+<li class="chapter" data-level="8.2.6" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#holt-winters-additive-method"><i class="fa fa-check"></i><b>8.2.6</b> Holt-Winters’ additive method</a></li>
+<li class="chapter" data-level="8.2.7" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#holt-winters-multiplicative-method"><i class="fa fa-check"></i><b>8.2.7</b> Holt-Winters’ multiplicative method</a></li>
+<li class="chapter" data-level="8.2.8" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#example-domestic-overnight-trips-in-australia"><i class="fa fa-check"></i><b>8.2.8</b> Example: Domestic overnight trips in Australia</a></li>
+<li class="chapter" data-level="8.2.9" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#holt-winters-damped-method"><i class="fa fa-check"></i><b>8.2.9</b> Holt-Winters’ damped method</a></li>
+<li class="chapter" data-level="8.2.10" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#example-holt-winters-method-with-daily-data"><i class="fa fa-check"></i><b>8.2.10</b> Example: Holt-Winters method with daily data</a></li>
 </ul></li>
-<li class="chapter" data-level="8.3" data-path="a-taxonomy-of-exponential-smoothing-methods.html"><a href="a-taxonomy-of-exponential-smoothing-methods.html"><i class="fa fa-check"></i><b>8.3</b> A taxonomy of exponential smoothing methods</a></li>
-<li class="chapter" data-level="8.4" data-path="innovations-state-space-models-for-exponential-smoothing.html"><a href="innovations-state-space-models-for-exponential-smoothing.html"><i class="fa fa-check"></i><b>8.4</b> Innovations state space models for exponential smoothing</a><ul>
-<li class="chapter" data-level="8.4.1" data-path="innovations-state-space-models-for-exponential-smoothing.html"><a href="innovations-state-space-models-for-exponential-smoothing.html#etsann-simple-exponential-smoothing-with-additive-errors"><i class="fa fa-check"></i><b>8.4.1</b> ETS(A,N,N): simple exponential smoothing with additive errors</a></li>
-<li class="chapter" data-level="8.4.2" data-path="innovations-state-space-models-for-exponential-smoothing.html"><a href="innovations-state-space-models-for-exponential-smoothing.html#etsmnn-simple-exponential-smoothing-with-multiplicative-errors"><i class="fa fa-check"></i><b>8.4.2</b> ETS(M,N,N): simple exponential smoothing with multiplicative errors</a></li>
-<li class="chapter" data-level="8.4.3" data-path="innovations-state-space-models-for-exponential-smoothing.html"><a href="innovations-state-space-models-for-exponential-smoothing.html#etsaan-holts-linear-method-with-additive-errors"><i class="fa fa-check"></i><b>8.4.3</b> ETS(A,A,N): Holt’s linear method with additive errors</a></li>
-<li class="chapter" data-level="8.4.4" data-path="innovations-state-space-models-for-exponential-smoothing.html"><a href="innovations-state-space-models-for-exponential-smoothing.html#ets-man"><i class="fa fa-check"></i><b>8.4.4</b> ETS(M,A,N): Holt’s linear method with multiplicative errors</a></li>
-<li class="chapter" data-level="8.4.5" data-path="innovations-state-space-models-for-exponential-smoothing.html"><a href="innovations-state-space-models-for-exponential-smoothing.html#other-ets-models"><i class="fa fa-check"></i><b>8.4.5</b> Other ETS models</a></li>
+<li class="chapter" data-level="8.3" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#a-taxonomy-of-exponential-smoothing-methods"><i class="fa fa-check"></i><b>8.3</b> A taxonomy of exponential smoothing methods</a></li>
+<li class="chapter" data-level="8.4" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#innovations-state-space-models-for-exponential-smoothing"><i class="fa fa-check"></i><b>8.4</b> Innovations state space models for exponential smoothing</a><ul>
+<li class="chapter" data-level="8.4.1" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#etsann-simple-exponential-smoothing-with-additive-errors"><i class="fa fa-check"></i><b>8.4.1</b> ETS(A,N,N): simple exponential smoothing with additive errors</a></li>
+<li class="chapter" data-level="8.4.2" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#etsmnn-simple-exponential-smoothing-with-multiplicative-errors"><i class="fa fa-check"></i><b>8.4.2</b> ETS(M,N,N): simple exponential smoothing with multiplicative errors</a></li>
+<li class="chapter" data-level="8.4.3" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#etsaan-holts-linear-method-with-additive-errors"><i class="fa fa-check"></i><b>8.4.3</b> ETS(A,A,N): Holt’s linear method with additive errors</a></li>
+<li class="chapter" data-level="8.4.4" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#ets-man"><i class="fa fa-check"></i><b>8.4.4</b> ETS(M,A,N): Holt’s linear method with multiplicative errors</a></li>
+<li class="chapter" data-level="8.4.5" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#other-ets-models"><i class="fa fa-check"></i><b>8.4.5</b> Other ETS models</a></li>
 </ul></li>
-<li class="chapter" data-level="8.5" data-path="estimation-and-model-selection.html"><a href="estimation-and-model-selection.html"><i class="fa fa-check"></i><b>8.5</b> Estimation and model selection</a><ul>
-<li class="chapter" data-level="8.5.1" data-path="estimation-and-model-selection.html"><a href="estimation-and-model-selection.html#estimating-ets-models"><i class="fa fa-check"></i><b>8.5.1</b> Estimating ETS models</a></li>
-<li class="chapter" data-level="8.5.2" data-path="estimation-and-model-selection.html"><a href="estimation-and-model-selection.html#model-selection-criteria"><i class="fa fa-check"></i><b>8.5.2</b> Model selection criteria</a></li>
-<li class="chapter" data-level="8.5.3" data-path="estimation-and-model-selection.html"><a href="estimation-and-model-selection.html#example-domestic-holiday-tourist-visitor-nights-in-australia"><i class="fa fa-check"></i><b>8.5.3</b> Example: Domestic holiday tourist visitor nights in Australia</a></li>
+<li class="chapter" data-level="8.5" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#estimation-and-model-selection"><i class="fa fa-check"></i><b>8.5</b> Estimation and model selection</a><ul>
+<li class="chapter" data-level="8.5.1" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#estimating-ets-models"><i class="fa fa-check"></i><b>8.5.1</b> Estimating ETS models</a></li>
+<li class="chapter" data-level="8.5.2" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#model-selection-criteria"><i class="fa fa-check"></i><b>8.5.2</b> Model selection criteria</a></li>
+<li class="chapter" data-level="8.5.3" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#example-domestic-holiday-tourist-visitor-nights-in-australia"><i class="fa fa-check"></i><b>8.5.3</b> Example: Domestic holiday tourist visitor nights in Australia</a></li>
 </ul></li>
-<li class="chapter" data-level="8.6" data-path="forecasting-with-ets-models.html"><a href="forecasting-with-ets-models.html"><i class="fa fa-check"></i><b>8.6</b> Forecasting with ETS models</a><ul>
-<li class="chapter" data-level="8.6.1" data-path="forecasting-with-ets-models.html"><a href="forecasting-with-ets-models.html#example-australia-gas-production"><i class="fa fa-check"></i><b>8.6.1</b> Example: Australia gas production</a></li>
-<li class="chapter" data-level="8.6.2" data-path="forecasting-with-ets-models.html"><a href="forecasting-with-ets-models.html#prediction-intervals-1"><i class="fa fa-check"></i><b>8.6.2</b> Prediction intervals</a></li>
+<li class="chapter" data-level="8.6" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#forecasting-with-ets-models"><i class="fa fa-check"></i><b>8.6</b> Forecasting with ETS models</a><ul>
+<li class="chapter" data-level="8.6.1" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#example-australia-gas-production"><i class="fa fa-check"></i><b>8.6.1</b> Example: Australia gas production</a></li>
+<li class="chapter" data-level="8.6.2" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#prediction-intervals"><i class="fa fa-check"></i><b>8.6.2</b> Prediction intervals</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="9" data-path="univariate-stationary-processes.html"><a href="univariate-stationary-processes.html"><i class="fa fa-check"></i><b>9</b> Univariate stationary processes</a><ul>
-<li class="chapter" data-level="9.1" data-path="stationarity.html"><a href="stationarity.html"><i class="fa fa-check"></i><b>9.1</b> Stationarity</a><ul>
-<li class="chapter" data-level="9.1.1" data-path="stationarity.html"><a href="stationarity.html#ch9-white-noise"><i class="fa fa-check"></i><b>9.1.1</b> White noise</a></li>
-<li class="chapter" data-level="9.1.2" data-path="stationarity.html"><a href="stationarity.html#tests-for-autocorrelation-and-normality"><i class="fa fa-check"></i><b>9.1.2</b> Tests for autocorrelation and normality</a></li>
-<li class="chapter" data-level="9.1.3" data-path="stationarity.html"><a href="stationarity.html#the-wold-decomposition"><i class="fa fa-check"></i><b>9.1.3</b> The Wold Decomposition</a></li>
+<li class="chapter" data-level="9.1" data-path="univariate-stationary-processes.html"><a href="univariate-stationary-processes.html#stationarity"><i class="fa fa-check"></i><b>9.1</b> Stationarity</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="univariate-stationary-processes.html"><a href="univariate-stationary-processes.html#ch9-white-noise"><i class="fa fa-check"></i><b>9.1.1</b> White noise</a></li>
+<li class="chapter" data-level="9.1.2" data-path="univariate-stationary-processes.html"><a href="univariate-stationary-processes.html#tests-for-autocorrelation-and-normality"><i class="fa fa-check"></i><b>9.1.2</b> Tests for autocorrelation and normality</a></li>
+<li class="chapter" data-level="9.1.3" data-path="univariate-stationary-processes.html"><a href="univariate-stationary-processes.html#the-wold-decomposition"><i class="fa fa-check"></i><b>9.1.3</b> The Wold Decomposition</a></li>
 </ul></li>
-<li class="chapter" data-level="9.2" data-path="backshift-notation.html"><a href="backshift-notation.html"><i class="fa fa-check"></i><b>9.2</b> Backshift notation</a></li>
-<li class="chapter" data-level="9.3" data-path="autoregressive-models.html"><a href="autoregressive-models.html"><i class="fa fa-check"></i><b>9.3</b> Autoregressive models</a><ul>
-<li class="chapter" data-level="9.3.1" data-path="autoregressive-models.html"><a href="autoregressive-models.html#stimulating-an-arp-process"><i class="fa fa-check"></i><b>9.3.1</b> Stimulating an AR(p) process</a></li>
-<li class="chapter" data-level="9.3.2" data-path="autoregressive-models.html"><a href="autoregressive-models.html#decision-of-order-p"><i class="fa fa-check"></i><b>9.3.2</b> Decision of order p</a></li>
-<li class="chapter" data-level="9.3.3" data-path="autoregressive-models.html"><a href="autoregressive-models.html#random-walk"><i class="fa fa-check"></i><b>9.3.3</b> Random walk</a></li>
+<li class="chapter" data-level="9.2" data-path="univariate-stationary-processes.html"><a href="univariate-stationary-processes.html#backshift-notation"><i class="fa fa-check"></i><b>9.2</b> Backshift notation</a></li>
+<li class="chapter" data-level="9.3" data-path="univariate-stationary-processes.html"><a href="univariate-stationary-processes.html#autoregressive-models"><i class="fa fa-check"></i><b>9.3</b> Autoregressive models</a><ul>
+<li class="chapter" data-level="9.3.1" data-path="univariate-stationary-processes.html"><a href="univariate-stationary-processes.html#stimulating-an-arp-process"><i class="fa fa-check"></i><b>9.3.1</b> Stimulating an AR(p) process</a></li>
+<li class="chapter" data-level="9.3.2" data-path="univariate-stationary-processes.html"><a href="univariate-stationary-processes.html#decision-of-order-p"><i class="fa fa-check"></i><b>9.3.2</b> Decision of order p</a></li>
+<li class="chapter" data-level="9.3.3" data-path="univariate-stationary-processes.html"><a href="univariate-stationary-processes.html#random-walk"><i class="fa fa-check"></i><b>9.3.3</b> Random walk</a></li>
 </ul></li>
-<li class="chapter" data-level="9.4" data-path="moving-average-models.html"><a href="moving-average-models.html"><i class="fa fa-check"></i><b>9.4</b> Moving average models</a><ul>
-<li class="chapter" data-level="9.4.1" data-path="moving-average-models.html"><a href="moving-average-models.html#simulating-an-maq-process"><i class="fa fa-check"></i><b>9.4.1</b> Simulating an MA(q) process</a></li>
-<li class="chapter" data-level="9.4.2" data-path="moving-average-models.html"><a href="moving-average-models.html#decision-of-order-q"><i class="fa fa-check"></i><b>9.4.2</b> Decision of order q</a></li>
-<li class="chapter" data-level="9.4.3" data-path="moving-average-models.html"><a href="moving-average-models.html#koyck-transformation-and-invertibility"><i class="fa fa-check"></i><b>9.4.3</b> Koyck transformation and Invertibility</a></li>
+<li class="chapter" data-level="9.4" data-path="univariate-stationary-processes.html"><a href="univariate-stationary-processes.html#moving-average-models"><i class="fa fa-check"></i><b>9.4</b> Moving average models</a><ul>
+<li class="chapter" data-level="9.4.1" data-path="univariate-stationary-processes.html"><a href="univariate-stationary-processes.html#simulating-an-maq-process"><i class="fa fa-check"></i><b>9.4.1</b> Simulating an MA(q) process</a></li>
+<li class="chapter" data-level="9.4.2" data-path="univariate-stationary-processes.html"><a href="univariate-stationary-processes.html#decision-of-order-q"><i class="fa fa-check"></i><b>9.4.2</b> Decision of order q</a></li>
+<li class="chapter" data-level="9.4.3" data-path="univariate-stationary-processes.html"><a href="univariate-stationary-processes.html#koyck-transformation-and-invertibility"><i class="fa fa-check"></i><b>9.4.3</b> Koyck transformation and Invertibility</a></li>
 </ul></li>
-<li class="chapter" data-level="9.5" data-path="arma-models.html"><a href="arma-models.html"><i class="fa fa-check"></i><b>9.5</b> ARMA models</a><ul>
-<li class="chapter" data-level="9.5.1" data-path="arma-models.html"><a href="arma-models.html#three-representations-of-an-arma-model"><i class="fa fa-check"></i><b>9.5.1</b> Three representations of an ARMA model</a></li>
+<li class="chapter" data-level="9.5" data-path="univariate-stationary-processes.html"><a href="univariate-stationary-processes.html#arma-models"><i class="fa fa-check"></i><b>9.5</b> ARMA models</a><ul>
+<li class="chapter" data-level="9.5.1" data-path="univariate-stationary-processes.html"><a href="univariate-stationary-processes.html#three-representations-of-an-arma-model"><i class="fa fa-check"></i><b>9.5.1</b> Three representations of an ARMA model</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="10" data-path="arima-models.html"><a href="arima-models.html"><i class="fa fa-check"></i><b>10</b> ARIMA models</a><ul>
-<li class="chapter" data-level="10.1" data-path="differencing.html"><a href="differencing.html"><i class="fa fa-check"></i><b>10.1</b> Differencing</a><ul>
-<li class="chapter" data-level="10.1.1" data-path="differencing.html"><a href="differencing.html#second-order-differencing"><i class="fa fa-check"></i><b>10.1.1</b> Second-order differencing</a></li>
-<li class="chapter" data-level="10.1.2" data-path="differencing.html"><a href="differencing.html#seasonal-differencing"><i class="fa fa-check"></i><b>10.1.2</b> Seasonal differencing</a></li>
-<li class="chapter" data-level="10.1.3" data-path="differencing.html"><a href="differencing.html#unit-root-tests"><i class="fa fa-check"></i><b>10.1.3</b> Unit root tests</a></li>
+<li class="chapter" data-level="10.1" data-path="arima-models.html"><a href="arima-models.html#differencing"><i class="fa fa-check"></i><b>10.1</b> Differencing</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="arima-models.html"><a href="arima-models.html#second-order-differencing"><i class="fa fa-check"></i><b>10.1.1</b> Second-order differencing</a></li>
+<li class="chapter" data-level="10.1.2" data-path="arima-models.html"><a href="arima-models.html#seasonal-differencing"><i class="fa fa-check"></i><b>10.1.2</b> Seasonal differencing</a></li>
+<li class="chapter" data-level="10.1.3" data-path="arima-models.html"><a href="arima-models.html#unit-root-tests"><i class="fa fa-check"></i><b>10.1.3</b> Unit root tests</a></li>
 </ul></li>
-<li class="chapter" data-level="10.2" data-path="non-seasonal-arima-models.html"><a href="non-seasonal-arima-models.html"><i class="fa fa-check"></i><b>10.2</b> Non-seasonal ARIMA models</a><ul>
-<li class="chapter" data-level="10.2.1" data-path="non-seasonal-arima-models.html"><a href="non-seasonal-arima-models.html#understanding-arima-models"><i class="fa fa-check"></i><b>10.2.1</b> Understanding ARIMA models</a></li>
+<li class="chapter" data-level="10.2" data-path="arima-models.html"><a href="arima-models.html#non-seasonal-arima-models"><i class="fa fa-check"></i><b>10.2</b> Non-seasonal ARIMA models</a><ul>
+<li class="chapter" data-level="10.2.1" data-path="arima-models.html"><a href="arima-models.html#understanding-arima-models"><i class="fa fa-check"></i><b>10.2.1</b> Understanding ARIMA models</a></li>
 </ul></li>
-<li class="chapter" data-level="10.3" data-path="estimation-and-order-selection.html"><a href="estimation-and-order-selection.html"><i class="fa fa-check"></i><b>10.3</b> Estimation and order selection</a><ul>
-<li class="chapter" data-level="10.3.1" data-path="estimation-and-order-selection.html"><a href="estimation-and-order-selection.html#mle"><i class="fa fa-check"></i><b>10.3.1</b> MLE</a></li>
-<li class="chapter" data-level="10.3.2" data-path="estimation-and-order-selection.html"><a href="estimation-and-order-selection.html#information-criteria"><i class="fa fa-check"></i><b>10.3.2</b> Information Criteria</a></li>
+<li class="chapter" data-level="10.3" data-path="arima-models.html"><a href="arima-models.html#estimation-and-order-selection"><i class="fa fa-check"></i><b>10.3</b> Estimation and order selection</a><ul>
+<li class="chapter" data-level="10.3.1" data-path="arima-models.html"><a href="arima-models.html#mle"><i class="fa fa-check"></i><b>10.3.1</b> MLE</a></li>
+<li class="chapter" data-level="10.3.2" data-path="arima-models.html"><a href="arima-models.html#information-criteria"><i class="fa fa-check"></i><b>10.3.2</b> Information Criteria</a></li>
 </ul></li>
-<li class="chapter" data-level="10.4" data-path="the-arima-function.html"><a href="the-arima-function.html"><i class="fa fa-check"></i><b>10.4</b> The <code>ARIMA()</code> function</a><ul>
-<li class="chapter" data-level="10.4.1" data-path="the-arima-function.html"><a href="the-arima-function.html#algorithm"><i class="fa fa-check"></i><b>10.4.1</b> Algorithm</a></li>
-<li class="chapter" data-level="10.4.2" data-path="the-arima-function.html"><a href="the-arima-function.html#modelling-procedure"><i class="fa fa-check"></i><b>10.4.2</b> Modelling procedure</a></li>
-<li class="chapter" data-level="10.4.3" data-path="the-arima-function.html"><a href="the-arima-function.html#example-seasonally-adjusted-electrical-equipment-orders"><i class="fa fa-check"></i><b>10.4.3</b> Example: Seasonally adjusted electrical equipment orders</a></li>
-<li class="chapter" data-level="10.4.4" data-path="the-arima-function.html"><a href="the-arima-function.html#plotting-the-characteristic-roots"><i class="fa fa-check"></i><b>10.4.4</b> Plotting the characteristic roots</a></li>
+<li class="chapter" data-level="10.4" data-path="arima-models.html"><a href="arima-models.html#the-arima-function"><i class="fa fa-check"></i><b>10.4</b> The <code>ARIMA()</code> function</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="arima-models.html"><a href="arima-models.html#algorithm"><i class="fa fa-check"></i><b>10.4.1</b> Algorithm</a></li>
+<li class="chapter" data-level="10.4.2" data-path="arima-models.html"><a href="arima-models.html#modelling-procedure"><i class="fa fa-check"></i><b>10.4.2</b> Modelling procedure</a></li>
+<li class="chapter" data-level="10.4.3" data-path="arima-models.html"><a href="arima-models.html#example-seasonally-adjusted-electrical-equipment-orders"><i class="fa fa-check"></i><b>10.4.3</b> Example: Seasonally adjusted electrical equipment orders</a></li>
+<li class="chapter" data-level="10.4.4" data-path="arima-models.html"><a href="arima-models.html#plotting-the-characteristic-roots"><i class="fa fa-check"></i><b>10.4.4</b> Plotting the characteristic roots</a></li>
 </ul></li>
-<li class="chapter" data-level="10.5" data-path="forecasting-with-arima-models.html"><a href="forecasting-with-arima-models.html"><i class="fa fa-check"></i><b>10.5</b> Forecasting with ARIMA models</a><ul>
-<li class="chapter" data-level="10.5.1" data-path="forecasting-with-arima-models.html"><a href="forecasting-with-arima-models.html#point-forecasts"><i class="fa fa-check"></i><b>10.5.1</b> Point forecasts</a></li>
-<li class="chapter" data-level="10.5.2" data-path="forecasting-with-arima-models.html"><a href="forecasting-with-arima-models.html#prediction-intervals-2"><i class="fa fa-check"></i><b>10.5.2</b> Prediction intervals</a></li>
+<li class="chapter" data-level="10.5" data-path="arima-models.html"><a href="arima-models.html#forecasting-with-arima-models"><i class="fa fa-check"></i><b>10.5</b> Forecasting with ARIMA models</a><ul>
+<li class="chapter" data-level="10.5.1" data-path="arima-models.html"><a href="arima-models.html#point-forecasts"><i class="fa fa-check"></i><b>10.5.1</b> Point forecasts</a></li>
+<li class="chapter" data-level="10.5.2" data-path="time-series-regression-models.html"><a href="time-series-regression-models.html#prediction-intervals"><i class="fa fa-check"></i><b>10.5.2</b> Prediction intervals</a></li>
 </ul></li>
-<li class="chapter" data-level="10.6" data-path="seasonal-arima-models.html"><a href="seasonal-arima-models.html"><i class="fa fa-check"></i><b>10.6</b> Seasonal ARIMA models</a><ul>
-<li class="chapter" data-level="10.6.1" data-path="seasonal-arima-models.html"><a href="seasonal-arima-models.html#acf-and-pacf"><i class="fa fa-check"></i><b>10.6.1</b> ACF and PACF</a></li>
-<li class="chapter" data-level="10.6.2" data-path="seasonal-arima-models.html"><a href="seasonal-arima-models.html#example-european-quarterly-retail-trade"><i class="fa fa-check"></i><b>10.6.2</b> Example: European quarterly retail trade</a></li>
-<li class="chapter" data-level="10.6.3" data-path="seasonal-arima-models.html"><a href="seasonal-arima-models.html#example-corticosteroid-drug-sales-in-australia"><i class="fa fa-check"></i><b>10.6.3</b> Example: Corticosteroid drug sales in Australia</a></li>
+<li class="chapter" data-level="10.6" data-path="arima-models.html"><a href="arima-models.html#seasonal-arima-models"><i class="fa fa-check"></i><b>10.6</b> Seasonal ARIMA models</a><ul>
+<li class="chapter" data-level="10.6.1" data-path="arima-models.html"><a href="arima-models.html#acf-and-pacf"><i class="fa fa-check"></i><b>10.6.1</b> ACF and PACF</a></li>
+<li class="chapter" data-level="10.6.2" data-path="arima-models.html"><a href="arima-models.html#example-european-quarterly-retail-trade"><i class="fa fa-check"></i><b>10.6.2</b> Example: European quarterly retail trade</a></li>
+<li class="chapter" data-level="10.6.3" data-path="arima-models.html"><a href="arima-models.html#example-corticosteroid-drug-sales-in-australia"><i class="fa fa-check"></i><b>10.6.3</b> Example: Corticosteroid drug sales in Australia</a></li>
 </ul></li>
-<li class="chapter" data-level="10.7" data-path="ets-and-arima.html"><a href="ets-and-arima.html"><i class="fa fa-check"></i><b>10.7</b> ETS and ARIMA</a><ul>
-<li class="chapter" data-level="10.7.1" data-path="ets-and-arima.html"><a href="ets-and-arima.html#example-comparing-arima-and-ets-on-non-seasonal-data"><i class="fa fa-check"></i><b>10.7.1</b> Example: Comparing <code>ARIMA()</code> and <code>ETS()</code> on non-seasonal data</a></li>
-<li class="chapter" data-level="10.7.2" data-path="ets-and-arima.html"><a href="ets-and-arima.html#example-comparing-arima-and-ets-on-seasonal-data"><i class="fa fa-check"></i><b>10.7.2</b> Example: Comparing <code>ARIMA()</code> and <code>ETS()</code> on seasonal data</a></li>
+<li class="chapter" data-level="10.7" data-path="arima-models.html"><a href="arima-models.html#ets-and-arima"><i class="fa fa-check"></i><b>10.7</b> ETS and ARIMA</a><ul>
+<li class="chapter" data-level="10.7.1" data-path="arima-models.html"><a href="arima-models.html#example-comparing-arima-and-ets-on-non-seasonal-data"><i class="fa fa-check"></i><b>10.7.1</b> Example: Comparing <code>ARIMA()</code> and <code>ETS()</code> on non-seasonal data</a></li>
+<li class="chapter" data-level="10.7.2" data-path="arima-models.html"><a href="arima-models.html#example-comparing-arima-and-ets-on-seasonal-data"><i class="fa fa-check"></i><b>10.7.2</b> Example: Comparing <code>ARIMA()</code> and <code>ETS()</code> on seasonal data</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="11" data-path="dynamic-regression-models.html"><a href="dynamic-regression-models.html"><i class="fa fa-check"></i><b>11</b> Dynamic regression models</a><ul>
-<li class="chapter" data-level="11.1" data-path="estimation-1.html"><a href="estimation-1.html"><i class="fa fa-check"></i><b>11.1</b> Estimation</a></li>
-<li class="chapter" data-level="11.2" data-path="regression-with-arima-errors.html"><a href="regression-with-arima-errors.html"><i class="fa fa-check"></i><b>11.2</b> Regression with ARIMA errors</a><ul>
-<li class="chapter" data-level="11.2.1" data-path="regression-with-arima-errors.html"><a href="regression-with-arima-errors.html#example-us-personal-consumption-and-income"><i class="fa fa-check"></i><b>11.2.1</b> Example: US Personal Consumption and Income</a></li>
+<li class="chapter" data-level="11.1" data-path="exponential-smoothing.html"><a href="exponential-smoothing.html#estimation"><i class="fa fa-check"></i><b>11.1</b> Estimation</a></li>
+<li class="chapter" data-level="11.2" data-path="dynamic-regression-models.html"><a href="dynamic-regression-models.html#regression-with-arima-errors"><i class="fa fa-check"></i><b>11.2</b> Regression with ARIMA errors</a><ul>
+<li class="chapter" data-level="11.2.1" data-path="dynamic-regression-models.html"><a href="dynamic-regression-models.html#example-us-personal-consumption-and-income"><i class="fa fa-check"></i><b>11.2.1</b> Example: US Personal Consumption and Income</a></li>
 </ul></li>
-<li class="chapter" data-level="11.3" data-path="forecasting.html"><a href="forecasting.html"><i class="fa fa-check"></i><b>11.3</b> Forecasting</a><ul>
-<li class="chapter" data-level="11.3.1" data-path="forecasting.html"><a href="forecasting.html#example-forecasting-electricity-demand"><i class="fa fa-check"></i><b>11.3.1</b> Example: Forecasting electricity demand</a></li>
+<li class="chapter" data-level="11.3" data-path="dynamic-regression-models.html"><a href="dynamic-regression-models.html#forecasting"><i class="fa fa-check"></i><b>11.3</b> Forecasting</a><ul>
+<li class="chapter" data-level="11.3.1" data-path="dynamic-regression-models.html"><a href="dynamic-regression-models.html#example-forecasting-electricity-demand"><i class="fa fa-check"></i><b>11.3.1</b> Example: Forecasting electricity demand</a></li>
 </ul></li>
-<li class="chapter" data-level="11.4" data-path="deterministic-and-stochastic-trends.html"><a href="deterministic-and-stochastic-trends.html"><i class="fa fa-check"></i><b>11.4</b> Deterministic and stochastic trends</a><ul>
-<li class="chapter" data-level="11.4.1" data-path="deterministic-and-stochastic-trends.html"><a href="deterministic-and-stochastic-trends.html#example-international-visitors-to-australia"><i class="fa fa-check"></i><b>11.4.1</b> Example: International visitors to Australia</a></li>
+<li class="chapter" data-level="11.4" data-path="dynamic-regression-models.html"><a href="dynamic-regression-models.html#deterministic-and-stochastic-trends"><i class="fa fa-check"></i><b>11.4</b> Deterministic and stochastic trends</a><ul>
+<li class="chapter" data-level="11.4.1" data-path="dynamic-regression-models.html"><a href="dynamic-regression-models.html#example-international-visitors-to-australia"><i class="fa fa-check"></i><b>11.4.1</b> Example: International visitors to Australia</a></li>
 </ul></li>
-<li class="chapter" data-level="11.5" data-path="dynamic-harmonic-regression.html"><a href="dynamic-harmonic-regression.html"><i class="fa fa-check"></i><b>11.5</b> Dynamic harmonic regression</a><ul>
-<li class="chapter" data-level="11.5.1" data-path="dynamic-harmonic-regression.html"><a href="dynamic-harmonic-regression.html#example-australian-eating-out-expenditure"><i class="fa fa-check"></i><b>11.5.1</b> Example: Australian eating out expenditure</a></li>
+<li class="chapter" data-level="11.5" data-path="dynamic-regression-models.html"><a href="dynamic-regression-models.html#dynamic-harmonic-regression"><i class="fa fa-check"></i><b>11.5</b> Dynamic harmonic regression</a><ul>
+<li class="chapter" data-level="11.5.1" data-path="dynamic-regression-models.html"><a href="dynamic-regression-models.html#example-australian-eating-out-expenditure"><i class="fa fa-check"></i><b>11.5.1</b> Example: Australian eating out expenditure</a></li>
 </ul></li>
-<li class="chapter" data-level="11.6" data-path="lagged-predictors.html"><a href="lagged-predictors.html"><i class="fa fa-check"></i><b>11.6</b> Lagged predictors</a><ul>
-<li class="chapter" data-level="11.6.1" data-path="lagged-predictors.html"><a href="lagged-predictors.html#example-tv-advertising-and-insurance-quotations"><i class="fa fa-check"></i><b>11.6.1</b> Example: TV advertising and insurance quotations</a></li>
+<li class="chapter" data-level="11.6" data-path="dynamic-regression-models.html"><a href="dynamic-regression-models.html#lagged-predictors"><i class="fa fa-check"></i><b>11.6</b> Lagged predictors</a><ul>
+<li class="chapter" data-level="11.6.1" data-path="dynamic-regression-models.html"><a href="dynamic-regression-models.html#example-tv-advertising-and-insurance-quotations"><i class="fa fa-check"></i><b>11.6.1</b> Example: TV advertising and insurance quotations</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
@@ -435,18 +438,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="dynamic-regression-models" class="section level1">
 <h1><span class="header-section-number">Chapter 11</span> Dynamic regression models</h1>
-<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb226-1" title="1"><span class="kw">library</span>(tsibble)</a>
-<a class="sourceLine" id="cb226-2" title="2"><span class="kw">library</span>(tsibbledata)</a>
-<a class="sourceLine" id="cb226-3" title="3"><span class="kw">library</span>(fable)</a>
-<a class="sourceLine" id="cb226-4" title="4"><span class="kw">library</span>(feasts)</a>
-<a class="sourceLine" id="cb226-5" title="5"><span class="kw">library</span>(lubridate)</a>
-<a class="sourceLine" id="cb226-6" title="6"><span class="kw">library</span>(pins)</a></code></pre></div>
+<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb226-1"><a href="dynamic-regression-models.html#cb226-1"></a><span class="kw">library</span>(tsibble)</span>
+<span id="cb226-2"><a href="dynamic-regression-models.html#cb226-2"></a><span class="kw">library</span>(tsibbledata)</span>
+<span id="cb226-3"><a href="dynamic-regression-models.html#cb226-3"></a><span class="kw">library</span>(fable)</span>
+<span id="cb226-4"><a href="dynamic-regression-models.html#cb226-4"></a><span class="kw">library</span>(feasts)</span>
+<span id="cb226-5"><a href="dynamic-regression-models.html#cb226-5"></a><span class="kw">library</span>(lubridate)</span></code></pre></div>
 <p>The time series models in the previous two chapters allow for the inclusion of information from past observations of a series, but <strong>not</strong> for the inclusion of other information (external variables) that may also be relevant. On the other hand, the regression models in Chapter <a href="time-series-regression-models.html#time-series-regression-models">7</a> allow for the inclusion of a lot of relevant information from predictor variables, but do not allow for the subtle time series dynamics that can be handled with ARIMA models. In this chapter, we consider how to extend ARIMA models in order to allow other information to be included in the models.</p>
 <p>In Chapter 7 we considered the time series linear model:</p>
 <p><span class="math display">\[
 y_t = \beta_0 + \beta_1x_{1t} + \beta_2x_{2t} + \dots + \beta_kx_{kt} + \varepsilon_t
 \]</span></p>
-<p>where <span class="math inline">\(\varepsilon_t\)</span> is usually assumed to be an uncorrelated error term (i.e., it is white noise). We considered tests such as the Breusch-Godfrey test for assessing whether the resulting residuals were significantly correlated. A regression model showing high <span class="math inline">\(R^2\)</span> as well as high <span class="math inline">\(\hat{\sigma}^2\)</span> is likely to be a spurious regression (Section <a href="evaluating-a-regression-model.html#spurious-regression">7.3.5</a>).</p>
+<p>where <span class="math inline">\(\varepsilon_t\)</span> is usually assumed to be an uncorrelated error term (i.e., it is white noise). We considered tests such as the Breusch-Godfrey test for assessing whether the resulting residuals were significantly correlated. A regression model showing high <span class="math inline">\(R^2\)</span> as well as high <span class="math inline">\(\hat{\sigma}^2\)</span> is likely to be a spurious regression (Section <a href="time-series-regression-models.html#spurious-regression">7.3.5</a>).</p>
 <p>In this chapter, we will allow the errors from a regression to contain autocorrelation. Such <strong>correlated errors</strong> are denoted by <span class="math inline">\(\eta_t\)</span>. The error series <span class="math inline">\(\eta_t\)</span> is assumed to follow an ARIMA model. For example, if <span class="math inline">\(\eta_t\)</span> follows an ARIMA(1, 1, 1) model, we can write</p>
 <p><span class="math display">\[
 y_t = \beta_0 + \beta_1x_{1t} + \beta_2x_{2t} + \dots + \beta_kx_{kt} + \eta_t \\
@@ -454,14 +456,442 @@ y_t = \beta_0 + \beta_1x_{1t} + \beta_2x_{2t} + \dots + \beta_kx_{kt} + \eta_t \
 \]</span></p>
 <p>where <span class="math inline">\(\varepsilon_t\)</span> is a white noise series.</p>
 <p>Notice that the model has two error terms here — the error from the regression model, which we denote by <span class="math inline">\(\eta_t\)</span>, and the error from the ARIMA model, which we denote by <span class="math inline">\(\varepsilon_t\)</span>. Only the ARIMA model errors are assumed to be white noise.</p>
+<div id="estimation" class="section level2">
+<h2><span class="header-section-number">11.1</span> Estimation</h2>
+<p>When we estimate the parameters from the model, we need to minimise the sum of squared εt values. If we minimise the sum of squared <span class="math inline">\(\eta_t\)</span> values instead (which is what would happen if we estimated the regression model ignoring the autocorrelations in the errors), then several problems arise.</p>
+<ol style="list-style-type: decimal">
+<li><p><span class="math inline">\(\hat{\beta}_0, \dots, \hat{\beta}_k\)</span> are no longer the best estimates, as some information has been ignored in the calculation</p></li>
+<li><p>Any statistical tests associated with the model (e.g., t-tests on the coefficients) will be incorrect.</p></li>
+<li><p>The <span class="math inline">\(\text{AIC}_c\)</span> values of the fitted models are no longer a good guide as to which is the best model for forecasting.</p></li>
+<li><p>In most cases, the <span class="math inline">\(p\)</span>-values associated with the coefficients will be too small, and so some predictor variables will appear to be important when they are not. This is known as “spurious regression” (see Section <a href="time-series-regression-models.html#spurious-regression">7.3.5</a>).</p></li>
+</ol>
+<p>Minimising the sum of squared <span class="math inline">\(\eta_t\)</span> values avoids these problems. Alternatively, maximum likelihood estimation can be used; this will give similar estimates of the coefficients.</p>
+<p>An important consideration when estimating a regression with ARMA errors is that <strong>all of the variables in the model must first be stationary</strong>. Thus, we first have to check that <span class="math inline">\(y_t\)</span> and all of the predictors <span class="math inline">\(x_{1t}, \dots ,x_{kt}\)</span> appear to be stationary. If we estimate the model when any of these are non-stationary, the estimated coefficients will not be consistent estimates (and therefore may not be meaningful).</p>
+<p>We therefore first difference the non-stationary variables in the model. It is often desirable to maintain the form of the relationship between <span class="math inline">\(y_t\)</span> and the predictors, and consequently it is common to difference all of the variables if any of them need differencing. The resulting model is then called a “<strong>model in differences</strong>”, as distinct from a “model in levels”, which is what is obtained when the original data are used without differencing.</p>
+<p>If all of the variables in the model are stationary, then we only need to consider ARMA errors for the residuals. It is easy to see that a regression model with ARIMA(p, d, q) errors is equivalent to regression model in d-differences with ARMA(p, q) errors. For example, we obtain from a univariate regression model with ARIMA(1, 1, 1) errors that</p>
+<p><span class="math display" id="eq:arima-error">\[\begin{equation}
+\tag{11.1}
+y_t = \beta_0 + \beta_1x_t + \eta_t  \\
+(1 - \phi_1B)(1 - B)\eta_t = c + (1 + \theta_1B)\varepsilon_t \\ 
+\end{equation}\]</span></p>
+<p>Expand the second equation we get</p>
+<p><span class="math display">\[
+\eta_t&#39; = c + \phi_1\eta_{t-1}&#39; + \theta_1\varepsilon_{t-1} + \varepsilon_t  
+\]</span>
+Note that <span class="math inline">\(\eta_t&#39;\)</span> can be considered as a ARMA(1, 1) series.</p>
+<p>Difference the first equation in <a href="dynamic-regression-models.html#eq:arima-error">(11.1)</a> we get</p>
+<p><span class="math display">\[
+y_t&#39; = \beta_1x_t&#39; + \eta_t&#39;
+\]</span>
+This is now a linear model with outcome <span class="math inline">\(y_t&#39;\)</span>, predictor <span class="math inline">\(x&#39;_t\)</span> and ARMA(1, 1) error <span class="math inline">\(\eta_t&#39;\)</span>. Let <span class="math inline">\(\eta_t = \eta_t&#39;\)</span>, the differenced model can be written as</p>
+<p><span class="math display" id="eq:arma-error">\[\begin{equation}
+\tag{11.2}
+y_t&#39; = \beta_1x_t&#39; + \eta_t  \\
+(1 - \phi_1B)\eta_t = c + (1 + \theta_1B)\varepsilon_t{
+\end{equation}\]</span></p>
+<p>The model in differences <a href="dynamic-regression-models.html#eq:arma-error">(11.2)</a> is equavalent to our former undifferenced model <a href="dynamic-regression-models.html#eq:arima-error">(11.1)</a>, with <span class="math inline">\(\eta_t\)</span> denoting a ARMA(1, 1) and ARIMA(1, 1) errors respectively.</p>
+</div>
+<div id="regression-with-arima-errors" class="section level2">
+<h2><span class="header-section-number">11.2</span> Regression with ARIMA errors</h2>
+<p><code>ARIMA()</code> will fit a regression model with ARIMA errors if exogenous regressors are included in the formula.
+The <code>pdq()</code> special specifies the order of the ARIMA error model. If differencing is specified, then the differencing is applied to all variables in the regression model before the model is estimated.</p>
+<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb227-1"><a href="dynamic-regression-models.html#cb227-1"></a><span class="kw">ARIMA</span>(y <span class="op">~</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span><span class="kw">pdq</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span></code></pre></div>
+<p>will fit the model <span class="math inline">\(y_t&#39; = \beta_1x_t&#39; + \eta_t&#39;\)</span> where <span class="math inline">\(\eta_t&#39; = c + \phi_1\eta_{t-1}&#39; + \varepsilon_t\)</span> is an ARMA(1, 0, 0) error. This is equivalent to fitting the model</p>
+<p><span class="math display">\[
+y_t = \beta_0 + \beta_1 x + \eta_t \\
+(1 - \phi_1B)(1 - B)\eta_t = c + \varepsilon_t
+\]</span></p>
+<p>where <span class="math inline">\(\eta_t\)</span> is ARIMA(1, 1, 1) error.</p>
+<p>The <code>ARIMA()</code> function can also be used to select the best ARIMA model for the errors. This is done by not specifying the <code>pdq()</code> special, <code>ARIMA(y ~ x)</code> will find the most approriate <span class="math inline">\(p\)</span>, <span class="math inline">\(d\)</span>, <span class="math inline">\(q\)</span> for ARIMA error <span class="math inline">\(\varepsilon_t\)</span>. If differencing is required, then all variables are differenced during the estimation process, although the final model will be expressed in terms of the original variables.</p>
+<p>The AICc is calculated for the final model, and this value can be used to determine the best predictors. That is, the procedure should be repeated for all subsets of predictors to be considered, and the model with the lowest AICc value selected.</p>
+<div id="example-us-personal-consumption-and-income" class="section level3">
+<h3><span class="header-section-number">11.2.1</span> Example: US Personal Consumption and Income</h3>
+<div class="sourceCode" id="cb228"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb228-1"><a href="dynamic-regression-models.html#cb228-1"></a>us_change &lt;-<span class="st"> </span>readr<span class="op">::</span><span class="kw">read_csv</span>(<span class="st">&quot;https://otexts.com/fpp3/extrafiles/us_change.csv&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb228-2"><a href="dynamic-regression-models.html#cb228-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Time =</span> <span class="kw">yearquarter</span>(Time)) <span class="op">%&gt;%</span></span>
+<span id="cb228-3"><a href="dynamic-regression-models.html#cb228-3"></a><span class="st">  </span><span class="kw">as_tsibble</span>(<span class="dt">index =</span> Time)</span>
+<span id="cb228-4"><a href="dynamic-regression-models.html#cb228-4"></a></span>
+<span id="cb228-5"><a href="dynamic-regression-models.html#cb228-5"></a>us_change <span class="op">%&gt;%</span></span>
+<span id="cb228-6"><a href="dynamic-regression-models.html#cb228-6"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="kw">c</span>(Consumption, Income), <span class="dt">names_to =</span> <span class="st">&quot;var&quot;</span>, <span class="dt">values_to =</span> <span class="st">&quot;value&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb228-7"><a href="dynamic-regression-models.html#cb228-7"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(Time, value)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb228-8"><a href="dynamic-regression-models.html#cb228-8"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb228-9"><a href="dynamic-regression-models.html#cb228-9"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>var, <span class="dt">nrow =</span> <span class="dv">2</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb228-10"><a href="dynamic-regression-models.html#cb228-10"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Quarterly changes in US consumption and personal income&quot;</span>,</span>
+<span id="cb228-11"><a href="dynamic-regression-models.html#cb228-11"></a>       <span class="dt">x =</span> <span class="st">&quot;Time&quot;</span>,</span>
+<span id="cb228-12"><a href="dynamic-regression-models.html#cb228-12"></a>       <span class="dt">y =</span> <span class="ot">NULL</span>)</span></code></pre></div>
+<p><img src="ch10_files/figure-html/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>We start by fitting a time series regression model, without ARIMA error:</p>
+<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="dynamic-regression-models.html#cb229-1"></a>us_change_lm &lt;-<span class="st"> </span>us_change <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb229-2"><a href="dynamic-regression-models.html#cb229-2"></a><span class="st">  </span><span class="kw">lm</span>(Consumption <span class="op">~</span><span class="st"> </span>Income, <span class="dt">data =</span> .) </span>
+<span id="cb229-3"><a href="dynamic-regression-models.html#cb229-3"></a></span>
+<span id="cb229-4"><a href="dynamic-regression-models.html#cb229-4"></a><span class="kw">glance</span>(us_change_lm)</span>
+<span id="cb229-5"><a href="dynamic-regression-models.html#cb229-5"></a><span class="co">#&gt; # A tibble: 1 x 12</span></span>
+<span id="cb229-6"><a href="dynamic-regression-models.html#cb229-6"></a><span class="co">#&gt;   r.squared adj.r.squared sigma statistic p.value    df logLik   AIC   BIC</span></span>
+<span id="cb229-7"><a href="dynamic-regression-models.html#cb229-7"></a><span class="co">#&gt;       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb229-8"><a href="dynamic-regression-models.html#cb229-8"></a><span class="co">#&gt; 1     0.159         0.154 0.603      35.0 1.58e-8     1  -170.  345.  355.</span></span>
+<span id="cb229-9"><a href="dynamic-regression-models.html#cb229-9"></a><span class="co">#&gt; # ... with 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</span></span>
+<span id="cb229-10"><a href="dynamic-regression-models.html#cb229-10"></a></span>
+<span id="cb229-11"><a href="dynamic-regression-models.html#cb229-11"></a>us_change <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb229-12"><a href="dynamic-regression-models.html#cb229-12"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(Income, Consumption)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb229-13"><a href="dynamic-regression-models.html#cb229-13"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb229-14"><a href="dynamic-regression-models.html#cb229-14"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<p><img src="ch10_files/figure-html/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>The linear model fit the data rather poorly (<span class="math inline">\(R^2 = 0.16\)</span>). We then fit a regression model with ARIMA errors</p>
+<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb230-1"><a href="dynamic-regression-models.html#cb230-1"></a>us_change_dynamic &lt;-<span class="st"> </span>us_change <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb230-2"><a href="dynamic-regression-models.html#cb230-2"></a><span class="st">  </span><span class="kw">model</span>(<span class="kw">ARIMA</span>(Consumption <span class="op">~</span><span class="st"> </span>Income))</span>
+<span id="cb230-3"><a href="dynamic-regression-models.html#cb230-3"></a></span>
+<span id="cb230-4"><a href="dynamic-regression-models.html#cb230-4"></a>us_change_dynamic <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">report</span>()</span>
+<span id="cb230-5"><a href="dynamic-regression-models.html#cb230-5"></a><span class="co">#&gt; Series: Consumption </span></span>
+<span id="cb230-6"><a href="dynamic-regression-models.html#cb230-6"></a><span class="co">#&gt; Model: LM w/ ARIMA(1,0,2) errors </span></span>
+<span id="cb230-7"><a href="dynamic-regression-models.html#cb230-7"></a><span class="co">#&gt; </span></span>
+<span id="cb230-8"><a href="dynamic-regression-models.html#cb230-8"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb230-9"><a href="dynamic-regression-models.html#cb230-9"></a><span class="co">#&gt;          ar1      ma1     ma2  Income  intercept</span></span>
+<span id="cb230-10"><a href="dynamic-regression-models.html#cb230-10"></a><span class="co">#&gt;       0.6922  -0.5758  0.1984  0.2028     0.5990</span></span>
+<span id="cb230-11"><a href="dynamic-regression-models.html#cb230-11"></a><span class="co">#&gt; s.e.  0.1159   0.1301  0.0756  0.0461     0.0884</span></span>
+<span id="cb230-12"><a href="dynamic-regression-models.html#cb230-12"></a><span class="co">#&gt; </span></span>
+<span id="cb230-13"><a href="dynamic-regression-models.html#cb230-13"></a><span class="co">#&gt; sigma^2 estimated as 0.3219:  log likelihood=-156.95</span></span>
+<span id="cb230-14"><a href="dynamic-regression-models.html#cb230-14"></a><span class="co">#&gt; AIC=325.91   AICc=326.37   BIC=345.29</span></span></code></pre></div>
+<p>The data are clearly already stationary (as we are considering percentage changes rather than raw expenditure and income), so there is no need for any differencing. The fitted model is</p>
+<p><span class="math display">\[
+y_t = 0.6 + 0.2 \text{Income} + \eta_t \\
+\eta_t = 0.69\eta_{t-1} - 0.58\varepsilon_{t-1} + 0.2\varepsilon_{t-2} + \varepsilon_t \\
+\varepsilon_t \sim NID(0, 0.32)
+\]</span></p>
+<p>We can recover estimates of both the <span class="math inline">\(\eta_t\)</span> and <span class="math inline">\(\varepsilon_t\)</span> series using the <code>residuals()</code> function (<code>augment</code> returns arima errors). It is the ARIMA errors that should resemble a white noise series.</p>
+<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb231-1"><a href="dynamic-regression-models.html#cb231-1"></a><span class="co"># regression errors</span></span>
+<span id="cb231-2"><a href="dynamic-regression-models.html#cb231-2"></a>res1 &lt;-<span class="st"> </span><span class="kw">residuals</span>(us_change_dynamic, <span class="dt">type =</span> <span class="st">&quot;regression&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb231-3"><a href="dynamic-regression-models.html#cb231-3"></a><span class="st">  </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb231-4"><a href="dynamic-regression-models.html#cb231-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">type =</span> <span class="st">&quot;regression&quot;</span>)</span>
+<span id="cb231-5"><a href="dynamic-regression-models.html#cb231-5"></a><span class="co"># arima errors</span></span>
+<span id="cb231-6"><a href="dynamic-regression-models.html#cb231-6"></a>res2 &lt;-<span class="st"> </span><span class="kw">residuals</span>(us_change_dynamic, <span class="dt">type =</span> <span class="st">&quot;innovation&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb231-7"><a href="dynamic-regression-models.html#cb231-7"></a><span class="st">  </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb231-8"><a href="dynamic-regression-models.html#cb231-8"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">type =</span> <span class="st">&quot;arima&quot;</span>)</span>
+<span id="cb231-9"><a href="dynamic-regression-models.html#cb231-9"></a></span>
+<span id="cb231-10"><a href="dynamic-regression-models.html#cb231-10"></a><span class="kw">bind_rows</span>(res1, res2) <span class="op">%&gt;%</span></span>
+<span id="cb231-11"><a href="dynamic-regression-models.html#cb231-11"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(Time, .resid, <span class="dt">color =</span> type)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb231-12"><a href="dynamic-regression-models.html#cb231-12"></a><span class="st">  </span><span class="kw">geom_line</span>()</span></code></pre></div>
+<p><img src="ch10_files/figure-html/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="dynamic-regression-models.html#cb232-1"></a>us_change_dynamic <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">gg_tsresiduals</span>()</span></code></pre></div>
+<p><img src="ch10_files/figure-html/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb233-1"><a href="dynamic-regression-models.html#cb233-1"></a><span class="kw">augment</span>(us_change_dynamic) <span class="op">%&gt;%</span></span>
+<span id="cb233-2"><a href="dynamic-regression-models.html#cb233-2"></a><span class="st">  </span><span class="kw">features</span>(.resid, ljung_box, <span class="dt">dof =</span> <span class="dv">6</span>, <span class="dt">lag =</span> <span class="dv">10</span>) <span class="co"># unseasonal data lag = 10, seaonsal data lag = 2m </span></span>
+<span id="cb233-3"><a href="dynamic-regression-models.html#cb233-3"></a><span class="co">#&gt; # A tibble: 1 x 3</span></span>
+<span id="cb233-4"><a href="dynamic-regression-models.html#cb233-4"></a><span class="co">#&gt;   .model                      lb_stat lb_pvalue</span></span>
+<span id="cb233-5"><a href="dynamic-regression-models.html#cb233-5"></a><span class="co">#&gt;   &lt;chr&gt;                         &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb233-6"><a href="dynamic-regression-models.html#cb233-6"></a><span class="co">#&gt; 1 ARIMA(Consumption ~ Income)    6.05     0.196</span></span></code></pre></div>
+</div>
+</div>
+<div id="forecasting" class="section level2">
+<h2><span class="header-section-number">11.3</span> Forecasting</h2>
+<p>To forecast using a regression model with ARIMA errors, we need to forecast the regression part of the model and the ARIMA part of the model, and combine the results. As with ordinary regression models, in order to obtain forecasts we first need to forecast the predictors.</p>
+<p>We continue with the <code>us_change_dynamic</code> model, assuming that the future percentage changes in personal disposable income will be equal to the mean percentage change from the last forty years.</p>
+<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb234-1"><a href="dynamic-regression-models.html#cb234-1"></a>us_change_future &lt;-<span class="st"> </span><span class="kw">new_data</span>(us_change, <span class="dv">8</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb234-2"><a href="dynamic-regression-models.html#cb234-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Income =</span> <span class="kw">mean</span>(us_change<span class="op">$</span>Income))</span>
+<span id="cb234-3"><a href="dynamic-regression-models.html#cb234-3"></a></span>
+<span id="cb234-4"><a href="dynamic-regression-models.html#cb234-4"></a>us_change_dynamic <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb234-5"><a href="dynamic-regression-models.html#cb234-5"></a><span class="st">  </span><span class="kw">forecast</span>(<span class="dt">new_data =</span> us_change_future) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb234-6"><a href="dynamic-regression-models.html#cb234-6"></a><span class="st">  </span><span class="kw">autoplot</span>(us_change, <span class="dt">level =</span> <span class="dv">95</span>)</span></code></pre></div>
+<p><img src="ch10_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>It is important to realise that the prediction intervals from regression models (with or without ARIMA errors) do <strong>not</strong> take into account the uncertainty in the forecasts of the predictors. So they should be interpreted as being conditional on the assumed (or estimated) future values of the predictor variables.</p>
+<div id="example-forecasting-electricity-demand" class="section level3">
+<h3><span class="header-section-number">11.3.1</span> Example: Forecasting electricity demand</h3>
+<p>Daily electricity demand can be modelled as a function of temperature. As can be observed on an electricity bill, more electricity is used on cold days due to heating and hot days due to air conditioning. The higher demand on cold and hot days is reflected in a u-shape, where daily demand is plotted versus daily maximum temperature</p>
+<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb235-1"><a href="dynamic-regression-models.html#cb235-1"></a>vic_elec_daily &lt;-<span class="st"> </span>vic_elec <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb235-2"><a href="dynamic-regression-models.html#cb235-2"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">year</span>(Time) <span class="op">==</span><span class="st"> </span><span class="dv">2014</span>) <span class="op">%&gt;%</span></span>
+<span id="cb235-3"><a href="dynamic-regression-models.html#cb235-3"></a><span class="st">  </span><span class="kw">index_by</span>(<span class="dt">date =</span> <span class="kw">as_date</span>(Time)) <span class="op">%&gt;%</span></span>
+<span id="cb235-4"><a href="dynamic-regression-models.html#cb235-4"></a><span class="st">  </span><span class="kw">summarize</span>(</span>
+<span id="cb235-5"><a href="dynamic-regression-models.html#cb235-5"></a>    <span class="dt">demand =</span> <span class="kw">sum</span>(Demand) <span class="op">/</span><span class="st"> </span><span class="fl">1e3</span>,</span>
+<span id="cb235-6"><a href="dynamic-regression-models.html#cb235-6"></a>    <span class="dt">temperature =</span> <span class="kw">max</span>(Temperature),</span>
+<span id="cb235-7"><a href="dynamic-regression-models.html#cb235-7"></a>    <span class="dt">holiday =</span> <span class="kw">any</span>(Holiday)</span>
+<span id="cb235-8"><a href="dynamic-regression-models.html#cb235-8"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb235-9"><a href="dynamic-regression-models.html#cb235-9"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">day_type =</span> <span class="kw">case_when</span>(</span>
+<span id="cb235-10"><a href="dynamic-regression-models.html#cb235-10"></a>    holiday <span class="op">==</span><span class="st"> &quot;TRUE&quot;</span> <span class="op">~</span><span class="st"> &quot;holiday&quot;</span>,</span>
+<span id="cb235-11"><a href="dynamic-regression-models.html#cb235-11"></a>    <span class="kw">wday</span>(date) <span class="op">%in%</span><span class="st"> </span><span class="dv">2</span><span class="op">:</span><span class="dv">6</span> <span class="op">~</span><span class="st"> &quot;weekday&quot;</span>,</span>
+<span id="cb235-12"><a href="dynamic-regression-models.html#cb235-12"></a>    <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> &quot;weekend&quot;</span></span>
+<span id="cb235-13"><a href="dynamic-regression-models.html#cb235-13"></a>  ))</span>
+<span id="cb235-14"><a href="dynamic-regression-models.html#cb235-14"></a></span>
+<span id="cb235-15"><a href="dynamic-regression-models.html#cb235-15"></a>vic_elec_daily <span class="op">%&gt;%</span></span>
+<span id="cb235-16"><a href="dynamic-regression-models.html#cb235-16"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(temperature, demand, <span class="dt">color =</span> day_type)) <span class="op">+</span></span>
+<span id="cb235-17"><a href="dynamic-regression-models.html#cb235-17"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb235-18"><a href="dynamic-regression-models.html#cb235-18"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Maximum daily temperature&quot;</span>,</span>
+<span id="cb235-19"><a href="dynamic-regression-models.html#cb235-19"></a>       <span class="dt">y =</span> <span class="st">&quot;Electricity demand (GW)&quot;</span>)</span></code></pre></div>
+<p><img src="ch10_files/figure-html/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>Electricity demand appears to be quadratically related to maximum temperature, whether the day is weekend or not can cause a shift in demand. Therefore, we fit a quadratic regression model with ARMA errors. The model also includes an indicator variable for if the day was a working day or not.</p>
+<div class="sourceCode" id="cb236"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb236-1"><a href="dynamic-regression-models.html#cb236-1"></a>elec_fit &lt;-<span class="st"> </span>vic_elec_daily <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb236-2"><a href="dynamic-regression-models.html#cb236-2"></a><span class="st">  </span><span class="kw">model</span>(<span class="kw">ARIMA</span>(demand <span class="op">~</span><span class="st"> </span>temperature <span class="op">+</span><span class="st"> </span>temperature <span class="op">^</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>(day_type <span class="op">==</span><span class="st"> &quot;weekday&quot;</span>)))</span>
+<span id="cb236-3"><a href="dynamic-regression-models.html#cb236-3"></a></span>
+<span id="cb236-4"><a href="dynamic-regression-models.html#cb236-4"></a>elec_fit <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">report</span>() </span>
+<span id="cb236-5"><a href="dynamic-regression-models.html#cb236-5"></a><span class="co">#&gt; Series: demand </span></span>
+<span id="cb236-6"><a href="dynamic-regression-models.html#cb236-6"></a><span class="co">#&gt; Model: LM w/ ARIMA(1,0,4)(0,1,1)[7] errors </span></span>
+<span id="cb236-7"><a href="dynamic-regression-models.html#cb236-7"></a><span class="co">#&gt; </span></span>
+<span id="cb236-8"><a href="dynamic-regression-models.html#cb236-8"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb236-9"><a href="dynamic-regression-models.html#cb236-9"></a><span class="co">#&gt;          ar1      ma1      ma2      ma3      ma4     sma1  temperature</span></span>
+<span id="cb236-10"><a href="dynamic-regression-models.html#cb236-10"></a><span class="co">#&gt;       0.9808  -0.0913  -0.1841  -0.1560  -0.1842  -0.9325       1.5529</span></span>
+<span id="cb236-11"><a href="dynamic-regression-models.html#cb236-11"></a><span class="co">#&gt; s.e.  0.0174   0.0568   0.0573   0.0566   0.0634   0.0277       0.1396</span></span>
+<span id="cb236-12"><a href="dynamic-regression-models.html#cb236-12"></a><span class="co">#&gt;       day_type == &quot;weekday&quot;TRUE</span></span>
+<span id="cb236-13"><a href="dynamic-regression-models.html#cb236-13"></a><span class="co">#&gt;                         30.6203</span></span>
+<span id="cb236-14"><a href="dynamic-regression-models.html#cb236-14"></a><span class="co">#&gt; s.e.                     3.8442</span></span>
+<span id="cb236-15"><a href="dynamic-regression-models.html#cb236-15"></a><span class="co">#&gt; </span></span>
+<span id="cb236-16"><a href="dynamic-regression-models.html#cb236-16"></a><span class="co">#&gt; sigma^2 estimated as 114.8:  log likelihood=-1359.71</span></span>
+<span id="cb236-17"><a href="dynamic-regression-models.html#cb236-17"></a><span class="co">#&gt; AIC=2737.41   AICc=2737.93   BIC=2772.34</span></span></code></pre></div>
+<p>In fact, the estimated <span class="math inline">\(\hat{\eta_t}\)</span> is a SARIMA error, this is due to the fact the <code>vic_elec_daily</code> is highly seasonal</p>
+<div class="sourceCode" id="cb237"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb237-1"><a href="dynamic-regression-models.html#cb237-1"></a>vic_elec_daily <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">features</span>(demand, feat_stl)</span>
+<span id="cb237-2"><a href="dynamic-regression-models.html#cb237-2"></a><span class="co">#&gt; # A tibble: 1 x 9</span></span>
+<span id="cb237-3"><a href="dynamic-regression-models.html#cb237-3"></a><span class="co">#&gt;   trend_strength seasonal_streng~ seasonal_peak_w~ seasonal_trough~ spikiness</span></span>
+<span id="cb237-4"><a href="dynamic-regression-models.html#cb237-4"></a><span class="co">#&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb237-5"><a href="dynamic-regression-models.html#cb237-5"></a><span class="co">#&gt; 1          0.772            0.709                0                5     0.796</span></span>
+<span id="cb237-6"><a href="dynamic-regression-models.html#cb237-6"></a><span class="co">#&gt; # ... with 4 more variables: linearity &lt;dbl&gt;, curvature &lt;dbl&gt;,</span></span>
+<span id="cb237-7"><a href="dynamic-regression-models.html#cb237-7"></a><span class="co">#&gt; #   stl_e_acf1 &lt;dbl&gt;, stl_e_acf10 &lt;dbl&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb238"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb238-1"><a href="dynamic-regression-models.html#cb238-1"></a>elec_fit <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">gg_tsresiduals</span>()</span></code></pre></div>
+<p><img src="ch10_files/figure-html/unnamed-chunk-13-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb239"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb239-1"><a href="dynamic-regression-models.html#cb239-1"></a></span>
+<span id="cb239-2"><a href="dynamic-regression-models.html#cb239-2"></a><span class="kw">augment</span>(elec_fit) <span class="op">%&gt;%</span></span>
+<span id="cb239-3"><a href="dynamic-regression-models.html#cb239-3"></a><span class="st">  </span><span class="kw">features</span>(.resid, ljung_box, <span class="dt">dof =</span> <span class="dv">9</span>, <span class="dt">lag =</span> <span class="dv">14</span>)</span>
+<span id="cb239-4"><a href="dynamic-regression-models.html#cb239-4"></a><span class="co">#&gt; # A tibble: 1 x 3</span></span>
+<span id="cb239-5"><a href="dynamic-regression-models.html#cb239-5"></a><span class="co">#&gt;   .model                                                       lb_stat lb_pvalue</span></span>
+<span id="cb239-6"><a href="dynamic-regression-models.html#cb239-6"></a><span class="co">#&gt;   &lt;chr&gt;                                                          &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb239-7"><a href="dynamic-regression-models.html#cb239-7"></a><span class="co">#&gt; 1 &quot;ARIMA(demand ~ temperature + temperature^2 + (day_type == ~    9.77    0.0819</span></span></code></pre></div>
+<p>The model has some significant autocorrelation in the residuals, which means the prediction intervals may not provide accurate coverage. Also, the histogram of the residuals shows one positive outlier, which will also affect the coverage of the prediction intervals.</p>
+<div class="sourceCode" id="cb240"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb240-1"><a href="dynamic-regression-models.html#cb240-1"></a><span class="kw">augment</span>(elec_fit) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb240-2"><a href="dynamic-regression-models.html#cb240-2"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(demand, .fitted)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb240-3"><a href="dynamic-regression-models.html#cb240-3"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb240-4"><a href="dynamic-regression-models.html#cb240-4"></a><span class="st">  </span><span class="kw">geom_abline</span>(<span class="dt">slope =</span> <span class="dv">1</span>, <span class="dt">intercept =</span> <span class="dv">0</span>, <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb240-5"><a href="dynamic-regression-models.html#cb240-5"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Demand (actual values)&quot;</span>,</span>
+<span id="cb240-6"><a href="dynamic-regression-models.html#cb240-6"></a>       <span class="dt">y =</span> <span class="st">&quot;Demand (fitted values)&quot;</span>)</span></code></pre></div>
+<p><img src="ch10_files/figure-html/unnamed-chunk-14-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>To generate foreccasts, we set the temperature for the next 14 days to a constant 26 degrees.</p>
+<div class="sourceCode" id="cb241"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb241-1"><a href="dynamic-regression-models.html#cb241-1"></a>vic_elec_future &lt;-<span class="st"> </span><span class="kw">new_data</span>(vic_elec_daily, <span class="dv">14</span>) <span class="op">%&gt;%</span></span>
+<span id="cb241-2"><a href="dynamic-regression-models.html#cb241-2"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb241-3"><a href="dynamic-regression-models.html#cb241-3"></a>    <span class="dt">temperature =</span> <span class="dv">26</span>,</span>
+<span id="cb241-4"><a href="dynamic-regression-models.html#cb241-4"></a>    <span class="dt">holiday =</span> <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="kw">rep</span>(<span class="ot">FALSE</span>, <span class="dv">13</span>)),</span>
+<span id="cb241-5"><a href="dynamic-regression-models.html#cb241-5"></a>    <span class="dt">day_type =</span> <span class="kw">case_when</span>(</span>
+<span id="cb241-6"><a href="dynamic-regression-models.html#cb241-6"></a>      holiday <span class="op">~</span><span class="st"> &quot;Holiday&quot;</span>,</span>
+<span id="cb241-7"><a href="dynamic-regression-models.html#cb241-7"></a>      <span class="kw">wday</span>(date) <span class="op">%in%</span><span class="st"> </span><span class="dv">2</span><span class="op">:</span><span class="dv">6</span> <span class="op">~</span><span class="st"> &quot;Weekday&quot;</span>,</span>
+<span id="cb241-8"><a href="dynamic-regression-models.html#cb241-8"></a>      <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> &quot;Weekend&quot;</span></span>
+<span id="cb241-9"><a href="dynamic-regression-models.html#cb241-9"></a>    )</span>
+<span id="cb241-10"><a href="dynamic-regression-models.html#cb241-10"></a>  )</span>
+<span id="cb241-11"><a href="dynamic-regression-models.html#cb241-11"></a></span>
+<span id="cb241-12"><a href="dynamic-regression-models.html#cb241-12"></a>elec_fit <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb241-13"><a href="dynamic-regression-models.html#cb241-13"></a><span class="st">  </span><span class="kw">forecast</span>(<span class="dt">new_data =</span> vic_elec_future) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb241-14"><a href="dynamic-regression-models.html#cb241-14"></a><span class="st">  </span><span class="kw">autoplot</span>(vic_elec_daily, <span class="dt">level =</span> <span class="dv">95</span>)</span></code></pre></div>
+<p><img src="ch10_files/figure-html/unnamed-chunk-15-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>The point forecasts look reasonable for the first two weeks of 2015. The slow down in electricity demand at the end of 2014 (due to many people taking summer vacations) has caused the forecasts for the next two weeks to show similarly low demand values.</p>
+</div>
+</div>
+<div id="deterministic-and-stochastic-trends" class="section level2">
+<h2><span class="header-section-number">11.4</span> Deterministic and stochastic trends</h2>
+<p>There are two different ways of using a trend variable <span class="math inline">\(t\)</span>.</p>
+<p>A <strong>deterministic</strong> trend is obtained using the regression model</p>
+<p><span class="math display">\[
+y_t = \beta_0 + \beta_1t + \eta_t
+\]</span></p>
+<p>where <span class="math inline">\(\eta_t\)</span> is an <strong>ARMA</strong> process.</p>
+<p>A <strong>stochastic</strong> trend is obtained using the model</p>
+<p><span class="math display">\[
+y_t = \beta_0 + \beta_1t + \eta_t
+\]</span>
+where <span class="math inline">\(\eta_t\)</span> is an <strong>ARIMA</strong> process with <span class="math inline">\(d = 1\)</span>. In the latter case, we can difference both sides so that <span class="math inline">\(y&#39;_t = \beta_1 + \eta_t&#39;\)</span>, where <span class="math inline">\(\eta_t&#39;\)</span> is an ARMA process. In other words, a stochastic trend can be expressed as</p>
+<p><span class="math display">\[
+y_t = \beta_1 + y_{t-1} + \eta_t&#39;
+\]</span>
+This is similar to a random walk with drift (introduced in Section <a href="univariate-stationary-processes.html#random-walk">9.3.3</a>), but here the error term is an ARMA process rather than simply white noise.</p>
+<p>Although these models appear quite similar (they only differ in the number of differences that need to be applied to <span class="math inline">\(\eta_t\)</span>), their forecasting characteristics are quite different.</p>
+<div id="example-international-visitors-to-australia" class="section level3">
+<h3><span class="header-section-number">11.4.1</span> Example: International visitors to Australia</h3>
+<div class="sourceCode" id="cb242"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb242-1"><a href="dynamic-regression-models.html#cb242-1"></a>aus_visitors &lt;-<span class="st"> </span><span class="kw">as_tsibble</span>(fpp2<span class="op">::</span>austa)</span>
+<span id="cb242-2"><a href="dynamic-regression-models.html#cb242-2"></a>aus_visitors <span class="op">%&gt;%</span></span>
+<span id="cb242-3"><a href="dynamic-regression-models.html#cb242-3"></a><span class="st">  </span><span class="kw">autoplot</span>(value) <span class="op">+</span></span>
+<span id="cb242-4"><a href="dynamic-regression-models.html#cb242-4"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Year&quot;</span>, </span>
+<span id="cb242-5"><a href="dynamic-regression-models.html#cb242-5"></a>       <span class="dt">y =</span> <span class="st">&quot;millions of people&quot;</span>,</span>
+<span id="cb242-6"><a href="dynamic-regression-models.html#cb242-6"></a>       <span class="dt">title =</span> <span class="st">&quot;Total annual international visitors to Australia&quot;</span>)</span></code></pre></div>
+<p><img src="ch10_files/figure-html/unnamed-chunk-16-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>We will fit both a deterministic and a stochastic trend model to these data.</p>
+<p>The deterministic trend model is obtained as follows:</p>
+<div class="sourceCode" id="cb243"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb243-1"><a href="dynamic-regression-models.html#cb243-1"></a>visitors_deterministic &lt;-<span class="st"> </span>aus_visitors <span class="op">%&gt;%</span></span>
+<span id="cb243-2"><a href="dynamic-regression-models.html#cb243-2"></a><span class="st">  </span><span class="kw">model</span>(<span class="kw">ARIMA</span>(value <span class="op">~</span><span class="st"> </span><span class="kw">trend</span>() <span class="op">+</span><span class="st"> </span><span class="kw">pdq</span>(<span class="dt">d =</span> <span class="dv">0</span>)))</span>
+<span id="cb243-3"><a href="dynamic-regression-models.html#cb243-3"></a></span>
+<span id="cb243-4"><a href="dynamic-regression-models.html#cb243-4"></a><span class="kw">report</span>(visitors_deterministic)</span>
+<span id="cb243-5"><a href="dynamic-regression-models.html#cb243-5"></a><span class="co">#&gt; Series: value </span></span>
+<span id="cb243-6"><a href="dynamic-regression-models.html#cb243-6"></a><span class="co">#&gt; Model: LM w/ ARIMA(2,0,0) errors </span></span>
+<span id="cb243-7"><a href="dynamic-regression-models.html#cb243-7"></a><span class="co">#&gt; </span></span>
+<span id="cb243-8"><a href="dynamic-regression-models.html#cb243-8"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb243-9"><a href="dynamic-regression-models.html#cb243-9"></a><span class="co">#&gt;          ar1      ar2  trend()  intercept</span></span>
+<span id="cb243-10"><a href="dynamic-regression-models.html#cb243-10"></a><span class="co">#&gt;       1.1127  -0.3805   0.1710     0.4156</span></span>
+<span id="cb243-11"><a href="dynamic-regression-models.html#cb243-11"></a><span class="co">#&gt; s.e.  0.1600   0.1585   0.0088     0.1897</span></span>
+<span id="cb243-12"><a href="dynamic-regression-models.html#cb243-12"></a><span class="co">#&gt; </span></span>
+<span id="cb243-13"><a href="dynamic-regression-models.html#cb243-13"></a><span class="co">#&gt; sigma^2 estimated as 0.02979:  log likelihood=13.6</span></span>
+<span id="cb243-14"><a href="dynamic-regression-models.html#cb243-14"></a><span class="co">#&gt; AIC=-17.2   AICc=-15.2   BIC=-9.28</span></span></code></pre></div>
+<p>The estimated growth in visitor numbers is 0.17 million people per year.</p>
+<p>Alternatively, the stochastic trend model can be estimated.</p>
+<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb244-1"><a href="dynamic-regression-models.html#cb244-1"></a>visitors_stochastic &lt;-<span class="st"> </span>aus_visitors <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb244-2"><a href="dynamic-regression-models.html#cb244-2"></a><span class="st">  </span><span class="kw">model</span>(<span class="kw">ARIMA</span>(value <span class="op">~</span><span class="st"> </span><span class="kw">trend</span>() <span class="op">+</span><span class="st"> </span><span class="kw">pdq</span>(<span class="dt">d =</span> <span class="dv">1</span>)))</span>
+<span id="cb244-3"><a href="dynamic-regression-models.html#cb244-3"></a></span>
+<span id="cb244-4"><a href="dynamic-regression-models.html#cb244-4"></a>visitors_stochastic <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">report</span>()</span>
+<span id="cb244-5"><a href="dynamic-regression-models.html#cb244-5"></a><span class="co">#&gt; Series: value </span></span>
+<span id="cb244-6"><a href="dynamic-regression-models.html#cb244-6"></a><span class="co">#&gt; Model: LM w/ ARIMA(0,1,1) errors </span></span>
+<span id="cb244-7"><a href="dynamic-regression-models.html#cb244-7"></a><span class="co">#&gt; </span></span>
+<span id="cb244-8"><a href="dynamic-regression-models.html#cb244-8"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb244-9"><a href="dynamic-regression-models.html#cb244-9"></a><span class="co">#&gt;          ma1  trend()</span></span>
+<span id="cb244-10"><a href="dynamic-regression-models.html#cb244-10"></a><span class="co">#&gt;       0.3006   0.1735</span></span>
+<span id="cb244-11"><a href="dynamic-regression-models.html#cb244-11"></a><span class="co">#&gt; s.e.  0.1647   0.0390</span></span>
+<span id="cb244-12"><a href="dynamic-regression-models.html#cb244-12"></a><span class="co">#&gt; </span></span>
+<span id="cb244-13"><a href="dynamic-regression-models.html#cb244-13"></a><span class="co">#&gt; sigma^2 estimated as 0.03376:  log likelihood=10.62</span></span>
+<span id="cb244-14"><a href="dynamic-regression-models.html#cb244-14"></a><span class="co">#&gt; AIC=-15.24   AICc=-14.46   BIC=-10.57</span></span></code></pre></div>
+<p>In this case, the estimated growth in visitor numbers is also 0.17 million people per year. Although the growth estimates are similar, the prediction intervals are not. In particular, stochastic trends have much wider prediction intervals because the errors are non-stationary.</p>
+<div class="sourceCode" id="cb245"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb245-1"><a href="dynamic-regression-models.html#cb245-1"></a><span class="kw">bind_cols</span>(visitors_deterministic, </span>
+<span id="cb245-2"><a href="dynamic-regression-models.html#cb245-2"></a>          visitors_stochastic) <span class="op">%&gt;%</span></span>
+<span id="cb245-3"><a href="dynamic-regression-models.html#cb245-3"></a><span class="st">  </span><span class="kw">rename</span>(<span class="st">`</span><span class="dt">Deterministic trend</span><span class="st">`</span> =<span class="st"> </span><span class="dv">1</span>, <span class="st">`</span><span class="dt">Stochastic trend</span><span class="st">`</span> =<span class="st"> </span><span class="dv">2</span>) <span class="op">%&gt;%</span></span>
+<span id="cb245-4"><a href="dynamic-regression-models.html#cb245-4"></a><span class="st">  </span><span class="kw">forecast</span>(<span class="dt">h =</span> <span class="dv">10</span>) <span class="op">%&gt;%</span></span>
+<span id="cb245-5"><a href="dynamic-regression-models.html#cb245-5"></a><span class="st">  </span><span class="kw">autoplot</span>(aus_visitors, <span class="dt">level =</span> <span class="dv">95</span>) <span class="op">+</span></span>
+<span id="cb245-6"><a href="dynamic-regression-models.html#cb245-6"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Year&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Visitors to Australia (millions)&quot;</span>,</span>
+<span id="cb245-7"><a href="dynamic-regression-models.html#cb245-7"></a>       <span class="dt">title =</span> <span class="st">&quot;Forecasts from trend models&quot;</span>)</span></code></pre></div>
+<p><img src="ch10_files/figure-html/unnamed-chunk-19-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>There is an implicit assumption with deterministic trends that the slope of the trend is not going to change over time. On the other hand, stochastic trends can change, and the estimated growth is only assumed to be the average growth over the historical period, not necessarily the rate of growth that will be observed into the future. Consequently, <strong>it is safer to forecast with stochastic trends</strong>, especially for longer forecast horizons, as the prediction intervals allow for greater uncertainty in future growth.</p>
+</div>
+</div>
+<div id="dynamic-harmonic-regression" class="section level2">
+<h2><span class="header-section-number">11.5</span> Dynamic harmonic regression</h2>
+<p>When there are long seasonal periods, a dynamic regression with Fourier terms (Section <a href="time-series-regression-models.html#fourier-sereis">7.4.8</a>)is often better than other models we have considered so far.</p>
+<p>Seasonal versions of ARIMA and ETS models are designed for shorter periods such as 12 for monthly data or 4 for quarterly data. The <code>ETS()</code> model restricts seasonality to be a maximum period of 24 to allow hourly data but not data with a larger seasonal frequency. The problem is that there are m−1 parameters to be estimated for the initial seasonal states where <span class="math inline">\(m\)</span> is the seasonal period. So for large <span class="math inline">\(m\)</span>, the estimation becomes almost impossible.</p>
+<p>The <code>ARIMA()</code> function will allow a seasonal period up to <span class="math inline">\(m = 350\)</span>, but in practice will usually run out of memory whenever the seasonal period is more than about 200.</p>
+<p>In any case, seasonal differencing of high order does not make a lot of sense — for daily data it involves comparing what happened today with what happened exactly a year ago and there is no constraint that the seasonal pattern is smooth.</p>
+<p>So for such time series, we prefer a harmonic regression approach where the seasonal pattern is modelled using Fourier terms with short-term time series dynamics handled by an ARMA error.</p>
+<p>The advantages of this approach are:</p>
+<ul>
+<li><p>for data with more than one seasonal period, Fourier terms of different frequencies can be included;</p></li>
+<li><p>the smoothness of the seasonal pattern can be controlled by <span class="math inline">\(K\)</span>, the number of Fourier sin and cos pairs – the seasonal pattern is smoother for smaller values of <span class="math inline">\(K\)</span>;</p></li>
+<li><p>the short-term dynamics are easily handled with a simple ARMA error.</p></li>
+</ul>
+<p>The only real disadvantage (compared to a seasonal ARIMA model) is that the seasonality is assumed to be fixed — the seasonal pattern is not allowed to change over time. But in practice, seasonality is usually remarkably constant so this is not a big disadvantage except for long time series.</p>
+<div id="example-australian-eating-out-expenditure" class="section level3">
+<h3><span class="header-section-number">11.5.1</span> Example: Australian eating out expenditure</h3>
+<p>In this example we demonstrate combining Fourier terms for capturing seasonality with ARIMA errors capturing other dynamics in the data. For monthly data, we vary <span class="math inline">\(K\)</span> from <span class="math inline">\(1\)</span> to <span class="math inline">\(6\)</span></p>
+<div class="sourceCode" id="cb246"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb246-1"><a href="dynamic-regression-models.html#cb246-1"></a>aus_cafe &lt;-<span class="st"> </span>aus_retail <span class="op">%&gt;%</span></span>
+<span id="cb246-2"><a href="dynamic-regression-models.html#cb246-2"></a><span class="st">  </span><span class="kw">filter</span>(</span>
+<span id="cb246-3"><a href="dynamic-regression-models.html#cb246-3"></a>    Industry <span class="op">==</span><span class="st"> &quot;Cafes, restaurants and takeaway food services&quot;</span>,</span>
+<span id="cb246-4"><a href="dynamic-regression-models.html#cb246-4"></a>    <span class="kw">year</span>(Month) <span class="op">%in%</span><span class="st"> </span><span class="dv">2004</span><span class="op">:</span><span class="dv">2018</span></span>
+<span id="cb246-5"><a href="dynamic-regression-models.html#cb246-5"></a>  ) <span class="op">%&gt;%</span></span>
+<span id="cb246-6"><a href="dynamic-regression-models.html#cb246-6"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">Turnover =</span> <span class="kw">sum</span>(Turnover))</span>
+<span id="cb246-7"><a href="dynamic-regression-models.html#cb246-7"></a></span>
+<span id="cb246-8"><a href="dynamic-regression-models.html#cb246-8"></a>aus_cafe <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">autoplot</span>()</span></code></pre></div>
+<p><img src="ch10_files/figure-html/unnamed-chunk-20-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>To stablize variance, we instead forecast <code>log(Turnover)</code></p>
+<div class="sourceCode" id="cb247"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb247-1"><a href="dynamic-regression-models.html#cb247-1"></a>cafe_fit &lt;-<span class="st"> </span><span class="kw">model</span>(</span>
+<span id="cb247-2"><a href="dynamic-regression-models.html#cb247-2"></a>    aus_cafe,</span>
+<span id="cb247-3"><a href="dynamic-regression-models.html#cb247-3"></a>    <span class="st">`</span><span class="dt">K = 1</span><span class="st">`</span> =<span class="st"> </span><span class="kw">ARIMA</span>(<span class="kw">log</span>(Turnover) <span class="op">~</span><span class="st"> </span><span class="kw">fourier</span>(<span class="dt">K =</span> <span class="dv">1</span>) <span class="op">+</span><span class="st"> </span><span class="kw">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<span id="cb247-4"><a href="dynamic-regression-models.html#cb247-4"></a>    <span class="st">`</span><span class="dt">K = 2</span><span class="st">`</span> =<span class="st"> </span><span class="kw">ARIMA</span>(<span class="kw">log</span>(Turnover) <span class="op">~</span><span class="st"> </span><span class="kw">fourier</span>(<span class="dt">K =</span> <span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="kw">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<span id="cb247-5"><a href="dynamic-regression-models.html#cb247-5"></a>    <span class="st">`</span><span class="dt">K = 3</span><span class="st">`</span> =<span class="st"> </span><span class="kw">ARIMA</span>(<span class="kw">log</span>(Turnover) <span class="op">~</span><span class="st"> </span><span class="kw">fourier</span>(<span class="dt">K =</span> <span class="dv">3</span>) <span class="op">+</span><span class="st"> </span><span class="kw">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<span id="cb247-6"><a href="dynamic-regression-models.html#cb247-6"></a>    <span class="st">`</span><span class="dt">K = 4</span><span class="st">`</span> =<span class="st"> </span><span class="kw">ARIMA</span>(<span class="kw">log</span>(Turnover) <span class="op">~</span><span class="st"> </span><span class="kw">fourier</span>(<span class="dt">K =</span> <span class="dv">4</span>) <span class="op">+</span><span class="st"> </span><span class="kw">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<span id="cb247-7"><a href="dynamic-regression-models.html#cb247-7"></a>    <span class="st">`</span><span class="dt">K = 5</span><span class="st">`</span> =<span class="st"> </span><span class="kw">ARIMA</span>(<span class="kw">log</span>(Turnover) <span class="op">~</span><span class="st"> </span><span class="kw">fourier</span>(<span class="dt">K =</span> <span class="dv">5</span>) <span class="op">+</span><span class="st"> </span><span class="kw">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<span id="cb247-8"><a href="dynamic-regression-models.html#cb247-8"></a>    <span class="st">`</span><span class="dt">K = 6</span><span class="st">`</span> =<span class="st"> </span><span class="kw">ARIMA</span>(<span class="kw">log</span>(Turnover) <span class="op">~</span><span class="st"> </span><span class="kw">fourier</span>(<span class="dt">K =</span> <span class="dv">6</span>) <span class="op">+</span><span class="st"> </span><span class="kw">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
+<span id="cb247-9"><a href="dynamic-regression-models.html#cb247-9"></a>)</span>
+<span id="cb247-10"><a href="dynamic-regression-models.html#cb247-10"></a></span>
+<span id="cb247-11"><a href="dynamic-regression-models.html#cb247-11"></a>cafe_fit <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">glance</span>()</span>
+<span id="cb247-12"><a href="dynamic-regression-models.html#cb247-12"></a><span class="co">#&gt; # A tibble: 6 x 8</span></span>
+<span id="cb247-13"><a href="dynamic-regression-models.html#cb247-13"></a><span class="co">#&gt;   .model   sigma2 log_lik   AIC  AICc   BIC ar_roots  ma_roots </span></span>
+<span id="cb247-14"><a href="dynamic-regression-models.html#cb247-14"></a><span class="co">#&gt;   &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;list&gt;    &lt;list&gt;   </span></span>
+<span id="cb247-15"><a href="dynamic-regression-models.html#cb247-15"></a><span class="co">#&gt; 1 K = 1  0.00175     317. -616. -615. -588. &lt;cpl [2]&gt; &lt;cpl [3]&gt;</span></span>
+<span id="cb247-16"><a href="dynamic-regression-models.html#cb247-16"></a><span class="co">#&gt; 2 K = 2  0.00107     362. -700. -698. -661. &lt;cpl [5]&gt; &lt;cpl [1]&gt;</span></span>
+<span id="cb247-17"><a href="dynamic-regression-models.html#cb247-17"></a><span class="co">#&gt; 3 K = 3  0.000761    394. -763. -761. -725. &lt;cpl [3]&gt; &lt;cpl [1]&gt;</span></span>
+<span id="cb247-18"><a href="dynamic-regression-models.html#cb247-18"></a><span class="co">#&gt; 4 K = 4  0.000539    427. -822. -818. -771. &lt;cpl [1]&gt; &lt;cpl [5]&gt;</span></span>
+<span id="cb247-19"><a href="dynamic-regression-models.html#cb247-19"></a><span class="co">#&gt; 5 K = 5  0.000317    474. -919. -917. -875. &lt;cpl [2]&gt; &lt;cpl [0]&gt;</span></span>
+<span id="cb247-20"><a href="dynamic-regression-models.html#cb247-20"></a><span class="co">#&gt; 6 K = 6  0.000316    474. -920. -918. -875. &lt;cpl [0]&gt; &lt;cpl [1]&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb248"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb248-1"><a href="dynamic-regression-models.html#cb248-1"></a>cafe_fit <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb248-2"><a href="dynamic-regression-models.html#cb248-2"></a><span class="st">  </span><span class="kw">forecast</span>(<span class="dt">h =</span> <span class="st">&quot;2 years&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb248-3"><a href="dynamic-regression-models.html#cb248-3"></a><span class="st">  </span><span class="kw">autoplot</span>(aus_cafe) <span class="op">+</span></span>
+<span id="cb248-4"><a href="dynamic-regression-models.html#cb248-4"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="kw">vars</span>(.model), <span class="dt">ncol =</span> <span class="dv">2</span>) <span class="op">+</span></span>
+<span id="cb248-5"><a href="dynamic-regression-models.html#cb248-5"></a><span class="st">  </span><span class="kw">guides</span>(<span class="dt">colour =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb248-6"><a href="dynamic-regression-models.html#cb248-6"></a><span class="st">  </span><span class="kw">geom_label</span>(</span>
+<span id="cb248-7"><a href="dynamic-regression-models.html#cb248-7"></a>    <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">yearmonth</span>(<span class="st">&quot;2007 Jan&quot;</span>), </span>
+<span id="cb248-8"><a href="dynamic-regression-models.html#cb248-8"></a>        <span class="dt">y =</span> <span class="dv">4250</span>, </span>
+<span id="cb248-9"><a href="dynamic-regression-models.html#cb248-9"></a>        <span class="dt">label =</span> <span class="kw">str_c</span>(<span class="st">&quot;AICc = &quot;</span>, <span class="kw">format</span>(AICc))),</span>
+<span id="cb248-10"><a href="dynamic-regression-models.html#cb248-10"></a>    <span class="dt">data =</span> <span class="kw">glance</span>(cafe_fit)</span>
+<span id="cb248-11"><a href="dynamic-regression-models.html#cb248-11"></a>  ) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb248-12"><a href="dynamic-regression-models.html#cb248-12"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
+<p><img src="ch10_files/figure-html/unnamed-chunk-22-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>As <span class="math inline">\(K\)</span> increases the Fourier terms capture and project a more “wiggly” seasonal pattern and simpler ARIMA models are required to capture other dynamics. The AICc value is minimised for <span class="math inline">\(K = 5\)</span>, with a significant jump going from <span class="math inline">\(K = 4\)</span> to <span class="math inline">\(K = 5\)</span>, hence the forecasts generated from this model would be the ones used.</p>
+</div>
+</div>
+<div id="lagged-predictors" class="section level2">
+<h2><span class="header-section-number">11.6</span> Lagged predictors</h2>
+<p>In Section <a href="time-series-regression-models.html#distributed-lags">7.4.6</a> we introduced distributed lags. In those situations, we need to allow for lagged effects of the predictor. Suppose that we have only one predictor in our model. Then a model which allows for lagged effects can be written as</p>
+<p><span class="math display">\[
+y_t + \beta_0 + \gamma_1x_t + \gamma_2x_{t-2} + \cdots + \gamma_kx_{t-k} + \eta_t
+\]</span></p>
+<p>where <span class="math inline">\(\eta_t\)</span> is an ARIMA process. The value of <span class="math inline">\(k\)</span> can be selected using the <span class="math inline">\(\text{AIC}_c\)</span>, along with the values of <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span> for the ARIMA error.</p>
+<p>Note that when comparing models with different lags, we need to set top k observations to <code>NA</code>, where k is the maximum lag tried, so that all models use the exact same data.</p>
+<div id="example-tv-advertising-and-insurance-quotations" class="section level3">
+<h3><span class="header-section-number">11.6.1</span> Example: TV advertising and insurance quotations</h3>
+<div class="sourceCode" id="cb249"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb249-1"><a href="dynamic-regression-models.html#cb249-1"></a>insurance &lt;-<span class="st"> </span><span class="kw">as_tsibble</span>(fpp2<span class="op">::</span>insurance, <span class="dt">pivot_longer =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb249-2"><a href="dynamic-regression-models.html#cb249-2"></a></span>
+<span id="cb249-3"><a href="dynamic-regression-models.html#cb249-3"></a>insurance <span class="op">%&gt;%</span></span>
+<span id="cb249-4"><a href="dynamic-regression-models.html#cb249-4"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="kw">c</span>(Quotes, TV.advert)) <span class="op">%&gt;%</span></span>
+<span id="cb249-5"><a href="dynamic-regression-models.html#cb249-5"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> index, <span class="dt">y =</span> value)) <span class="op">+</span></span>
+<span id="cb249-6"><a href="dynamic-regression-models.html#cb249-6"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
+<span id="cb249-7"><a href="dynamic-regression-models.html#cb249-7"></a><span class="st">  </span><span class="kw">facet_grid</span>(<span class="kw">vars</span>(name), <span class="dt">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="op">+</span></span>
+<span id="cb249-8"><a href="dynamic-regression-models.html#cb249-8"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Year&quot;</span>, </span>
+<span id="cb249-9"><a href="dynamic-regression-models.html#cb249-9"></a>       <span class="dt">y =</span> <span class="ot">NULL</span>,</span>
+<span id="cb249-10"><a href="dynamic-regression-models.html#cb249-10"></a>       <span class="dt">title =</span> <span class="st">&quot;Insurance advertising and quotations&quot;</span>)</span></code></pre></div>
+<p><img src="ch10_files/figure-html/unnamed-chunk-23-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb250"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb250-1"><a href="dynamic-regression-models.html#cb250-1"></a>insurance_fit &lt;-<span class="st"> </span>insurance <span class="op">%&gt;%</span></span>
+<span id="cb250-2"><a href="dynamic-regression-models.html#cb250-2"></a><span class="st">  </span><span class="co"># Restrict data so models use same fitting period</span></span>
+<span id="cb250-3"><a href="dynamic-regression-models.html#cb250-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Quotes =</span> <span class="kw">c</span>(<span class="ot">NA</span>, <span class="ot">NA</span>, <span class="ot">NA</span>, Quotes[<span class="dv">4</span><span class="op">:</span><span class="dv">40</span>])) <span class="op">%&gt;%</span></span>
+<span id="cb250-4"><a href="dynamic-regression-models.html#cb250-4"></a><span class="st">  </span><span class="co"># Estimate models</span></span>
+<span id="cb250-5"><a href="dynamic-regression-models.html#cb250-5"></a><span class="st">  </span><span class="kw">model</span>(</span>
+<span id="cb250-6"><a href="dynamic-regression-models.html#cb250-6"></a>    <span class="dt">lag0 =</span> <span class="kw">ARIMA</span>(Quotes <span class="op">~</span><span class="st"> </span><span class="kw">pdq</span>(<span class="dt">d =</span> <span class="dv">0</span>) <span class="op">+</span><span class="st"> </span>TV.advert),</span>
+<span id="cb250-7"><a href="dynamic-regression-models.html#cb250-7"></a>    <span class="dt">lag1=</span> <span class="kw">ARIMA</span>(Quotes <span class="op">~</span><span class="st"> </span><span class="kw">pdq</span>(<span class="dt">d =</span> <span class="dv">0</span>) <span class="op">+</span><span class="st"> </span>TV.advert <span class="op">+</span><span class="st"> </span><span class="kw">lag</span>(TV.advert)),</span>
+<span id="cb250-8"><a href="dynamic-regression-models.html#cb250-8"></a>    <span class="dt">lag2=</span> <span class="kw">ARIMA</span>(Quotes <span class="op">~</span><span class="st"> </span><span class="kw">pdq</span>(<span class="dt">d =</span> <span class="dv">0</span>) <span class="op">+</span><span class="st"> </span>TV.advert <span class="op">+</span><span class="st"> </span><span class="kw">lag</span>(TV.advert) <span class="op">+</span><span class="st"> </span><span class="kw">lag</span>(TV.advert, <span class="dv">2</span>)),</span>
+<span id="cb250-9"><a href="dynamic-regression-models.html#cb250-9"></a>    <span class="dt">lag3=</span> <span class="kw">ARIMA</span>(Quotes <span class="op">~</span><span class="st"> </span><span class="kw">pdq</span>(<span class="dt">d =</span> <span class="dv">0</span>) <span class="op">+</span><span class="st"> </span>TV.advert <span class="op">+</span><span class="st"> </span><span class="kw">lag</span>(TV.advert) <span class="op">+</span><span class="st"> </span><span class="kw">lag</span>(TV.advert, <span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="kw">lag</span>(TV.advert, <span class="dv">3</span>)))</span>
+<span id="cb250-10"><a href="dynamic-regression-models.html#cb250-10"></a></span>
+<span id="cb250-11"><a href="dynamic-regression-models.html#cb250-11"></a><span class="kw">glance</span>(insurance_fit)</span>
+<span id="cb250-12"><a href="dynamic-regression-models.html#cb250-12"></a><span class="co">#&gt; # A tibble: 4 x 8</span></span>
+<span id="cb250-13"><a href="dynamic-regression-models.html#cb250-13"></a><span class="co">#&gt;   .model sigma2 log_lik   AIC  AICc   BIC ar_roots  ma_roots </span></span>
+<span id="cb250-14"><a href="dynamic-regression-models.html#cb250-14"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;list&gt;    &lt;list&gt;   </span></span>
+<span id="cb250-15"><a href="dynamic-regression-models.html#cb250-15"></a><span class="co">#&gt; 1 lag0    0.265   -28.3  66.6  68.3  75.0 &lt;cpl [2]&gt; &lt;cpl [0]&gt;</span></span>
+<span id="cb250-16"><a href="dynamic-regression-models.html#cb250-16"></a><span class="co">#&gt; 2 lag1    0.209   -24.0  58.1  59.9  66.5 &lt;cpl [1]&gt; &lt;cpl [1]&gt;</span></span>
+<span id="cb250-17"><a href="dynamic-regression-models.html#cb250-17"></a><span class="co">#&gt; 3 lag2    0.215   -24.0  60.0  62.6  70.2 &lt;cpl [1]&gt; &lt;cpl [1]&gt;</span></span>
+<span id="cb250-18"><a href="dynamic-regression-models.html#cb250-18"></a><span class="co">#&gt; 4 lag3    0.206   -22.2  60.3  65.0  73.8 &lt;cpl [1]&gt; &lt;cpl [1]&gt;</span></span></code></pre></div>
+<p>The best model (with the smallest AICc value) has two lagged predictors; that is, it includes advertising only in the current month and the previous month. So we now re-estimate that model, but using all the available data.</p>
+<div class="sourceCode" id="cb251"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb251-1"><a href="dynamic-regression-models.html#cb251-1"></a>insurance_best &lt;-<span class="st"> </span>insurance <span class="op">%&gt;%</span></span>
+<span id="cb251-2"><a href="dynamic-regression-models.html#cb251-2"></a><span class="st">  </span><span class="kw">model</span>(<span class="kw">ARIMA</span>(Quotes <span class="op">~</span><span class="st"> </span><span class="kw">pdq</span>(<span class="dt">d =</span> <span class="dv">0</span>) <span class="op">+</span><span class="st"> </span>TV.advert <span class="op">+</span><span class="st"> </span><span class="kw">lag</span>(TV.advert)))</span>
+<span id="cb251-3"><a href="dynamic-regression-models.html#cb251-3"></a></span>
+<span id="cb251-4"><a href="dynamic-regression-models.html#cb251-4"></a><span class="kw">report</span>(insurance_best)</span>
+<span id="cb251-5"><a href="dynamic-regression-models.html#cb251-5"></a><span class="co">#&gt; Series: Quotes </span></span>
+<span id="cb251-6"><a href="dynamic-regression-models.html#cb251-6"></a><span class="co">#&gt; Model: LM w/ ARIMA(1,0,2) errors </span></span>
+<span id="cb251-7"><a href="dynamic-regression-models.html#cb251-7"></a><span class="co">#&gt; </span></span>
+<span id="cb251-8"><a href="dynamic-regression-models.html#cb251-8"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb251-9"><a href="dynamic-regression-models.html#cb251-9"></a><span class="co">#&gt;          ar1     ma1     ma2  TV.advert  lag(TV.advert)  intercept</span></span>
+<span id="cb251-10"><a href="dynamic-regression-models.html#cb251-10"></a><span class="co">#&gt;       0.5123  0.9169  0.4591     1.2527          0.1464     2.1554</span></span>
+<span id="cb251-11"><a href="dynamic-regression-models.html#cb251-11"></a><span class="co">#&gt; s.e.  0.1849  0.2051  0.1895     0.0588          0.0531     0.8595</span></span>
+<span id="cb251-12"><a href="dynamic-regression-models.html#cb251-12"></a><span class="co">#&gt; </span></span>
+<span id="cb251-13"><a href="dynamic-regression-models.html#cb251-13"></a><span class="co">#&gt; sigma^2 estimated as 0.2166:  log likelihood=-23.94</span></span>
+<span id="cb251-14"><a href="dynamic-regression-models.html#cb251-14"></a><span class="co">#&gt; AIC=61.88   AICc=65.38   BIC=73.7</span></span></code></pre></div>
+<div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb252-1"><a href="dynamic-regression-models.html#cb252-1"></a>insurance_best <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb252-2"><a href="dynamic-regression-models.html#cb252-2"></a><span class="st">  </span><span class="kw">augment</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb252-3"><a href="dynamic-regression-models.html#cb252-3"></a><span class="st">  </span><span class="kw">features</span>(.resid, ljung_box, <span class="dt">dof =</span> <span class="dv">7</span>, <span class="dt">lag =</span> <span class="dv">10</span>)</span>
+<span id="cb252-4"><a href="dynamic-regression-models.html#cb252-4"></a><span class="co">#&gt; # A tibble: 1 x 3</span></span>
+<span id="cb252-5"><a href="dynamic-regression-models.html#cb252-5"></a><span class="co">#&gt;   .model                                                  lb_stat lb_pvalue</span></span>
+<span id="cb252-6"><a href="dynamic-regression-models.html#cb252-6"></a><span class="co">#&gt;   &lt;chr&gt;                                                     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb252-7"><a href="dynamic-regression-models.html#cb252-7"></a><span class="co">#&gt; 1 ARIMA(Quotes ~ pdq(d = 0) + TV.advert + lag(TV.advert))    3.09     0.379</span></span></code></pre></div>
+<p>We can calculate forecasts using this model if we assume future values for the advertising variable. If we set the future monthly advertising to 8 units</p>
+<div class="sourceCode" id="cb253"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb253-1"><a href="dynamic-regression-models.html#cb253-1"></a>insurance_future &lt;-<span class="st"> </span>insurance <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb253-2"><a href="dynamic-regression-models.html#cb253-2"></a><span class="st">  </span><span class="kw">new_data</span>(<span class="dv">20</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb253-3"><a href="dynamic-regression-models.html#cb253-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">TV.advert =</span> <span class="dv">8</span>)</span>
+<span id="cb253-4"><a href="dynamic-regression-models.html#cb253-4"></a></span>
+<span id="cb253-5"><a href="dynamic-regression-models.html#cb253-5"></a>insurance_best <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb253-6"><a href="dynamic-regression-models.html#cb253-6"></a><span class="st">  </span><span class="kw">forecast</span>(insurance_future) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb253-7"><a href="dynamic-regression-models.html#cb253-7"></a><span class="st">  </span><span class="kw">autoplot</span>(insurance)</span></code></pre></div>
+<p><img src="ch10_files/figure-html/unnamed-chunk-27-1.png" width="100%" style="display: block; margin: auto;" /></p>
+
+</div>
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="ets-and-arima.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="estimation-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="arima-models.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
